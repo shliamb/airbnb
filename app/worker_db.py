@@ -8,8 +8,8 @@ from sqlalchemy.orm import sessionmaker
 from models import Base, Users, Rooms, Task
 from sqlalchemy import select, insert, update, join, func
 
-async def create_async_engine_and_session():                               # localhost
-    engine = create_async_engine(f"postgresql+asyncpg://{user_db}:{paswor_db}@postgres:5432/my_database") # echo=True - вывод логирования
+async def create_async_engine_and_session():                               # postgres
+    engine = create_async_engine(f"postgresql+asyncpg://{user_db}:{paswor_db}@localhost:5432/my_database") # echo=True - вывод логирования
     async_session = sessionmaker(bind=engine, class_=AsyncSession)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -82,7 +82,7 @@ async def update_rooms(id: int, updated_session) -> bool:
             logging.error(f"Failed to update rooms data, error: {e}")
     return confirmation
 
-# Add User Session to DB
+# Add Rooms to DB
 async def adding_rooms(session_data) -> bool:
     async_session = await create_async_engine_and_session()
     confirmation = False

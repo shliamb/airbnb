@@ -52,7 +52,7 @@ class Task(Base):
     name_task = Column(sqlalchemy.String(100), nullable=True)
     date_task = Column(sqlalchemy.DateTime, nullable=True)
     data_task = Column(sqlalchemy.String(3000), nullable=True)
-    owner_task = Column(sqlalchemy.BigInteger, ForeignKey('user_id.id'), primary_key=True)
+    owner_task = Column(sqlalchemy.BigInteger, ForeignKey('users.id'), primary_key=True)
     ####
     users_task = relationship("Users", back_populates="task")
 
@@ -60,7 +60,7 @@ class Task(Base):
 class Users(Base):
     __tablename__ = 'users'
     id = Column(sqlalchemy.BigInteger, primary_key=True, unique=True, nullable=False, index=True) # Telegram user_id or any else
-    username = sqlalchemy.Column(sqlalchemy.String(50), nullable=False, unique=True)
+    username = Column(sqlalchemy.String(50), nullable=False, unique=True)
     password = Column(sqlalchemy.String(100), nullable=False)
     email = Column(sqlalchemy.String(100), nullable=True, unique=True)
     date_reg = Column(sqlalchemy.DateTime, nullable=True)
@@ -68,7 +68,7 @@ class Users(Base):
     is_admin = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False)
     is_block = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False)
     ####
-    task = relationship("Task", back_populates="task", uselist=False)
+    task = relationship("Task", back_populates="users_task", uselist=False)
 
 
 
