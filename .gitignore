@@ -1,4 +1,4 @@
-myvenv/
+venv/
 app/__pycache__/
 .env
 in_time
