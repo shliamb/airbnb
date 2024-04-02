@@ -26,7 +26,7 @@ data = {
     "night_price": 150,
 }
 
-asyncio.run(add_rooms(data))
+# asyncio.run(add_rooms(data))
 
 
 #  Забираем из базы тестово
@@ -35,4 +35,4 @@ async def read_rooms():
     data = await get_rooms_by_id(id)
     print(data.country)
 
-# asyncio.run(read_rooms())
+asyncio.run(read_rooms())
