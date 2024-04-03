@@ -1,4 +1,7 @@
 venv/
-app/__pycache__/
+app/bedly/
 .env
 in_time
+profiles/
+img/
+app/chromedriver/
