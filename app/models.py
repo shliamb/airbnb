@@ -67,6 +67,13 @@ class Users(Base):
     date_visit = Column(sqlalchemy.DateTime, nullable=True)
     is_admin = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False)
     is_block = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False)
+
+    # location = "Bali"
+    # checkin_date = "2024-05-01"
+    # checkout_date = "2024-05-07"
+    # guests = 2
+    # USD = 
+
     ####
     task = relationship("Task", back_populates="users_task", uselist=False)
 

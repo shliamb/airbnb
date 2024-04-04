@@ -8,9 +8,13 @@ import requests
 import time
 import random
 import sys
+import re
 # import pandas as pd
 # import re
 
+#### SYSTEM FUNCTIONS ####
+
+# Begin work, options driver, return driver
 def begin():
     ua = UserAgent(browsers=['edge', 'chrome']) # ua = UserAgent(browsers=['edge', 'chrome'])  ua = UserAgent(os='linux') ua = UserAgent(min_version=120.0)  ua = UserAgent(platforms='mobile')  
     service = Service()
@@ -35,12 +39,12 @@ def begin():
     return driver
 ####
 
-
 # QUICK SLEEP - промежуток случайных чисел на входе, между которыми будет случайный период остановки
 def quick_sleep(mi: int, ma: int) -> bool:
     confirm = False
     num = random.randint(mi, ma)
     for _ in range(num):
+        #print(".", end='', flush=True)
         print(".", end='', flush=True)
         time.sleep(1)
     print("\n")
@@ -51,15 +55,26 @@ def quick_sleep(mi: int, ma: int) -> bool:
 def response_code(url: str) -> int:
     response = requests.get(url)
     code = response.status_code
-    return code
+    return code or None
 
 # GOING TO THE SITE
-def go_url(driver, url: str) -> str:
-    if response_code(url) == 200:
+def go_url(driver, url: str) -> bool:
+    confirmation = False
+    code = response_code(url)
+    if code == 200:
         driver.get(url)
-        return
+        confirmation = True
+    else:
+        confirmation = False
+        print(f"Error: server back code response - {code}")
+    return confirmation
+    
+# CLOSE DRIVER CHROME
+def end_close(driver):
+    driver.close()
+    driver.quit()
 
-# FIND URL BT4 
+# FIND SOME URL BT4
 def find_url(driver, tag: str, name: str, value: str) -> str:
     html = driver.page_source
     nand = BeautifulSoup(html, 'lxml')
@@ -69,23 +84,16 @@ def find_url(driver, tag: str, name: str, value: str) -> str:
         url_href = data.get("href")
     return url_href
 
-# FIND TEXT BT4
-def find_text(driver):
-    html = driver.page_source
-    nand = BeautifulSoup(html, 'lxml')
-    quick_sleep(2, 3)
-    a = ""
-    for el in nand.find_all("div", {"class": "dir-ltr"}):
-        prop_type = el.find("div", {"data-testid": "listing-card-title"})
-        if prop_type != None:# and prop_type != "":
-            if a != prop_type.text.strip():
-                a = prop_type.text.strip()
-                print(a)
-    return
 
-# GET URL AIRBNB
+
+
+
+
+#### INDIVIDUAL FUNCTIONS ####
+
+# GET URL AIRBNB ROOMS
 def build_url(location, checkin_date, checkout_date, guests=None, room_types=None, amenities=[]) -> str:
-    url = f"https://www.airbnb.com/s/{location}/homes?checkin={checkin_date}&checkout={checkout_date}"
+    url = f"https://www.airbnb.com/s/{location}/homes?checkin={checkin_date}&checkout={checkout_date}&enable_auto_translate=false&locale=en&currency=USD"
     if guests:
         url += f"&guests={guests}"
     if room_types:
@@ -94,10 +102,81 @@ def build_url(location, checkin_date, checkout_date, guests=None, room_types=Non
         url += "&amenities=" + "+".join(amenities)
     return url
 
-# CLOSE DRIVER CHROME
-def end_close(driver):
-    driver.close()
-    driver.quit()
+# FIND URL NEXT PAGE 
+def get_url_next_page(driver) -> str:
+    html = driver.page_source
+    nand = BeautifulSoup(html, 'lxml')
+    data = nand.find("a", {"aria-label" : "Next"})
+    url_href = None
+    if data:
+        url_href = "https://www.airbnb.com/" + data.get("href")
+    return url_href
+
+# FIND TEXT FIXED BT4
+# Позже сделать входные параметры в виде словаря для легкой подстройке к изменениям на сайте
+def find_data_room(driver):
+    html = driver.page_source
+    nand = BeautifulSoup(html, 'lxml')
+    quick_sleep(2, 3)
+
+
+    for el in nand.find_all("div", {"data-testid": "card-container"}):
+
+        # Title room
+        title = el.find("div", {"data-testid": "listing-card-title"})
+        if title != None:
+            print("Title:", title.text.strip())
+
+        # Name room
+        name = el.find("span", {"data-testid": "listing-card-name"})
+        if name != None:
+            print("Name:", name.text.strip())
+
+        # Subtitle room
+        subtitle = el.find("span", {"aria-hidden": "true"})
+        if subtitle != None:
+            print("Subtitle:", subtitle.text.strip())
+
+        # Price night room
+        night = el.find("span", {"class": "_1y74zjx"})
+        if night != None:
+            print("Night:", night.text.strip())
+
+        # Price total room
+        total = el.find("div", {"class": "_tt122m"})
+        if total != None:
+            print("Total:", total.text.strip())
+
+        # Rating room - так как нет зацепок, то связывал с текстом который внутри
+        word_to_find = "out of 5 average rating"
+        rating = el.find("span", {"class": "r4a59j5"})
+        if rating != None:
+            if word_to_find in rating.text:
+                print("Rating:", rating.text.strip())
+
+        # Room url and ID room
+        room_url = el.find("a", {"class": "l1ovpqvx"})
+        if room_url:
+            url_href = room_url.get("href")
+            print("URL room:", f"https://www.airbnb.com{url_href}")
+            # ID ROOM
+            patern = "/rooms/(\d+)"
+            match = re.search(patern, url_href)
+            if match:
+                room_number = match.group(1)
+                print("ID Room:", room_number)
+
+        # Img url room
+        data_img = el.find("img", {"class": "itu7ddv"})
+        if data_img != None:
+            img_url = data_img.get("src")
+            print("Url img:", img_url)
+
+
+        print("\n")
+
+    return
+
 
 
 

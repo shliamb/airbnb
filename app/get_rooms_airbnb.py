@@ -1,40 +1,87 @@
-from scraper import go_url, begin, build_url, end_close, quick_sleep, response_code, find_url, find_text
+from scraper import ( go_url, begin, build_url, end_close, quick_sleep, response_code, find_data_room,\
+get_url_next_page, find_url )
+
 
 # DATA FOR SEARCH URL
 location = "Bali"
 checkin_date = "2024-05-01"
 checkout_date = "2024-05-07"
 guests = 2
-#room_types = "Private room"
+# room_types = "Private room"
 
 
 
 
+#### GETTING DATA FOR ALL ROOMS ####
 
-
-# Build URL
-url = build_url(location, checkin_date, checkout_date, guests)#, room_types)
-
+# Build 1rst URL to citi
+url = build_url(location, checkin_date, checkout_date, guests)
 # Build Driver Chrome
 driver = begin()
+i = 1
+while True:
+    # Response code
+    code = response_code(url)
+    if code != 200:
+        print(f"\nHTTP response code: {code}\n")
+        # Close Driver Chrome
+        end_close(driver)
+        break
+    # Go to URL
+    go_url(driver, url)
+    # Wait time
+    quick_sleep(7, 8)
+    # Find data room
+    data_room = find_data_room(driver)
+    quick_sleep(1, 2)
+    # Find url next page
+    url = get_url_next_page(driver)
+    if url == None:
+        # Close Driver Chrome
+        end_close(driver)
+        break
+    print(f"Is {i} page")
+    i += 1
+    quick_sleep(1, 2)
 
-# Response code
-code = response_code(url)
-print(f"\nHTTP response code: {code}\n")
 
-# Go to URL
-go_url(driver, url)
 
-# Wait time
-quick_sleep(10, 11)
 
-# Find url
-data_url = find_url(driver, "a", "aria-label", "Next")
-print(data_url)
 
-# Find text
-data_text = find_text(driver)
-#print(data_text)
 
-# Close Driver Chrome
-end_close(driver)
+
+
+
+
+
+
+
+
+
+# # Build Driver Chrome  - запуск настроек, создание экземпляров, драйвер
+# driver = begin()
+
+# # Response code - Получить код ответа сервера по url при помощи response
+# code = response_code(url)
+# print(f"\nHTTP response code: {code}\n")
+
+# # Go to URL - переход на url Selenium
+# go_url(driver, url)
+
+# # Wait time - Запуск тайм слип на случайное число секунд из диапозона
+# quick_sleep(5, 6)
+
+# # Find url - Поиск и возврат href по параметрам, <a aria-label="Next" href= 
+# data_url = find_url(driver, "a", "aria-label", "Next")
+# print(data_url)
+
+# # Find url next page - просто возврат url следующей страницы для сайта airbnb
+# url_next = get_url_next_page(driver)
+# print(url_next)
+
+# # Find data Airbnb - специализированный скраблинг данных room с Airbnb
+# data_room = find_data_room(driver)
+# print(data_room)
+
+# # Close Driver Chrome - закрытие сеанса 
+# end_close(driver)
