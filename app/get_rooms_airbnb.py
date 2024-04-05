@@ -1,5 +1,7 @@
 from scraper import ( go_url, begin, build_url, end_close, quick_sleep, response_code, find_data_room,\
-get_url_next_page, find_url )
+get_url_next_page, scroll, find_url )
+import time
+import random
 
 
 # DATA FOR SEARCH URL
@@ -20,6 +22,7 @@ url = build_url(location, checkin_date, checkout_date, guests)
 driver = begin()
 i = 1
 while True:
+    print(f"Is {i} page:")
     # Response code
     code = response_code(url)
     if code != 200:
@@ -30,7 +33,11 @@ while True:
     # Go to URL
     go_url(driver, url)
     # Wait time
-    quick_sleep(7, 8)
+    quick_sleep(5, 6)
+
+    # Scroll page
+    scroll(driver)
+
     # Find data room
     data_room = find_data_room(driver)
     quick_sleep(1, 2)
@@ -40,7 +47,6 @@ while True:
         # Close Driver Chrome
         end_close(driver)
         break
-    print(f"Is {i} page")
     i += 1
     quick_sleep(1, 2)
 

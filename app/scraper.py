@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
+from tqdm import tqdm
 import requests
 import time
 import random
@@ -43,11 +44,20 @@ def begin():
 def quick_sleep(mi: int, ma: int) -> bool:
     confirm = False
     num = random.randint(mi, ma)
-    for _ in range(num):
-        #print(".", end='', flush=True)
-        print(".", end='', flush=True)
-        time.sleep(1)
-    print("\n")
+    print(f"wait {num} seconds")
+    def spinning_cursor():
+        while True:
+            for cursor in '|/-\|':
+                yield cursor
+    spinner = spinning_cursor()
+    i = 0
+    while i < num:
+        sys.stdout.write(next(spinner))
+        sys.stdout.flush()
+        time.sleep(0.04)
+        sys.stdout.write('\r')
+        i += 0.042
+    #print()
     confirm = True
     return confirm
 
@@ -83,6 +93,24 @@ def find_url(driver, tag: str, name: str, value: str) -> str:
     if data:
         url_href = data.get("href")
     return url_href
+
+# SCROLL PAGE SLOWLY - Медленная прокрутка страницы вниз
+def scroll(driver):
+    scroll_pause_time = random.uniform(0.31, 0.83) # Задержка между прокрутками
+    screen_height = driver.execute_script("return window.innerHeight;")  # Получить высоту окна браузера
+    i = 1
+    while True:
+        # Прокрутить на одну высоту окна за раз
+        driver.execute_script(f"window.scrollTo(0, {screen_height * i});")
+        i += 1
+        time.sleep(scroll_pause_time)
+        # Получить прокрученную высоту
+        scroll_height = driver.execute_script("return document.body.scrollHeight;")
+        # Прервать цикл, если достигнут конец страницы
+        if (screen_height * i) > scroll_height:
+            break
+
+
 
 
 
