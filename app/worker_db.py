@@ -68,12 +68,12 @@ async def get_rooms_by_id(id: int):
         return data or None
 
 # Update Rooms Data
-async def update_rooms(id: int, updated_session) -> bool: 
+async def update_rooms(id: int, updated_data_room) -> bool:
     async_session = await create_async_engine_and_session()
     confirmation = False
     async with async_session() as session:
         try:
-            query = update(Rooms).where(Rooms.id == id).values(**updated_session)
+            query = update(Rooms).where(Rooms.id == id).values(**updated_data_room)
             await session.execute(query)
             await session.commit()
             confirmation = True
@@ -83,12 +83,12 @@ async def update_rooms(id: int, updated_session) -> bool:
     return confirmation
 
 # Add Rooms to DB
-async def adding_rooms(session_data) -> bool:
+async def adding_rooms(new_data_room) -> bool:
     async_session = await create_async_engine_and_session()
     confirmation = False
     async with async_session() as session:
         try:
-            query = insert(Rooms).values(**session_data)
+            query = insert(Rooms).values(**new_data_room)
             await session.execute(query)
             await session.commit()
             confirmation = True

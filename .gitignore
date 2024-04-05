@@ -5,3 +5,4 @@ in_time
 profiles/
 img/
 app/chromedriver/
+/test.py

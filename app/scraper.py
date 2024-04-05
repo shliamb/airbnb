@@ -1,10 +1,11 @@
 from options_chrome import profil
+from worker_db import get_rooms_by_id, update_rooms, adding_rooms
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
-from tqdm import tqdm
+import asyncio
 import requests
 import time
 import random
@@ -18,7 +19,7 @@ import re
 # Begin work, options driver, return driver
 def begin():
     ua = UserAgent(browsers=['edge', 'chrome']) # ua = UserAgent(browsers=['edge', 'chrome'])  ua = UserAgent(os='linux') ua = UserAgent(min_version=120.0)  ua = UserAgent(platforms='mobile')  
-    service = Service()
+    service = Service() # Попробовать удалить..
     options = Options()
     # OPTINONS DRIVER CHRONE SELENIUM
     prof = profil()
@@ -84,6 +85,20 @@ def end_close(driver):
     driver.close()
     driver.quit()
 
+# GET FLOAT at STR - Из строки получаем только не целое число
+def str_int(num: str) -> float:
+    pattern = r"(\d{1,3}(?:,\d{3})*(?:\.\d+)?)"
+    num = re.sub(r"[^\d.,]", "", num)
+    str_num = re.search(pattern, num)
+    if not str_num:
+        return None
+    float_num_str = str_num.group(1).replace(',', '')
+    try:
+        float_num = float(float_num_str)
+        return float_num
+    except ValueError:
+        return None
+
 # FIND SOME URL BT4
 def find_url(driver, tag: str, name: str, value: str) -> str:
     html = driver.page_source
@@ -142,7 +157,7 @@ def get_url_next_page(driver) -> str:
 
 # FIND TEXT FIXED BT4
 # Позже сделать входные параметры в виде словаря для легкой подстройке к изменениям на сайте
-def find_data_room(driver):
+def find_data_room(driver, location):
     html = driver.page_source
     nand = BeautifulSoup(html, 'lxml')
     quick_sleep(2, 3)
@@ -153,55 +168,88 @@ def find_data_room(driver):
         # Title room
         title = el.find("div", {"data-testid": "listing-card-title"})
         if title != None:
-            print("Title:", title.text.strip())
+            title_room = title.text.strip()
+            print("title_room:", title_room)
 
         # Name room
         name = el.find("span", {"data-testid": "listing-card-name"})
         if name != None:
-            print("Name:", name.text.strip())
+            name_room = name.text.strip()
+            print("name_room:", name_room)
 
         # Subtitle room
         subtitle = el.find("span", {"aria-hidden": "true"})
         if subtitle != None:
-            print("Subtitle:", subtitle.text.strip())
+            subtitle_room = subtitle.text.strip()
+            print("subtitle_room:", subtitle_room)
 
         # Price night room
         night = el.find("span", {"class": "_1y74zjx"})
         if night != None:
-            print("Night:", night.text.strip())
+            night_price = str_int(night.text.strip())
+            print("night_price:", night_price) # float
 
         # Price total room
         total = el.find("div", {"class": "_tt122m"})
         if total != None:
-            print("Total:", total.text.strip())
+            total_price = str_int(total.text.strip())
+            print("total_price:", total_price)
 
         # Rating room - так как нет зацепок, то связывал с текстом который внутри
         word_to_find = "out of 5 average rating"
-        rating = el.find("span", {"class": "r4a59j5"})
-        if rating != None:
-            if word_to_find in rating.text:
-                print("Rating:", rating.text.strip())
+        rating_el = el.find("span", {"class": "r4a59j5"})
+        if rating_el != None:
+            if word_to_find in rating_el.text:
+                rating = rating_el.text.strip()
+                print("rating:", rating)
+            else:
+                rating = None
+        else:
+            rating = None
 
         # Room url and ID room
         room_url = el.find("a", {"class": "l1ovpqvx"})
         if room_url:
             url_href = room_url.get("href")
-            print("URL room:", f"https://www.airbnb.com{url_href}")
+            url_room = f"https://www.airbnb.com{url_href}"
+            print("url_room:", url_room)
             # ID ROOM
             patern = "/rooms/(\d+)"
             match = re.search(patern, url_href)
             if match:
-                room_number = match.group(1)
-                print("ID Room:", room_number)
+                id = int(match.group(1))
+                print("id:", id)
 
         # Img url room
         data_img = el.find("img", {"class": "itu7ddv"})
         if data_img != None:
-            img_url = data_img.get("src")
-            print("Url img:", img_url)
+            image_url = data_img.get("src") 
+            print("image_url:", image_url)
+
+        # Preparing data for the room - Готовим данные 
+        country = "Bali"
+        room_data = {"id": id, "title_room": title_room, "name_room": name_room, "subtitle_room": subtitle_room,\
+                        "night_price": night_price, "total_price": total_price, "rating": rating,\
+                        "url_room": url_room, "image_url": image_url, "country": country}
+        
+        # Обновляем или добавляем данные
+        data_room = asyncio.run(get_rooms_by_id(id))
+        if data_room is not None:
+            asyncio.run(update_rooms(id, room_data))
+            print()
+            print("Update!!!!!!")
+            print()
+        else:
+            asyncio.run(adding_rooms(room_data))
+            print()
+            print("ADD!!!!!!")
+            print()
 
 
-        print("\n")
+
+
+
+        print()
 
     return
 

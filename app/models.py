@@ -27,12 +27,19 @@ Column = sqlalchemy.Column
 class Rooms(Base):
     __tablename__ = 'rooms_id'
     id = Column(sqlalchemy.BigInteger, primary_key=True, unique=True, nullable=False, index=True) # id rooms or any data id
-    name_room = Column(sqlalchemy.String(100), nullable=True)
-    country = Column(sqlalchemy.String(100), nullable=True)
+    title_room = Column(sqlalchemy.String(500), nullable=True)
+    name_room = Column(sqlalchemy.String(500), nullable=True)
+    subtitle_room = Column(sqlalchemy.String(500), nullable=True)
+    night_price = Column(sqlalchemy.Float, default=0, server_default="0", nullable=False)
+    total_price = Column(sqlalchemy.Float, default=0, server_default="0", nullable=False)
+    currency = Column(sqlalchemy.String(10), default="USD", server_default="USD", nullable=False) # берем из настроек или url
+    rating = Column(sqlalchemy.String(500), nullable=True)
+    url_room = Column(sqlalchemy.String(2000), nullable=False) 
+    image_url = Column(sqlalchemy.String(2000), nullable=True)
+    country = Column(sqlalchemy.String(500), nullable=False) # Bali - например, иначе потом хер найдешь из настроек или url
+
     city = Column(sqlalchemy.String(50), nullable=True)
     address_room = Column(sqlalchemy.String(200), nullable=True)
-    url_room = Column(sqlalchemy.String(200), nullable=True)
-    image_url = Column(sqlalchemy.String(200), nullable=True)
     guest = Column(sqlalchemy.String(100), nullable=True)
     bedrooms = Column(sqlalchemy.String(100), nullable=True)
     beds = Column(sqlalchemy.String(100), nullable=True)
@@ -41,9 +48,8 @@ class Rooms(Base):
     conveniences = Column(sqlalchemy.String(100), nullable=True)
     important_info = Column(sqlalchemy.String(100), nullable=True)
     cancellation_policy = Column(sqlalchemy.String(100), nullable=True)
-    currency = Column(sqlalchemy.String(10), default="USD", server_default="USD", nullable=False)
-    night_price = Column(sqlalchemy.Float, default=0, server_default="0", nullable=False)
-    date_of_update = Column(sqlalchemy.DateTime, nullable=True)
+
+    date_of_update = Column(sqlalchemy.DateTime, nullable=True) # Important - во время добавления или обновления
 
 # Task
 class Task(Base):
@@ -68,12 +74,12 @@ class Users(Base):
     is_admin = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False)
     is_block = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False)
 
-    # location = "Bali"
-    # checkin_date = "2024-05-01"
-    # checkout_date = "2024-05-07"
-    # guests = 2
-    # USD = 
-
+    # Настройки по умолчанию, что бы каждый раз не набирать
+    checkin_date = Column(sqlalchemy.DateTime, nullable=True) # "2024-05-01"
+    checkout_date = Column(sqlalchemy.DateTime, nullable=True) # "2024-05-07"
+    country = Column(sqlalchemy.String(100), default="Bali", server_default="Bali", nullable=False) # Bali - например, иначе потом хер найдешь
+    guest = Column(sqlalchemy.Integer, default=0, server_default="0", nullable=False)
+    currency = Column(sqlalchemy.String(10), default="USD", server_default="USD", nullable=False)
     ####
     task = relationship("Task", back_populates="users_task", uselist=False)
 

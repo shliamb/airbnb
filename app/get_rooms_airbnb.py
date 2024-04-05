@@ -8,7 +8,7 @@ import random
 location = "Bali"
 checkin_date = "2024-05-01"
 checkout_date = "2024-05-07"
-guests = 2
+guests = 1
 # room_types = "Private room"
 
 
@@ -22,7 +22,6 @@ url = build_url(location, checkin_date, checkout_date, guests)
 driver = begin()
 i = 1
 while True:
-    print(f"Is {i} page:")
     # Response code
     code = response_code(url)
     if code != 200:
@@ -34,12 +33,10 @@ while True:
     go_url(driver, url)
     # Wait time
     quick_sleep(5, 6)
-
     # Scroll page
     scroll(driver)
-
-    # Find data room
-    data_room = find_data_room(driver)
+    # Find data room and save to DB
+    data_room = find_data_room(driver, location)
     quick_sleep(1, 2)
     # Find url next page
     url = get_url_next_page(driver)
@@ -49,8 +46,6 @@ while True:
         break
     i += 1
     quick_sleep(1, 2)
-
-
 
 
 
