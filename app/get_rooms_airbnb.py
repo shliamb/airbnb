@@ -1,7 +1,5 @@
-from scraper import ( go_url, begin, build_url, end_close, quick_sleep, response_code, find_data_room,\
-get_url_next_page, scroll, find_url )
-# import time
-# import random
+from sys_def_scraper import ( go_url, begin, end_close, quick_sleep, response_code, scroll)
+from airbnb_def_scraper import ( build_url, quick_sleep, find_data_room, get_url_next_page)
 
 
 # DATA FOR SEARCH URL
