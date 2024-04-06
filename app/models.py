@@ -49,8 +49,9 @@ class Rooms(Base):
     conveniences = Column(sqlalchemy.String(100), nullable=True)
     important_info = Column(sqlalchemy.String(100), nullable=True)
     cancellation_policy = Column(sqlalchemy.String(100), nullable=True)
-
-    date_of_update = Column(sqlalchemy.DateTime, nullable=True) # Important - во время добавления или обновления
+    
+    room_date_update = Column(sqlalchemy.DateTime, nullable=True) 
+    rooms_date_update = Column(sqlalchemy.DateTime, nullable=True)
 
 # Task
 class Task(Base):

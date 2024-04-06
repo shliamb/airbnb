@@ -1,6 +1,6 @@
 from options_chrome import profil
 from worker_db import get_rooms_by_id, update_rooms, adding_rooms
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -13,13 +13,13 @@ import random
 import sys
 import re
 # import pandas as pd
-# import re
+
 
 #### SYSTEM FUNCTIONS ####
 
 # Begin work, options driver, return driver
 def begin():
-    ua = UserAgent(browsers=['edge', 'chrome']) # ua = UserAgent(browsers=['edge', 'chrome'])  ua = UserAgent(os='linux') ua = UserAgent(min_version=120.0)  ua = UserAgent(platforms='mobile')  
+    ua = UserAgent() # ua = UserAgent(browsers=['edge', 'chrome'])  ua = UserAgent(os='linux') ua = UserAgent(min_version=120.0)  ua = UserAgent(platforms='mobile')  
     service = Service() # Попробовать удалить..
     options = Options()
     # OPTINONS DRIVER CHRONE SELENIUM
@@ -101,11 +101,19 @@ def str_int(num: str) -> float:
         return None
 
 # GET DAY AND TIME
-def day_utcnow() -> str:
-    a = datetime.now(timezone.utc).replace(tzinfo=None)
+def day_utcnow(time_correction: str) -> datetime:
+    utc_zone = timezone.utc
+    a = datetime.now(timezone.utc).replace(tzinfo=utc_zone)
+    a = a + timedelta(hours=time_correction)
     day_str = a.strftime("%Y-%m-%d %H:%M:%S")
     day = datetime.strptime(day_str, '%Y-%m-%d %H:%M:%S')
-    return day
+    return day or None
+
+# UNFORMAT TIME
+def unformat_date(date) -> str | int:
+    day_now = str(date.strftime("%Y-%m-%d"))
+    time_now = float(date.strftime("%H.%M"))
+    return day_now, time_now
 
 # FIND SOME URL BT4
 def find_url(driver, tag: str, name: str, value: str) -> str:
@@ -140,7 +148,7 @@ def scroll(driver):
 
 
 
-#### INDIVIDUAL FUNCTIONS ####
+#### INDIVIDUAL FUNCTIONS BY ROOMS ####
 
 # GET URL AIRBNB ROOMS
 def build_url(location, checkin_date, checkout_date, guests=None, room_types=None, amenities=[]) -> str:
@@ -179,8 +187,8 @@ def rating_cleen(num: str) -> float | int:
     return rating, place
 
 # FIND TEXT FIXED BT4
-# Позже сделать входные параметры в виде словаря для легкой подстройке к изменениям на сайте
-def find_data_room(driver, country):
+# Позже сделать входные параметры в виде словаря для легкой подстройки к изменениям на сайте
+def find_data_room(driver, country, time_correction):
     html = driver.page_source
     nand = BeautifulSoup(html, 'lxml')
     quick_sleep(2, 3)
@@ -188,35 +196,49 @@ def find_data_room(driver, country):
 
     for el in nand.find_all("div", {"data-testid": "card-container"}):
 
+        if el is None:
+            print("Error is ...")
+            return
+        
         # Title room
         title = el.find("div", {"data-testid": "listing-card-title"})
         if title != None:
             title_room = title.text.strip()
             print("title_room:", title_room)
+        else:
+            title_room = None
 
         # Name room
         name = el.find("span", {"data-testid": "listing-card-name"})
         if name != None:
             name_room = name.text.strip()
             print("name_room:", name_room)
+        else:
+            name_room = None
 
         # Subtitle room
         subtitle = el.find("span", {"aria-hidden": "true"})
         if subtitle != None:
             subtitle_room = subtitle.text.strip()
             print("subtitle_room:", subtitle_room)
+        else:
+            subtitle_room = None
 
         # Price night room
         night = el.find("span", {"class": "_1y74zjx"})
         if night != None:
             night_price = str_int(night.text.strip())
             print("night_price:", night_price) # float
+        else:
+            night_price = None
 
         # Price total room
         total = el.find("div", {"class": "_tt122m"})
         if total != None:
             total_price = str_int(total.text.strip())
             print("total_price:", total_price)
+        else:
+            total_price = None
 
         # Rating room - так как нет зацепок, то связывал с текстом который внутри
         word_to_find = "out of 5 average rating"
@@ -249,105 +271,54 @@ def find_data_room(driver, country):
             if match:
                 id = int(match.group(1))
                 print("id:", id)
+            else:
+                return # Если нет id, то делать тут не чего..
+        else:
+            return # Если нет url, то делать тут не чего..
 
         # Img url room
         data_img = el.find("img", {"class": "itu7ddv"})
         if data_img != None:
             image_url = data_img.get("src") 
             print("image_url:", image_url)
+        else:
+            image_url = None
+
 
         # Get day and time now
-        date_of_update = day_utcnow()
+        rooms_date_update = day_utcnow(time_correction)
 
         # Preparing data for the room - Готовим данные 
         room_data = {"id": id, "title_room": title_room, "name_room": name_room, "subtitle_room": subtitle_room,\
                         "night_price": night_price, "total_price": total_price, "rating": rating,\
                         "place": place, "url_room": url_room, "image_url": image_url, "country": country,\
-                        "date_of_update": date_of_update }
+                        "rooms_date_update": rooms_date_update }
         
-
-
         # Обновляем или добавляем данные
         data_room = asyncio.run(get_rooms_by_id(id))
+        # Update data to room, if is outdated
         if data_room is not None:
-            asyncio.run(update_rooms(id, room_data))
-            print()
-            print(f"Update Room {id} !!!!!!")
-            print()
+            # Get day -> str and time -> float now in format
+            format_date_now = unformat_date(rooms_date_update)
+            format_day_now = format_date_now[0]
+            format_time_now = format_date_now[1]
+            # Get in DB room day -> str and time -> float now in format
+            date_room_db = data_room.rooms_date_update
+            format_date_db = unformat_date(date_room_db)
+            format_day_db = format_date_db[0]
+            format_time_db = format_date_db[1]
+
+            if format_day_now != format_day_db or (format_day_now == format_day_db and (format_time_now - format_time_db) >= 1.00):
+
+                # Update data room
+                asyncio.run(update_rooms(id, room_data))
+                print(f"\nUpdate Room {id}\n")
+            else:
+                print(f"\nThe record {id} is fresh, there is no need to update it\n")
         else:
+            # Adding data room
             asyncio.run(adding_rooms(room_data))
-            print()
-            print(f"ADD Room {id} !!!!!!")
-            print()
-
-
-
-
-
-        print()
+            print(f"\nADD Room {id}\n")
 
     return
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#quick_sleep(1000, 2000)
-
-# if __name__ == "__main__":
-#     restore_db()
-
-# url = "https://www.airbnb.com/s/Bali--Indonesia/homes?adults=1&place_id=ChIJoQ8Q6NNB0S0RkOYkS7EPkSQ&refinement_paths%5B%5D=%2Fhomes"
-# get_url(url)
-
-
-# quick_sleep(3, 4)
-# res = find_url("a", "aria-label", "Next")
-# print(res)
-
-
-# while True:
-#     res = find_url_soup("a", "aria-label", "Next")
-#     if res != None:
-#         print(res)
-#         break
-
-# Так наверное слишком жестко
-# while True:
-#     res = find_url_soup(soup, "a", "aria-label", "Next")
-#     if res != None:
-#         print(res)
-#         break
-
-# Получение селениумом url
-# page = driver.get(url)
-
-# # Получение исходного кода страницы
-# html = driver.page_source
-# # Создание объекта BeautifulSoup для парсинга HTML
-# soup = BeautifulSoup(html, 'lxml')

@@ -1,5 +1,5 @@
 from worker_db import get_rooms_by_id#, update_rooms, adding_rooms
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import asyncio
 import time
 import random
@@ -7,35 +7,84 @@ import sys
 from tqdm import tqdm
 import re
 
-id = 865475780517712432
+
+
+
+
+id = 687145322276122257
 data_room = asyncio.run(get_rooms_by_id(id))
+if data_room is not None:
+    pass
+    print()
+    print(data_room.title_room)
+    print(data_room.name_room)
+    print(data_room.subtitle_room)
+    print(data_room.night_price)
+    print(data_room.total_price)
+    print(data_room.currency)
+    print(data_room.rating)
+    print(data_room.place)
+    print(data_room.url_room)
+    print(data_room.image_url)
+    print(data_room.country)
+    print(data_room.rooms_date_update)
+    print(data_room.room_date_update)
+    print()
+else:
+    print("None data, sorry..")
 
-print()
-print(data_room.title_room)
-print(data_room.name_room)
-print(data_room.subtitle_room)
-print(data_room.night_price)
-print(data_room.total_price)
-print(data_room.currency)
-print(data_room.rating)
-print(data_room.place)
-print(data_room.url_room)
-print(data_room.image_url)
-print(data_room.country)
-print(data_room.date_of_update)
-print()
+# title_room: Bed and breakfast in Kecamatan Ubud
+# name_room: Budget traveller's private roon in Central Ubud
+# subtitle_room: 1 bed
+# night_price: 20.0
+# total_price: 121.0
+# rating: 4.13
+# place: 15
+# url_room: https://www.airbnb.com/rooms/687145322276122257?guests=1&search_mode=regular_search&check_in=2024-05-01&check_out=2024-05-07&source_impression_id=p3_1712417859_c4TYxJZNcHnyOvYu&previous_page_section_name=1000&federated_search_id=61e7798c-2be8-4705-b497-b52c41db70b1
+# id: 687145322276122257
+# image_url: https://a0.muscache.com/im/pictures/miso/Hosting-687145322276122257/original/d2b138d4-e1a4-4efc-9eb6-9cc1ccf8de82.jpeg?im_w=720
+
+# The record 687145322276122257 is fresh, there is no need to update it
 
 
 
 
-# # GET DAY AND TIME
-# def day_utcnow() -> str:
-#     a = datetime.now(timezone.utc).replace(tzinfo=None)
+
+# # Получение текущего времени
+# a = datetime.now()
+# # Установка значения для ff
+# ff = -2
+# # Добавление ff часов к текущему времени
+# a = a + timedelta(hours=ff)
+# print(a)  # Выведет время, увеличенное на ff часа
+
+
+# GET DAY AND TIME
+# def day_utcnow(time_correction: str) -> datetime:
+#     utc_zone = timezone.utc
+#     a = datetime.now(timezone.utc).replace(tzinfo=utc_zone)
+#     a = a + timedelta(hours=time_correction)
 #     day_str = a.strftime("%Y-%m-%d %H:%M:%S")
 #     day = datetime.strptime(day_str, '%Y-%m-%d %H:%M:%S')
-#     return day
+#     return day or None
 
-# print(type(day_utcnow()))
+# time_correction = +3
+# b = day_utcnow(time_correction)
+# print(type(b))
+
+# UNFORMAT TIME
+# def unfomat_date(date_of_update) -> str | int:
+#     day_now = str(date_of_update.strftime("%Y-%m-%d"))
+#     time_now = float(date_of_update.strftime("%H.%M"))
+#     return day_now, time_now
+
+
+# time_correction = +3
+# b = day_utcnow(time_correction)
+# a = unfomat_date(b)
+
+# print(a[0]) 
+# print(a[1])
 
 
 
