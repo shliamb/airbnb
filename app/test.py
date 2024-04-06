@@ -1,37 +1,45 @@
-from worker_db import get_rooms_by_id#, update_rooms, adding_rooms
+from worker_db import get_rooms_by_id, get_rooms_by_location#, update_rooms, adding_rooms
 from datetime import datetime, timezone, timedelta
 import asyncio
 import time
 import random
 import sys
-from tqdm import tqdm
+# from tqdm import tqdm
 import re
 
 
 
+# def dddf():
+#     data_room = asyncio.run(get_rooms_by_location("Bali"))
+
+#     for data in data_room:
+#         print(data.id)
+
+# if __name__ == "__main__":
+#     dddf()
 
 
-id = 12635899
-data_room = asyncio.run(get_rooms_by_id(id))
-if data_room is not None:
-    pass
-    print()
-    print(data_room.title_room)
-    print(data_room.name_room)
-    print(data_room.subtitle_room)
-    print(data_room.night_price)
-    print(data_room.total_price)
-    print(data_room.currency)
-    print(data_room.rating)
-    print(data_room.place)
-    print(data_room.url_room)
-    print(data_room.image_url)
-    print(data_room.country)
-    print(data_room.rooms_date_update)
-    print(data_room.room_date_update)
-    print()
-else:
-    print("None data, sorry..")
+# id = 12635899
+# data_room = asyncio.run(get_rooms_by_id(id))
+# if data_room is not None:
+#     pass
+#     print()
+#     print(data_room.title_room)
+#     print(data_room.name_room)
+#     print(data_room.subtitle_room)
+#     print(data_room.night_price)
+#     print(data_room.total_price)
+#     print(data_room.currency)
+#     print(data_room.rating)
+#     print(data_room.place)
+#     print(data_room.url_room)
+#     print(data_room.image_url)
+#     print(data_room.country)
+#     print(data_room.rooms_date_update)
+#     print(data_room.room_date_update)
+#     print()
+# else:
+#     print("None data, sorry..")
 
 # title_room: Bed and breakfast in Kecamatan Ubud
 # name_room: Budget traveller's private roon in Central Ubud

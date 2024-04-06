@@ -7,6 +7,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from models import Base, Users, Rooms, Task
 from sqlalchemy import select, insert, update, join, func
+# from sqlalchemy.future import select
 
 async def create_async_engine_and_session():                               # postgres
     engine = create_async_engine(f"postgresql+asyncpg://{user_db}:{paswor_db}@localhost:5432/my_database") # echo=True - вывод логирования
@@ -96,6 +97,16 @@ async def adding_rooms(new_data_room) -> bool:
         except Exception as e:
             logging.error(f"Failed to add rooms, error: {e}")
     return confirmation
+
+# Read All Rooms For Location
+async def get_rooms_by_location(country: int):
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = select(Rooms).filter(Rooms.country == country)
+        result = await session.execute(query)
+        data = result.scalars().all()  # Получение всех записей
+        return data # Если не будет записей, то вернет пустой список
+
 
 
 #### Task #### 
