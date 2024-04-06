@@ -33,7 +33,8 @@ class Rooms(Base):
     night_price = Column(sqlalchemy.Float, default=0, server_default="0", nullable=False)
     total_price = Column(sqlalchemy.Float, default=0, server_default="0", nullable=False)
     currency = Column(sqlalchemy.String(10), default="USD", server_default="USD", nullable=False) # берем из настроек или url
-    rating = Column(sqlalchemy.String(500), nullable=True)
+    rating = Column(sqlalchemy.Float, nullable=True)
+    place = Column(sqlalchemy.Integer, nullable=True)
     url_room = Column(sqlalchemy.String(2000), nullable=False) 
     image_url = Column(sqlalchemy.String(2000), nullable=True)
     country = Column(sqlalchemy.String(500), nullable=False) # Bali - например, иначе потом хер найдешь из настроек или url

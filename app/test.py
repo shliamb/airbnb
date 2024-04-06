@@ -1,4 +1,5 @@
 from worker_db import get_rooms_by_id#, update_rooms, adding_rooms
+from datetime import datetime, timezone
 import asyncio
 import time
 import random
@@ -6,8 +7,7 @@ import sys
 from tqdm import tqdm
 import re
 
-
-id = 4354526
+id = 865475780517712432
 data_room = asyncio.run(get_rooms_by_id(id))
 
 print()
@@ -18,11 +18,81 @@ print(data_room.night_price)
 print(data_room.total_price)
 print(data_room.currency)
 print(data_room.rating)
+print(data_room.place)
 print(data_room.url_room)
 print(data_room.image_url)
 print(data_room.country)
 print(data_room.date_of_update)
 print()
+
+
+
+
+# # GET DAY AND TIME
+# def day_utcnow() -> str:
+#     a = datetime.now(timezone.utc).replace(tzinfo=None)
+#     day_str = a.strftime("%Y-%m-%d %H:%M:%S")
+#     day = datetime.strptime(day_str, '%Y-%m-%d %H:%M:%S')
+#     return day
+
+# print(type(day_utcnow()))
+
+
+
+
+# # CLEAN RATING
+# def rating_cleen(num: str) -> float | int:
+#     match1 = re.search(r"\b\d+\.\d+\b", num)
+#     if match1:
+#         rating = float(match1.group(0))
+#     else:
+#         rating = None
+
+#     match2 = re.search(r',\s*(\d+)\s+', num)
+#     if match2:
+#         place = int(match2.group(1))
+#     else:
+#         place = None
+#     return rating, place
+
+
+# a = "4.71 out of 5 average rating,  457 reviews4.71 (457)"
+# #a = "5.0 out of 5 average rating,  15 reviews5.0 (15)"
+# #a = "4.95 out of 5 average rating,  19 reviews4.95 (19)"
+
+# b = rating_cleen(a)
+# print(b[0])
+# print(b[1])
+
+
+# def rating_cleen(num: str) -> float:
+#     pattern = r"(\d{1,3}(?:,\d{3})*)"
+#     num = re.sub(r"[^\d.,]", "", num)
+#     str_num = re.search(pattern, num)
+#     float_num_str = str_num.group(1).replace(',', '')
+#     float_num = float(float_num_str)
+#     print(float_num)
+
+
+
+#a = "5.0 out of 5 average rating,  15 reviews5.0 (15)"
+#a = "4.95 out of 5 average rating,  19 reviews4.95 (19)"
+#a = "4.71 out of 5 average rating,  457 reviews4.71 (457)"
+
+# rating_cleen(a)
+
+
+
+
+# def rating_cleen(num: str) -> float:
+#     pattern = r"(\d{1,3}(?:,\d{3})*(?:\.\d+)?)"
+#     num = re.sub(r"[^\d.,]", "", num)
+#     str_num = re.search(pattern, num)
+#     float_num_str = str_num.group(1).replace(',', '')
+#     float_num = float(float_num_str)
+#     print(float_num)
+
+
 
 
 

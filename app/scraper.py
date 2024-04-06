@@ -1,5 +1,6 @@
 from options_chrome import profil
 from worker_db import get_rooms_by_id, update_rooms, adding_rooms
+from datetime import datetime, timezone
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -99,6 +100,13 @@ def str_int(num: str) -> float:
     except ValueError:
         return None
 
+# GET DAY AND TIME
+def day_utcnow() -> str:
+    a = datetime.now(timezone.utc).replace(tzinfo=None)
+    day_str = a.strftime("%Y-%m-%d %H:%M:%S")
+    day = datetime.strptime(day_str, '%Y-%m-%d %H:%M:%S')
+    return day
+
 # FIND SOME URL BT4
 def find_url(driver, tag: str, name: str, value: str) -> str:
     html = driver.page_source
@@ -155,9 +163,24 @@ def get_url_next_page(driver) -> str:
         url_href = "https://www.airbnb.com/" + data.get("href")
     return url_href
 
+# CLEAN RATING
+def rating_cleen(num: str) -> float | int:
+    match1 = re.search(r"\b\d+\.\d+\b", num)
+    if match1:
+        rating = float(match1.group(0))
+    else:
+        rating = None
+
+    match2 = re.search(r',\s*(\d+)\s+', num)
+    if match2:
+        place = int(match2.group(1))
+    else:
+        place = None
+    return rating, place
+
 # FIND TEXT FIXED BT4
 # Позже сделать входные параметры в виде словаря для легкой подстройке к изменениям на сайте
-def find_data_room(driver, location):
+def find_data_room(driver, country):
     html = driver.page_source
     nand = BeautifulSoup(html, 'lxml')
     quick_sleep(2, 3)
@@ -200,12 +223,19 @@ def find_data_room(driver, location):
         rating_el = el.find("span", {"class": "r4a59j5"})
         if rating_el != None:
             if word_to_find in rating_el.text:
-                rating = rating_el.text.strip()
+                data = rating_el.text.strip()
+                rating_place = rating_cleen(data)
+                rating = rating_place[0]
+                place = rating_place[1]
                 print("rating:", rating)
+                print("place:", place)
+
             else:
                 rating = None
+                place = None
         else:
             rating = None
+            place = None
 
         # Room url and ID room
         room_url = el.find("a", {"class": "l1ovpqvx"})
@@ -226,23 +256,28 @@ def find_data_room(driver, location):
             image_url = data_img.get("src") 
             print("image_url:", image_url)
 
+        # Get day and time now
+        date_of_update = day_utcnow()
+
         # Preparing data for the room - Готовим данные 
-        country = "Bali"
         room_data = {"id": id, "title_room": title_room, "name_room": name_room, "subtitle_room": subtitle_room,\
                         "night_price": night_price, "total_price": total_price, "rating": rating,\
-                        "url_room": url_room, "image_url": image_url, "country": country}
+                        "place": place, "url_room": url_room, "image_url": image_url, "country": country,\
+                        "date_of_update": date_of_update }
         
+
+
         # Обновляем или добавляем данные
         data_room = asyncio.run(get_rooms_by_id(id))
         if data_room is not None:
             asyncio.run(update_rooms(id, room_data))
             print()
-            print("Update!!!!!!")
+            print(f"Update Room {id} !!!!!!")
             print()
         else:
             asyncio.run(adding_rooms(room_data))
             print()
-            print("ADD!!!!!!")
+            print(f"ADD Room {id} !!!!!!")
             print()
 
 
