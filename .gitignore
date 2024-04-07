@@ -1,8 +1,7 @@
 venv/
-app/bedly/
+app/bad/
 .env
-in_time
 profiles/
 img/
 app/chromedriver/
-/test.py
+app/test.py

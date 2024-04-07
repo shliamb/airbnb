@@ -1,5 +1,5 @@
 from worker_db import get_rooms_by_id, update_rooms, adding_rooms
-from sys_def_scraper import quick_sleep, str_int, day_utcnow, unformat_date
+from parser_sys import quick_sleep, str_int, day_utcnow, unformat_date
 from bs4 import BeautifulSoup
 import asyncio
 import re
@@ -8,15 +8,21 @@ import re
 
 #### INDIVIDUAL FUNCTIONS BY ROOMS ####
 
-# GET URL AIRBNB ROOMS
-def build_url(location, checkin_date, checkout_date, guests=None, room_types=None, amenities=[]) -> str:
-    url = f"https://www.airbnb.com/s/{location}/homes?checkin={checkin_date}&checkout={checkout_date}&enable_auto_translate=false&locale=en&currency=USD"
+# GET URL AIRBNB ROOMS amenities=[]
+def build_url(location, checkin_date, checkout_date, guests=None, currency=None, price_min=None, price_max=None, room_types=None) -> str:
+    url = f"https://www.airbnb.com/s/{location}/homes?checkin={checkin_date}&checkout={checkout_date}&enable_auto_translate=false&locale=en"
     if guests:
         url += f"&guests={guests}"
+    # if amenities:
+    #     url += "&amenities=" + "+".join(amenities)
+    if currency:
+        url += f"&currency={currency}" 
+    if price_min:
+        url += f"&price_min={price_min}"   
+    if price_max:
+        url += f"&price_max={price_max}"
     if room_types:
-        url += f"&room_types={room_types}"
-    if amenities:
-        url += "&amenities=" + "+".join(amenities)
+        url += f"&room_types[]={room_types}"
     return url
 
 # FIND URL NEXT PAGE 
@@ -44,7 +50,7 @@ def rating_cleen(num: str) -> float | int:
         place = None
     return rating, place
 
-# FIND TEXT FIXED BT4
+# FIND TEXT LIST FIXED BT4
 # Позже сделать входные параметры в виде словаря для легкой подстройки к изменениям на сайте
 def find_data_room(driver, country, time_correction):
     html = driver.page_source
@@ -88,7 +94,7 @@ def find_data_room(driver, country, time_correction):
             night_price = str_int(night.text.strip())
             print("night_price:", night_price) # float
         else:
-            night_price = None
+            night_price = 0
 
         # Price total room
         total = el.find("div", {"class": "_tt122m"})
@@ -96,7 +102,7 @@ def find_data_room(driver, country, time_correction):
             total_price = str_int(total.text.strip())
             print("total_price:", total_price)
         else:
-            total_price = None
+            total_price = 0
 
         # Rating room - так как нет зацепок, то связывал с текстом который внутри
         word_to_find = "out of 5 average rating"
@@ -130,9 +136,9 @@ def find_data_room(driver, country, time_correction):
                 id = int(match.group(1))
                 print("id:", id)
             else:
-                return # Если нет id, то делать тут не чего..
+                print("Ошибка поиска ID")
         else:
-            return # Если нет url, то делать тут не чего..
+            print("Ошибка поиска URl")
 
         # Img url room
         data_img = el.find("img", {"class": "itu7ddv"})
@@ -179,3 +185,35 @@ def find_data_room(driver, country, time_correction):
             print(f"\nADD Room {id}\n")
 
     return
+
+
+# FIND TEXT FIXED OBJECT BT4
+# Позже сделать входные параметры в виде словаря для легкой подстройки к изменениям на сайте
+def find_data_object(driver):#, country, time_correction):
+    html = driver.page_source
+    nand = BeautifulSoup(html, 'lxml')
+    quick_sleep(2, 3)
+
+
+    for el in nand.find_all("main", {"id": "site-content"}):
+
+        if el is None:
+            print("Error is ...")
+            return
+        
+        # Title room
+        title = el.find("h1", {"elementtiming": "LCP-target"})
+        if title != None:
+            title_room = title.text.strip()
+            print("title_room:", title_room)
+        else:
+            title_room = None
+            print(title_room)
+
+    return
+
+
+
+# https://www.airbnb.com/s/Bali-Province--Indonesia/homes?checkin=&checkout=&enable_auto_translate=false&locale=en&guests=1&currency=USD&price_min=20&price_max=21&room_types[]=Entire%20home%2Fapt
+# https://www.airbnb.com/s/Bali-Province--Indonesia/homes?checkin=[]&checkout=[]&enable_auto_translate=false&locale=en&guests=1&currency=USD&price_min=20&price_max=21&room_types[]=Entire%20home%2Fapt
+# https://www.airbnb.com/s/Bali-Province--Indonesia/homes?guests=1&price_min=20&price_max=21&room_types%5B%5D=Entire%20home%2Fapt&tab_id=home_tab&refinement_paths%5B%5D=%2Fhomes&query=Bali%20Province%2C%20Indonesia&place_id=ChIJoQ8Q6NNB0S0RkOYkS7EPkSQ&flexible_trip_lengths%5B%5D=one_week&monthly_start_date=2024-05-01&monthly_length=3&monthly_end_date=2024-08-01&search_mode=regular_search&disable_auto_translation=true&price_filter_input_type=0&channel=EXPLORE&federated_search_session_id=b10e1bf5-5ec7-40a5-8059-7daf53a5550f&search_type=unknown&pagination_search=true&cursor=eyJzZWN0aW9uX29mZnNldCI6MCwiaXRlbXNfb2Zmc2V0IjoxOCwidmVyc2lvbiI6MX0%3D

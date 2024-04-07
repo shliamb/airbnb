@@ -1,5 +1,5 @@
-from sys_def_scraper import ( go_url, begin, end_close, quick_sleep, response_code, scroll)
-from airbnb_def_scraper import ( build_url, quick_sleep, find_data_room, get_url_next_page)
+from parser_sys import ( go_url, begin, end_close, quick_sleep, response_code, scroll)
+from parser_airbnb import ( find_data_object, build_url, quick_sleep, find_data_room, get_url_next_page)
 from worker_db import get_rooms_by_location
 import asyncio
 
@@ -36,10 +36,10 @@ def get_room_data(location):
         # Scroll page
         scroll(driver)
         # Find data room and save to DB
-        #find_data_room(driver, location, time_correction)
+        find_data_object(driver)#, location, time_correction)
         quick_sleep(1, 2)
 
-        quick_sleep(500, 600)
+        #quick_sleep(500, 600)
 
         # Close Driver Chrome
         end_close(driver)

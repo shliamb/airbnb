@@ -1,23 +1,26 @@
-from sys_def_scraper import ( go_url, begin, end_close, quick_sleep, response_code, scroll)
-from airbnb_def_scraper import ( build_url, quick_sleep, find_data_room, get_url_next_page)
-from get_room_airbnb import get_room_data
-
-
-# DATA FOR SEARCH URL
-location = "Bali"
-checkin_date = ""
-checkout_date = ""
-guests = 1
-time_correction = +5
-# room_types = "Private room"
-
+from parser_sys import ( go_url, begin, end_close, quick_sleep, response_code, scroll)
+from parser_airbnb import ( build_url, quick_sleep, find_data_room, get_url_next_page)
+from get_object import get_room_data
 
 
 
 #### GETTING DATA FOR ALL ROOMS ####
 # Build 1rst URL to citi
-def get_rooms_data(location, checkin_date, checkout_date, guests, time_correction):
-    url = build_url(location, checkin_date, checkout_date, guests)
+def get_list_data():
+    confirm = False
+    # DATA FOR SEARCH URL
+    location = "Bali-Province--Indonesia" # Bali Как точно надо? 
+    checkin_date = "[]" # Он сам ставит на 1 месяц 
+    checkout_date = "[]"
+    guests = 1 # Гости Сколько гостей устанавливать в поиске?
+    time_correction = +5
+    currency = "USD"
+    price_min = "10" # Не уверен что стоит вообще собирать от 10$ за ночь, там амбар сдают))
+    price_max = "11"
+    room_types = "Entire home%2Fapt" # Весь дом целиком
+    # Добавить в таблицу Task ячейку 
+
+    url = build_url(location, checkin_date, checkout_date, guests, currency, price_min, price_max, room_types)
     # Build Driver Chrome
     driver = begin()
     i = 1
@@ -46,12 +49,42 @@ def get_rooms_data(location, checkin_date, checkout_date, guests, time_correctio
             break
         i += 1
         quick_sleep(1, 2)
-        break
-    get_room_data(location) # Run geting room data
-    
 
-if __name__ == "__main__":
-    get_rooms_data(location, checkin_date, checkout_date, guests, time_correction)
+    confirm = True
+    return confirm
+
+
+
+
+
+def get_data_obj():
+    confirm = False
+    # DATA FOR SEARCH ID
+    location = "Bali-Province--Indonesia" # Bali Как точно надо? 
+    get_room_data(location) # Run geting room data
+    confirm = True
+    return confirm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -98,3 +131,6 @@ if __name__ == "__main__":
 
 # # Close Driver Chrome - закрытие сеанса 
 # end_close(driver)
+
+# if __name__ == "__main__":
+#     get_rooms_data()

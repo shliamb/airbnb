@@ -1,13 +1,17 @@
-from keys import user_db, paswor_db
+import os
 import logging
 import asyncio
 import sqlalchemy
+from sqlalchemy import select, insert, update, join, func
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from models import Base, Users, Rooms, Task
-from sqlalchemy import select, insert, update, join, func
-# from sqlalchemy.future import select
+from keys import user_db, paswor_db
+
+# from dotenv import load_dotenv
+# load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
+# user_db, paswor_db = os.environ.get('USER_DB'),  os.environ.get('PASWOR_DB')
 
 async def create_async_engine_and_session():                               # postgres
     engine = create_async_engine(f"postgresql+asyncpg://{user_db}:{paswor_db}@localhost:5432/my_database") # echo=True - вывод логирования

@@ -1,11 +1,4 @@
-from dotenv import load_dotenv
 import os
-
-dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
-load_dotenv(dotenv_path)
-user_db = os.environ.get('USER_DB')
-paswor_db = os.environ.get('PASWOR_DB')
-
 from sqlalchemy import ForeignKey
 import sqlalchemy
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
@@ -13,7 +6,11 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import relationship
 from typing import AsyncGenerator
-# from keys import user_db, paswor_db
+from keys import user_db, paswor_db
+
+# from dotenv import load_dotenv
+# load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
+# user_db, paswor_db = os.environ.get('USER_DB'),  os.environ.get('PASWOR_DB')
 
 
 #DATABASE_URL = f"postgresql+asyncpg://{user_db}:{paswor_db}@postgres:5432/my_database"
