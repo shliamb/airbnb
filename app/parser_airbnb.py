@@ -213,7 +213,3 @@ def find_data_object(driver):#, country, time_correction):
     return
 
 
-
-# https://www.airbnb.com/s/Bali-Province--Indonesia/homes?checkin=&checkout=&enable_auto_translate=false&locale=en&guests=1&currency=USD&price_min=20&price_max=21&room_types[]=Entire%20home%2Fapt
-# https://www.airbnb.com/s/Bali-Province--Indonesia/homes?checkin=[]&checkout=[]&enable_auto_translate=false&locale=en&guests=1&currency=USD&price_min=20&price_max=21&room_types[]=Entire%20home%2Fapt
-# https://www.airbnb.com/s/Bali-Province--Indonesia/homes?guests=1&price_min=20&price_max=21&room_types%5B%5D=Entire%20home%2Fapt&tab_id=home_tab&refinement_paths%5B%5D=%2Fhomes&query=Bali%20Province%2C%20Indonesia&place_id=ChIJoQ8Q6NNB0S0RkOYkS7EPkSQ&flexible_trip_lengths%5B%5D=one_week&monthly_start_date=2024-05-01&monthly_length=3&monthly_end_date=2024-08-01&search_mode=regular_search&disable_auto_translation=true&price_filter_input_type=0&channel=EXPLORE&federated_search_session_id=b10e1bf5-5ec7-40a5-8059-7daf53a5550f&search_type=unknown&pagination_search=true&cursor=eyJzZWN0aW9uX29mZnNldCI6MCwiaXRlbXNfb2Zmc2V0IjoxOCwidmVyc2lvbiI6MX0%3D

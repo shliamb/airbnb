@@ -9,9 +9,11 @@ import asyncio
 
 
 # Получение id по location переданной в запущенной функции запуска данного этапа
-location = "Bali" # Для теста
 
-def get_room_data(location):
+
+def get_data_obj():
+    confirm = False
+    location = "Bali-Province--Indonesia"
     data_room = asyncio.run(get_rooms_by_location(location))
     if data_room == []:
         print(f"Error: There is no such location - {location}")
@@ -43,11 +45,9 @@ def get_room_data(location):
 
         # Close Driver Chrome
         end_close(driver)
+    confirm = True
+    return confirm
 
 if __name__ == "__main__":
-    get_room_data(location)
-
-
-
-
+    get_data_obj()
 

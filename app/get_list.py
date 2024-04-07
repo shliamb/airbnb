@@ -1,6 +1,5 @@
 from parser_sys import ( go_url, begin, end_close, quick_sleep, response_code, scroll)
 from parser_airbnb import ( build_url, quick_sleep, find_data_room, get_url_next_page)
-from get_object import get_room_data
 
 
 
@@ -20,10 +19,11 @@ def get_list_data():
     room_types = "Entire home%2Fapt" # Весь дом целиком
     # Добавить в таблицу Task ячейку 
 
-    url = build_url(location, checkin_date, checkout_date, guests, currency, price_min, price_max, room_types)
+    url = build_url(location, checkin_date, checkout_date, guests,\
+                     currency, price_min, price_max, room_types)
     # Build Driver Chrome
     driver = begin()
-    i = 1
+
     while True:
         # Response code
         code = response_code(url)
@@ -47,23 +47,13 @@ def get_list_data():
             # Close Driver Chrome
             end_close(driver)
             break
-        i += 1
         quick_sleep(1, 2)
 
     confirm = True
     return confirm
 
-
-
-
-
-def get_data_obj():
-    confirm = False
-    # DATA FOR SEARCH ID
-    location = "Bali-Province--Indonesia" # Bali Как точно надо? 
-    get_room_data(location) # Run geting room data
-    confirm = True
-    return confirm
+if __name__ == "__main__":
+    get_list_data()
 
 
 
