@@ -5,10 +5,10 @@ from get_room_airbnb import get_room_data
 
 # DATA FOR SEARCH URL
 location = "Bali"
-checkin_date = "2024-05-01"
-checkout_date = "2024-05-07"
+checkin_date = ""
+checkout_date = ""
 guests = 1
-time_correction = +3
+time_correction = +5
 # room_types = "Private room"
 
 

@@ -9,14 +9,21 @@ import re
 
 
 
-# def dddf():
-#     data_room = asyncio.run(get_rooms_by_location("Bali"))
+# num = int('-2')
 
-#     for data in data_room:
-#         print(data.id)
 
-# if __name__ == "__main__":
-#     dddf()
+# print(num)
+# print(type(num))
+
+
+def dddf():
+    data_room = asyncio.run(get_rooms_by_location("Bali"))
+
+    for data in data_room:
+        print(data.id)
+
+if __name__ == "__main__":
+    dddf()
 
 
 # id = 12635899

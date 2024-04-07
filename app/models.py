@@ -75,6 +75,9 @@ class Users(Base):
     date_visit = Column(sqlalchemy.DateTime, nullable=True)
     is_admin = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False)
     is_block = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False)
+    
+    # +3 часа или - 4 часа пояса часового...
+    # time_correction = Column(sqlalchemy.Integer, default=+5, server_default="+5", nullable=False)
 
     # Настройки по умолчанию, что бы каждый раз не набирать
     checkin_date = Column(sqlalchemy.DateTime, nullable=True) # "2024-05-01"
