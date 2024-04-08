@@ -2,6 +2,7 @@ from parser_sys import ( go_url, begin, end_close, quick_sleep, response_code, s
 from parser_airbnb import ( find_data_object, build_url, quick_sleep, find_data_room, get_url_next_page)
 from worker_db import get_rooms_by_location
 import asyncio
+import re
 
 
 #### GETTING DATA FOR ROOM AT ITS ID IN DB ####
@@ -21,7 +22,11 @@ def get_data_obj():
     # Перебор по полученым id из базы входящей категории
     for data in data_room:
         id = data.id
-        url_room = data.url_room
+        url = data.url_room
+
+        pattern = r'(/rooms/\d+)'
+        url_room = re.sub(pattern, r'\1/amenities', url)
+
         # Build Driver Chrome
         driver = begin()
         # Response code
@@ -36,13 +41,13 @@ def get_data_obj():
         # Wait time
         quick_sleep(5, 6)
         # Scroll page
-        scroll(driver)
+        #scroll(driver)
         # Find data room and save to DB
-        find_data_object(driver)#, location, time_correction)
-        quick_sleep(1, 2)
+        find_data_object(driver, url_room)#, location, time_correction)
+        # quick_sleep(1, 2)
 
         #quick_sleep(500, 600)
-
+        print()
         # Close Driver Chrome
         end_close(driver)
     confirm = True

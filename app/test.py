@@ -9,6 +9,85 @@ import re
 
 
 
+
+
+a = "https://www.airbnb.com/rooms/708579259703259226?adults=1&category_tag=Tag%3A8678&children=0&enable_m3_private_room=true&guests=1&infants=0&pets=0&photo_id=1484527939&check_in=2024-04-21&check_out=2024-04-26&source_impression_id=p3_1712514996_%2Flccft7RBYBPYYtn&previous_page_section_name=1000&federated_search_id=ab7422c9-cae1-4c11-8af3-6b73f3500c9b"
+# # https://www.airbnb.com/rooms/708579259703259226/amenities?adults=1&category_tag=Tag%3A8678&children=0&enable_m3_private_room=true&guests=1&infants=0&pets=0&photo_id=1484527939&check_in=2024-04-21&check_out=2024-04-26&source_impression_id=p3_1712514996_%2Flccft7RBYBPYYtn&previous_page_section_name=1000&federated_search_id=ab7422c9-cae1-4c11-8af3-6b73f3500c9b
+
+
+# pattern = r'(rooms/\d+)'
+
+
+# b = re.sub(pattern, a)
+
+# print(b)
+
+
+
+
+
+
+
+
+#a = "https://www.airbnb.com/rooms/708579259703259226?adults=1&category_t"
+
+pattern = r'(/rooms/\d+)'
+a_amenities = re.sub(pattern, r'\1/amenities', a)
+
+print(a_amenities)
+
+
+
+
+
+
+
+
+
+
+
+
+# как в строку 
+# a = "https://www.airbnb.com/rooms/708579259703259226?adults=1&category_t"
+# вставить amenities сразу после rooms/ при помощи re
+
+# https://www.airbnb.com/rooms/708579259703259226/amenities?adults=1&category_t
+
+
+
+
+
+
+
+
+# s = "dfd VIfLA fdf dfff"
+
+# if "vila" in s.lower():
+#     print("Yes")
+# else:
+#     print("Not")
+
+
+
+
+
+
+# a = "2 guests ·  · 1 bedroom ·  · 1 bed ·  · 1 bath"
+
+# # Заменяем " ·  · " на "|"
+# a = a.replace(" ·  · ", " | ")
+
+# # Разделяем строку по "|"
+# list_of_elements = a.split(" | ")
+
+# aa = list_of_elements
+
+# print(aa[0])
+
+
+
+
+
 # num = int('-2')
 
 
@@ -26,27 +105,27 @@ import re
 #     dddf()
 
 
-id = 41413422
-data_room = asyncio.run(get_rooms_by_id(id))
-if data_room is not None:
-    pass
-    print()
-    print(data_room.title_room)
-    print(data_room.name_room)
-    print(data_room.subtitle_room)
-    print(data_room.night_price)
-    print(data_room.total_price)
-    print(data_room.currency)
-    print(data_room.rating)
-    print(data_room.place)
-    print(data_room.url_room)
-    print(data_room.image_url)
-    print(data_room.country)
-    print(data_room.rooms_date_update)
-    print(data_room.room_date_update)
-    print()
-else:
-    print("None data, sorry..")
+# id = 41413422
+# data_room = asyncio.run(get_rooms_by_id(id))
+# if data_room is not None:
+#     pass
+#     print()
+#     print(data_room.title_room)
+#     print(data_room.name_room)
+#     print(data_room.subtitle_room)
+#     print(data_room.night_price)
+#     print(data_room.total_price)
+#     print(data_room.currency)
+#     print(data_room.rating)
+#     print(data_room.place)
+#     print(data_room.url_room)
+#     print(data_room.image_url)
+#     print(data_room.country)
+#     print(data_room.rooms_date_update)
+#     print(data_room.room_date_update)
+#     print()
+# else:
+#     print("None data, sorry..")
 
 # title_room: Bed and breakfast in Kecamatan Ubud
 # name_room: Budget traveller's private roon in Central Ubud

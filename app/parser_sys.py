@@ -21,12 +21,12 @@ def begin():
     options = Options()
     # OPTINONS DRIVER CHRONE SELENIUM
     prof = profil()
-    print("\nOPTIONS DRIVER CHROME:")
+    # print("\nOPTIONS DRIVER CHROME:")
     ####
     def add_options(options, *args):
         for arg in args:
             options.add_argument(arg)
-            print(arg)
+            #print(arg)
     ####
     add_options(options, "--disable-webgl", "--disable-gpu", "--disable-3d-apis", "--enable-virtual-keyboard", "--mute-audio", "--disable-plugins-discovery", "--profile-directory=Default", "disable-infobars", "start-maximized", "--disable-blink-features=AutomationControlled", f"--user-agent={ua.random}", f"user-data-dir=./profiles/{prof}/") # , "--incognito", f"--proxy-server={PROXY}", "--headless=new")
     ####

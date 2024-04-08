@@ -11,11 +11,11 @@ def get_list_data():
     location = "Bali-Province--Indonesia" # Bali Как точно надо? 
     checkin_date = "[]" # Он сам ставит на 1 месяц 
     checkout_date = "[]"
-    guests = 1 # Гости Сколько гостей устанавливать в поиске?
+    guests = 0 # Гости Сколько гостей устанавливать в поиске?
     time_correction = +5
     currency = "USD"
     price_min = "10" # Не уверен что стоит вообще собирать от 10$ за ночь, там амбар сдают))
-    price_max = "11"
+    price_max = "110"
     room_types = "Entire home%2Fapt" # Весь дом целиком
     # Добавить в таблицу Task ячейку 
 
@@ -37,17 +37,17 @@ def get_list_data():
         # Wait time
         quick_sleep(5, 6)
         # Scroll page
-        scroll(driver)
+        #scroll(driver)
         # Find data room and save to DB
-        find_data_room(driver, location, time_correction)
-        quick_sleep(1, 2)
+        find_data_room(driver, location, time_correction, currency)
+        #quick_sleep(1, 2)
         # Find url next page
         url = get_url_next_page(driver)
         if url == None:
             # Close Driver Chrome
             end_close(driver)
             break
-        quick_sleep(1, 2)
+        #quick_sleep(1, 2)
 
     confirm = True
     return confirm
