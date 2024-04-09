@@ -1,8 +1,8 @@
 """Description of changes
 
-Revision ID: 695b6b5d5cc1
+Revision ID: 8026cbeb346a
 Revises: 
-Create Date: 2024-04-06 18:52:30.272772
+Create Date: 2024-04-09 03:29:30.487387
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '695b6b5d5cc1'
+revision: str = '8026cbeb346a'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -24,27 +24,30 @@ def upgrade() -> None:
     sa.Column('id', sa.BigInteger(), nullable=False),
     sa.Column('title_room', sa.String(length=500), nullable=True),
     sa.Column('name_room', sa.String(length=500), nullable=True),
-    sa.Column('subtitle_room', sa.String(length=500), nullable=True),
+    sa.Column('type_house', sa.String(length=500), nullable=True),
     sa.Column('night_price', sa.Float(), server_default='0', nullable=False),
-    sa.Column('total_price', sa.Float(), server_default='0', nullable=False),
+    sa.Column('month_price', sa.Float(), server_default='0', nullable=False),
     sa.Column('currency', sa.String(length=10), server_default='USD', nullable=False),
     sa.Column('rating', sa.Float(), nullable=True),
-    sa.Column('place', sa.Integer(), nullable=True),
+    sa.Column('reviews', sa.Integer(), nullable=True),
+    sa.Column('guest_favorite', sa.Float(), nullable=True),
+    sa.Column('guest', sa.Integer(), nullable=True),
+    sa.Column('bedroom', sa.Integer(), nullable=True),
+    sa.Column('bed', sa.Integer(), nullable=True),
+    sa.Column('bath', sa.Float(), nullable=True),
+    sa.Column('parking', sa.String(length=500), nullable=True),
+    sa.Column('kitchen', sa.String(length=500), nullable=True),
+    sa.Column('view', sa.String(length=500), nullable=True),
+    sa.Column('workspace', sa.String(length=500), nullable=True),
+    sa.Column('rooftop', sa.String(length=500), nullable=True),
+    sa.Column('terrace_balcony', sa.String(length=500), nullable=True),
+    sa.Column('restaurants', sa.String(length=500), nullable=True),
+    sa.Column('storage', sa.String(length=500), nullable=True),
+    sa.Column('sqm', sa.String(length=500), nullable=True),
     sa.Column('url_room', sa.String(length=2000), nullable=False),
-    sa.Column('image_url', sa.String(length=2000), nullable=True),
-    sa.Column('country', sa.String(length=500), nullable=False),
-    sa.Column('city', sa.String(length=50), nullable=True),
-    sa.Column('address_room', sa.String(length=200), nullable=True),
-    sa.Column('guest', sa.String(length=100), nullable=True),
-    sa.Column('bedrooms', sa.String(length=100), nullable=True),
-    sa.Column('beds', sa.String(length=100), nullable=True),
-    sa.Column('bathrooms', sa.String(length=100), nullable=True),
-    sa.Column('owner', sa.String(length=100), nullable=True),
-    sa.Column('conveniences', sa.String(length=100), nullable=True),
-    sa.Column('important_info', sa.String(length=100), nullable=True),
-    sa.Column('cancellation_policy', sa.String(length=100), nullable=True),
-    sa.Column('room_date_update', sa.DateTime(), nullable=True),
-    sa.Column('rooms_date_update', sa.DateTime(), nullable=True),
+    sa.Column('location', sa.String(length=500), nullable=False),
+    sa.Column('obj_date_update', sa.DateTime(), nullable=True),
+    sa.Column('list_date_update', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_rooms_id_id'), 'rooms_id', ['id'], unique=True)

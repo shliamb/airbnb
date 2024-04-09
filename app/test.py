@@ -11,31 +11,6 @@ import re
 
 
 
-a = "https://www.airbnb.com/rooms/708579259703259226?adults=1&category_tag=Tag%3A8678&children=0&enable_m3_private_room=true&guests=1&infants=0&pets=0&photo_id=1484527939&check_in=2024-04-21&check_out=2024-04-26&source_impression_id=p3_1712514996_%2Flccft7RBYBPYYtn&previous_page_section_name=1000&federated_search_id=ab7422c9-cae1-4c11-8af3-6b73f3500c9b"
-# # https://www.airbnb.com/rooms/708579259703259226/amenities?adults=1&category_tag=Tag%3A8678&children=0&enable_m3_private_room=true&guests=1&infants=0&pets=0&photo_id=1484527939&check_in=2024-04-21&check_out=2024-04-26&source_impression_id=p3_1712514996_%2Flccft7RBYBPYYtn&previous_page_section_name=1000&federated_search_id=ab7422c9-cae1-4c11-8af3-6b73f3500c9b
-
-
-# pattern = r'(rooms/\d+)'
-
-
-# b = re.sub(pattern, a)
-
-# print(b)
-
-
-
-
-
-
-
-
-#a = "https://www.airbnb.com/rooms/708579259703259226?adults=1&category_t"
-
-pattern = r'(/rooms/\d+)'
-a_amenities = re.sub(pattern, r'\1/amenities', a)
-
-print(a_amenities)
-
 
 
 
@@ -105,27 +80,192 @@ print(a_amenities)
 #     dddf()
 
 
-# id = 41413422
-# data_room = asyncio.run(get_rooms_by_id(id))
-# if data_room is not None:
-#     pass
-#     print()
-#     print(data_room.title_room)
-#     print(data_room.name_room)
-#     print(data_room.subtitle_room)
-#     print(data_room.night_price)
-#     print(data_room.total_price)
-#     print(data_room.currency)
-#     print(data_room.rating)
-#     print(data_room.place)
-#     print(data_room.url_room)
-#     print(data_room.image_url)
-#     print(data_room.country)
-#     print(data_room.rooms_date_update)
-#     print(data_room.room_date_update)
-#     print()
+
+
+
+
+# # text = "The room is 15sqm in size."
+# text = "The room is 15sqm in size."
+# # Этот шаблон ищет одно или более чисел, за которыми следует необязательный пробел и 'sqm'
+# pattern = r'(\d+)\s*sqm'
+
+# match = re.search(pattern, text)
+# if match:
+#     number = match.group(1)
+#     unit = 'sqm'
+#     print(f"Number: {number}, Unit: {unit}")
 # else:
-#     print("None data, sorry..")
+#     print("No match found.")
+
+
+
+# import sys
+
+# number = 989583347152579661
+# print(sys.getsizeof(number))
+
+# выходит примерно около 32кб каждая 1000 id в памяти - приемлемо
+
+
+
+
+# def rating_clean2(num: str) -> float | int:
+#     match1 = re.search(r"\b\d+(?:\.\d+)?\b", num)
+#     if match1:
+#         rating = float(match1.group(0))
+#     else:
+#         rating = 0.0
+
+#     match2 = re.search(r"\b(\d+)\s+reviews\b", num)
+#     if match2:
+#         reviews = int(match2.group(1))
+#     else:
+#         reviews = 0
+
+#     return rating, reviews
+
+
+# a = rating_clean2("4.95 · 37 reviews")
+# print(a[0])
+# print(a[1])
+
+
+# id
+# title_room
+# name_room
+# type_house
+# night_price
+# month_price
+# currency
+# rating
+# reviews
+# guest_favorite
+# guest
+# bedroom
+# bed
+# bath
+# parking
+# kitchen
+# view
+# workspace
+# rooftop
+# terrace_balcony
+# restaurants
+# storage
+# sqm
+
+# CLEAN RATING
+# def rating_cleen(num: str) -> float | int:
+#     match1 = re.search(r"\b\d+\.\d+\b", num)
+#     if match1:
+#         rating = float(match1.group(0))
+#     else:
+#         rating = None
+
+#     match2 = re.search(r",\s*(\d+)s+reviews", num)
+#     if match2:
+#         place = int(match2.group(1))
+#     else:
+#         place = None
+#     return rating, place
+
+
+# print(rating_cleen("4.95 · 37 reviews"))
+
+
+
+    # # Извлечение количества отзывов
+    # match2 = re.search(r',s*(d+)s+reviews', text)
+    # if match2:
+    #     place = int(match2.group(1))
+    # else:
+    #     place = None
+
+
+
+
+
+
+
+# sqm площадь не нашел, в одном месте видел в виде текста (15 sqm, 15sqm) м²
+# print("sqm:", "None")
+
+
+
+
+id = 986635336249978757
+data_room = asyncio.run(get_rooms_by_id(id))
+if data_room is not None:
+    pass
+    print()
+    print(data_room.title_room)
+    print(data_room.name_room)
+    print(data_room.type_house)
+    print(data_room.night_price)
+    print(data_room.month_price)
+    print(data_room.currency)
+    print(data_room.rating)
+    print(data_room.reviews)
+    print(data_room.guest_favorite)
+    print(data_room.guest)
+    print(data_room.bedroom)
+    print(data_room.bed)
+    print(data_room.bath)
+    print(data_room.parking)
+    print(data_room.kitchen)
+    print(data_room.view)
+    print(data_room.workspace)
+    print(data_room.rooftop)
+    print(data_room.terrace_balcony)
+    print(data_room.restaurants)
+    print(data_room.storage)
+    print(data_room.sqm)
+
+    print(data_room.url_room)
+    print(data_room.location)
+    print(data_room.obj_date_update)
+    print(data_room.currency)
+    print()
+else:
+    print("None data, sorry..")
+
+        # # "id": id,
+        # "title_room": title_room,
+        # "name_room": name_room,
+        # "type_house": type_house,
+        # "night_price": night_price,
+        # "month_price": month_price,
+        # "currency": currency,
+        # "rating": rating,
+        # "reviews": reviews,
+        # "guest_favorite": guest_favorite,
+        # "guest": guest,
+        # "bedroom": bedroom,
+        # "bed": bed,
+        # "bath": bath,
+        # "parking": parking,
+        # "kitchen": kitchen,
+        # "view": view,
+        # "workspace": workspace,
+        # "rooftop": rooftop,
+        # "terrace_balcony": terrace_balcony,
+        # "restaurants": restaurants,
+        # "storage": storage,
+        # "sqm": sqm,
+        # # "url_room": url_room,
+        # # "location": location,
+        # "obj_date_update": obj_date_update,
+        # "currency" : currency 
+
+
+
+
+
+
+
+
+
+
 
 # title_room: Bed and breakfast in Kecamatan Ubud
 # name_room: Budget traveller's private roon in Central Ubud

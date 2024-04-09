@@ -6,11 +6,11 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import relationship
 from typing import AsyncGenerator
-from keys import user_db, paswor_db
+# from keys import user_db, paswor_db
 
-# from dotenv import load_dotenv
-# load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
-# user_db, paswor_db = os.environ.get('USER_DB'),  os.environ.get('PASWOR_DB')
+from dotenv import load_dotenv
+load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
+user_db, paswor_db = os.environ.get('USER_DB'),  os.environ.get('PASWOR_DB')
 
 
 #DATABASE_URL = f"postgresql+asyncpg://{user_db}:{paswor_db}@postgres:5432/my_database"
@@ -26,29 +26,31 @@ class Rooms(Base):
     id = Column(sqlalchemy.BigInteger, primary_key=True, unique=True, nullable=False, index=True) # id rooms or any data id
     title_room = Column(sqlalchemy.String(500), nullable=True)
     name_room = Column(sqlalchemy.String(500), nullable=True)
-    subtitle_room = Column(sqlalchemy.String(500), nullable=True)
+    type_house = Column(sqlalchemy.String(500), nullable=True)
     night_price = Column(sqlalchemy.Float, default=0, server_default="0", nullable=False)
-    total_price = Column(sqlalchemy.Float, default=0, server_default="0", nullable=False)
+    month_price = Column(sqlalchemy.Float, default=0, server_default="0", nullable=False)
     currency = Column(sqlalchemy.String(10), default="USD", server_default="USD", nullable=False) # берем из настроек или url
     rating = Column(sqlalchemy.Float, nullable=True)
-    place = Column(sqlalchemy.Integer, nullable=True)
+    reviews = Column(sqlalchemy.Integer, nullable=True)
+    guest_favorite = Column(sqlalchemy.Float, nullable=True)
+    guest = Column(sqlalchemy.Integer, nullable=True)
+    bedroom = Column(sqlalchemy.Integer, nullable=True)
+    bed = Column(sqlalchemy.Integer, nullable=True)
+    bath = Column(sqlalchemy.Float, nullable=True)
+    parking = Column(sqlalchemy.String(500), nullable=True)
+    kitchen = Column(sqlalchemy.String(500), nullable=True)
+    view = Column(sqlalchemy.String(500), nullable=True)
+    workspace = Column(sqlalchemy.String(500), nullable=True)
+    rooftop = Column(sqlalchemy.String(500), nullable=True)
+    terrace_balcony = Column(sqlalchemy.String(500), nullable=True)
+    restaurants = Column(sqlalchemy.String(500), nullable=True)
+    storage = Column(sqlalchemy.String(500), nullable=True)
+    sqm = Column(sqlalchemy.String(500), nullable=True)
     url_room = Column(sqlalchemy.String(2000), nullable=False) 
-    image_url = Column(sqlalchemy.String(2000), nullable=True)
-    country = Column(sqlalchemy.String(500), nullable=False) # Bali - например, иначе потом хер найдешь из настроек или url
+    location = Column(sqlalchemy.String(500), nullable=False) # Bali - например, иначе потом хер найдешь из настроек или url
 
-    city = Column(sqlalchemy.String(50), nullable=True)
-    address_room = Column(sqlalchemy.String(200), nullable=True)
-    guest = Column(sqlalchemy.String(100), nullable=True)
-    bedrooms = Column(sqlalchemy.String(100), nullable=True)
-    beds = Column(sqlalchemy.String(100), nullable=True)
-    bathrooms = Column(sqlalchemy.String(100), nullable=True)
-    owner = Column(sqlalchemy.String(100), nullable=True)
-    conveniences = Column(sqlalchemy.String(100), nullable=True)
-    important_info = Column(sqlalchemy.String(100), nullable=True)
-    cancellation_policy = Column(sqlalchemy.String(100), nullable=True)
-    
-    room_date_update = Column(sqlalchemy.DateTime, nullable=True) 
-    rooms_date_update = Column(sqlalchemy.DateTime, nullable=True)
+    obj_date_update = Column(sqlalchemy.DateTime, nullable=True) 
+    list_date_update = Column(sqlalchemy.DateTime, nullable=True)
 
 # Task
 class Task(Base):

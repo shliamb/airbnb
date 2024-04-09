@@ -1,5 +1,5 @@
 from worker_db import get_rooms_by_id, update_rooms, adding_rooms
-from parser_sys import quick_sleep, str_int, day_utcnow, unformat_date
+from parser_sys import quick_sleep, str_int, day_utcnow, unformat_date, str_inter
 from bs4 import BeautifulSoup
 import asyncio
 import re
@@ -36,21 +36,39 @@ def get_url_next_page(driver) -> str:
     return url_href
 
 # CLEAN RATING
-def rating_cleen(num: str) -> float | int:
-    match1 = re.search(r"\b\d+\.\d+\b", num)
+def rating_clean(num: str) -> float | int:
+    match1 = re.search(r"\b\d+(?:\.\d+)?\b", num)
     if match1:
         rating = float(match1.group(0))
     else:
-        rating = None
+        rating = 0.0
 
-    match2 = re.search(r',\s*(\d+)\s+', num)
+    match2 = re.search(r"\b(\d+)\s+reviews\b", num)
     if match2:
-        place = int(match2.group(1))
+        reviews = int(match2.group(1))
     else:
-        place = None
-    return rating, place
+        reviews = 0
 
-# FIND TEXT LIST FIXED BT4
+    return rating, reviews
+# def rating_cleen(num: str) -> float | int:
+#     match1 = re.search(r"\b\d+\.\d+\b", num)
+#     if match1:
+#         rating = float(match1.group(0))
+#     else:
+#         rating = None
+
+#     match2 = re.search(r',\s*(\d+)\s+', num)
+#     if match2:
+#         place = int(match2.group(1))
+#     else:
+#         place = None
+#     return rating, place
+
+
+
+
+
+# FIND TEXT LIST FIXED BT4  -  Сбор со страниц поиска id и url
 # Позже сделать входные параметры в виде словаря для легкой подстройки к изменениям на сайте
 def find_data_room(driver, country, time_correction, currency):
     html = driver.page_source
@@ -150,21 +168,21 @@ def find_data_room(driver, country, time_correction, currency):
 
 
         # Get day and time now
-        rooms_date_update = day_utcnow(time_correction)
+        list_date_update = day_utcnow(time_correction)
 
         # Preparing data for the room - Готовим данные 
-        room_data = {"id": id, "url_room": url_room, "country": country, "rooms_date_update": rooms_date_update, "currency" : currency }
+        room_data = {"id": id, "url_room": url_room, "location": country, "list_date_update": list_date_update}
         
         # Обновляем или добавляем данные
         data_room = asyncio.run(get_rooms_by_id(id))
         # Update data to room, if is outdated
         if data_room is not None:
             # Get day -> str and time -> float now in format
-            format_date_now = unformat_date(rooms_date_update)
+            format_date_now = unformat_date(list_date_update)
             format_day_now = format_date_now[0]
             format_time_now = format_date_now[1]
             # Get in DB room day -> str and time -> float now in format
-            date_room_db = data_room.rooms_date_update
+            date_room_db = data_room.list_date_update
             format_date_db = unformat_date(date_room_db)
             format_day_db = format_date_db[0]
             format_time_db = format_date_db[1]
@@ -184,9 +202,22 @@ def find_data_room(driver, country, time_correction, currency):
     return
 
 
-# FIND TEXT FIXED OBJECT BT4
+
+
+
+
+
+
+
+
+
+
+
+
+
+# FIND TEXT FIXED OBJECT BT4  -  Сбор и сохранение данных на странице заведения
 # Позже сделать входные параметры в виде словаря для легкой подстройки к изменениям на сайте
-def find_data_object(driver, url):#, country, time_correction):
+def find_data_object(driver, id, url_room, location, time_correction, currency):#, country, time_correction):
     html = driver.page_source
     nand = BeautifulSoup(html, 'lxml')
     #quick_sleep(2, 3)
@@ -243,23 +274,20 @@ def find_data_object(driver, url):#, country, time_correction):
 
         for n in list_of_elements:
             if "guests" in n:
-                guest = n
+                guest = str_inter(n)
                 print("guest:", guest)
             elif "droom" in n:
-                bedroom = n 
+                bedroom = str_inter(n) 
                 print("bedroom:", bedroom) 
             elif "bed" in n:
-                bed = n
+                bed = str_inter(n)
                 print("bed:", bed) 
             elif "bath" in n:
-                bath = n 
+                bath = str_int(n) # float
                 print("bath:", bath)  # 1.5 baths бывает и так, хз.. полторы басейна.. прикол
     else:
         text_list = None
         print(text_list)
-
-
-
 
 
     # is Guest favorite
@@ -274,10 +302,14 @@ def find_data_object(driver, url):#, country, time_correction):
     # Rating room no Guest favorite
     if guest_favorite == False:
         rating_data_b = el.find("div", {"data-section-id": "REVIEWS_DEFAULT"})
-        rating_data_a = rating_data_b.find("span", {"aria-hidden": "true"})
-        if rating_data_a != None:
-            rating_no_gf = rating_data_a.text.strip()
-            print(f"Rating: {rating_no_gf}")
+        if rating_data_b != None:
+            rating_data_a = rating_data_b.find("span", {"aria-hidden": "true"})
+            if rating_data_a != None:
+                rating_no_gf = rating_data_a.text.strip()
+                rating_data = rating_clean(rating_no_gf)
+                rating = rating_data[0]
+                reviews = rating_data[1]
+                print(f"Rating: {rating}, {reviews}")
 
 
     # Rating room Guest Favorite
@@ -288,14 +320,15 @@ def find_data_object(driver, url):#, country, time_correction):
 
         place_data = el.find("div", {"class": "r16onr0j"})
         if place_data != None:
-            place = str_int(place_data.text.strip())
+            reviews = str_inter(place_data.text.strip())
 
-        print(f"Rating: {rating} · {place} reviews")
+        print(f"Rating: {rating}, {reviews}")
+
 
 
 
     # url
-    print("url:", url)
+    print("url:", url_room)
 
 
     # Amenities - услуги
@@ -303,9 +336,9 @@ def find_data_object(driver, url):#, country, time_correction):
     # Забираю все перечеркнутые элементы del и смотрю что в них - устанавливаю флаги
     del_text =  amenities_data.find_all("del")
     # not_dryer, not_garage, not_kitchen, not_lockbox, not_safe, not_lockbox  = False, False, False, False, False, False
-    not_dryer = not_garage = not_kitchen = not_lockbox = not_safe = not_lockbox = dedicated_workspace = not_rooftop \
+    not_dryer = not_garage = not_kitchen = not_safe = not_lockbox = dedicated_workspace = not_rooftop \
     = outdoor_dining_area = patio_or_balcony = private_backyard = courtyard_view = garden_view = sea_view = \
-    beach_view = backyard = private_pool = mountain_view = park_view = river_view = valley_view = ocean_view = \
+    beach_view = private_pool = mountain_view = park_view = river_view = valley_view = ocean_view = \
     pool_view = restaurant = coworking = storage = False
 
     for n_del_text in del_text:
@@ -341,8 +374,6 @@ def find_data_object(driver, url):#, country, time_correction):
                 sea_view = True
             if "beach view" in del_text_clear.lower():
                 beach_view = True
-            if "backyard" in del_text_clear.lower():
-                backyard = True
             if "private pool" in del_text_clear.lower():
                 private_pool = True
             if "mountain view" in del_text_clear.lower():
@@ -369,85 +400,248 @@ def find_data_object(driver, url):#, country, time_correction):
     if amenities_data != None:
         amenities = amenities_data.text.strip()
 
+    parking, kitchen, storage, workspace, rooftop, terrace_balcony, view, restaurants = [], [], [], [], [], [], [], []
+
+    # parking
     if "free parking on premises" in amenities.lower():
-        print("Free parking on premises")
+        parking.append("Free parking on premises")
     if "street parking" in amenities.lower():
-        print("Free street parking")
+        parking.append("Street parking")
     if not_garage == False and "free residential garage on premises" in amenities.lower():
-        print("Free residential garage on premises")
-    if not_dryer == False and "dryer" in amenities.lower():
-        print("Dryer")
-    if not_kitchen == False and "kitchen" in amenities.lower():
-        print("Kitchen")
-    if not_lockbox == False and "lockbox" in amenities.lower():
-        print("Lockbox")
-    if not_safe == False and "safe" in amenities.lower():
-        print("Safe")
-    if not_lockbox == False and "Lockbox" in amenities.lower():
-        print("Lockbox")
-    if dedicated_workspace == False and "dedicated workspace" in amenities.lower():
-        print("Dedicated workspace")
-    if not_rooftop == False and "not rooftop" in amenities.lower():
-        print("Not rooftop")
-    if outdoor_dining_area == False and "outdoor dining area" in amenities.lower():
-        print("Outdoor dining area")
-    if patio_or_balcony == False and "balcony" in amenities.lower():
-        print("Patio or balcony")
-    if private_backyard == False and "private backyard" in amenities.lower():
-        print("Private backyard")
-    if courtyard_view  == False and "courtyard view" in amenities.lower():
-        print("Courtyard view")
-    if garden_view  == False and "garden view" in amenities.lower():
-        print("Garden view")
-    if sea_view  == False and "sea view" in amenities.lower():
-        print("Sea view")
-    if beach_view  == False and "beach view" in amenities.lower():
-        print("Beach view")
-    if backyard  == False and "backyard" in amenities.lower():
-        print("Backyard")
-    if private_pool  == False and "private pool" in amenities.lower():
-        print("Private pool")
-    if mountain_view == False and "mountain view" in amenities.lower():
-        print("Mountain view")
-    if park_view == False and "park view" in amenities.lower():
-        print("Park view")
-    if river_view == False and "river view" in amenities.lower():
-        print("River view")
-    if valley_view == False and "valley view" in amenities.lower():
-        print("Valley view")
-    if ocean_view == False and "ocean view" in amenities.lower():
-        print("Ocean view")
-    if pool_view == False and "pool view" in amenities.lower():
-        print("Pool view")
-    if restaurant == False and "restaurant" in amenities.lower():
-        print("Restaurant")
+        parking.append("Free residential garage on premises")
+    print(', '.join(parking))
+
+    # kitchen 
+    if not_kitchen == False and "kitchen" in amenities.lower():  # Кухня
+        kitchen.append("kitchen")
+    print(', '.join(kitchen))
+
+    # Storage room
+    if not_lockbox == False and "lockbox" in amenities.lower(): # Запирающийся ящик
+        storage.append("Lockbox")
+    if not_safe == False and "safe" in amenities.lower(): # Сейф
+        storage.append("Safe")
+    if storage == False and "storage" in amenities.lower(): # Место хранения
+        storage.append("Storage")
+    print(', '.join(storage))
+
+    # coworking
+    if dedicated_workspace == False and "dedicated workspace" in amenities.lower(): # Коворкинг
+        workspace.append("Dedicated workspace")
     if coworking == False and "coworking" in amenities.lower():
-        print("Coworking")
-    if storage == False and "storage" in amenities.lower():
-        print("Storage")
+        workspace.append("Coworking")
+    print(', '.join(workspace))
+
+    # rooftop
+    if not_rooftop == False and "rooftop" in amenities.lower(): # Крыша
+        rooftop.append("Rooftop")
+    print(', '.join(rooftop))
+
+    # Terrace or balcony
+    if outdoor_dining_area == False and "outdoor dining area" in amenities.lower(): # обеденная зона на открытом воздухе
+        terrace_balcony.append("Outdoor dining area")
+    if patio_or_balcony == False and "balcony" in amenities.lower(): # Балконы
+        terrace_balcony.append("Patio or balcony")
+    if private_backyard == False and "backyard" in amenities.lower(): # частный задний двор
+        terrace_balcony.append("Backyard")
+    if private_pool  == False and "private pool" in amenities.lower():
+        terrace_balcony.append("Private pool")
+    print(', '.join(terrace_balcony))
+
+    # View - вид
+    if courtyard_view  == False and "courtyard view" in amenities.lower():
+        view.append("Courtyard view")
+    if garden_view  == False and "garden view" in amenities.lower():
+        view.append("Garden view")
+    if sea_view  == False and "sea view" in amenities.lower():
+        view.append("Sea view")
+    if beach_view  == False and "beach view" in amenities.lower():
+        view.append("Beach view")
+    if mountain_view == False and "mountain view" in amenities.lower():
+        view.append("Mountain view")
+    if park_view == False and "park view" in amenities.lower():
+        view.append("Park view")
+    if river_view == False and "river view" in amenities.lower():
+        view.append("River view")
+    if valley_view == False and "valley view" in amenities.lower():
+        view.append("Valley view")
+    if ocean_view == False and "ocean view" in amenities.lower():
+        view.append("Ocean view")
+    if pool_view == False and "pool view" in amenities.lower():
+        view.append("Pool view")
+    print(', '.join(view))
+
+    # restaurants
+    if restaurant == False and "restaurant" in amenities.lower():
+        restaurants.append("Restaurant")
+    print(', '.join(restaurants))
+
+    # 
+    if not_dryer == False and "dryer" in amenities.lower():  # Сушилка
+        print("Dryer")
+
+
+
+
+    # title_room + name_room --> type_house
+    title_house = title_room + " " + name_room
+    if "hotel" in title_house.lower():
+        type_house = "Hotel"
+    elif "guesthouse" in title_house.lower():
+        type_house = "Guesthouse"
+    elif "house" in title_house.lower():
+        type_house = "House"
+    elif "villa" in title_house.lower():
+        type_house = "Villa"
+    elif "townhouse" in title_house.lower():
+        type_house = "Townhouse"
+    elif "bungalow" in title_house.lower():
+        type_house = "Bungalow"
+    elif "cottage" in title_house.lower():
+        type_house = "Cottage"
+    elif "cabin" in title_house.lower():
+        type_house = "Cabin"
+    elif "barn" in title_house.lower():
+        type_house = "Barn"
+    elif "home" in title_house.lower():
+        type_house = "Home"
+    elif "treehouse" in title_house.lower():
+        type_house = "Treehouse"
+    elif "hut" in title_house.lower():
+        type_house = "Hut"
+    elif "tent" in title_house.lower():
+        type_house = "Tent"
+    elif "farmstay" in title_house.lower():
+        type_house = "Farmstay"
+    elif "farm" in title_house.lower():
+        type_house = "Farmstay"
+    elif "apartment" in title_house.lower():
+        type_house = "Apartment"
+    elif "condo" in title_house.lower():
+        type_house = "Condo"
+    elif "guest" in title_house.lower():
+        type_house = "Guesthouse"
+    elif "homestay" in title_house.lower():
+        type_house = "Homestay"
+    elif "place" in title_house.lower():
+        type_house = "Place"
+    print("type_house:", type_house)
+
+
+
+    # SQM  - площадь не нашел, но попадалось в тексте иногда опиание площади (15 sqm, 15sqm) м²
+    text_room = el.find("div", {"data-section-id": "DESCRIPTION_DEFAULT"})
+    if text_room != None:
+        text = text_room.text.strip()
+        pattern = r"(\d+)\s*sqm"
+        match = re.search(pattern, text)
+        if match:
+            sqm = match.group(1)
+            print(f"Square: {sqm} sqm")
+        else:
+            sqm = None
+            print("No match found sqm.")
 
 
 
 
 
 
+    # Get day and time now
+    obj_date_update = day_utcnow(time_correction)
+
+    # Preparing data for the room - Готовим данные 
+
+
+
+    parking = (', '.join(parking))
+    kitchen = (', '.join(kitchen))
+    view = (', '.join(view))
+    workspace = (', '.join(workspace))
+    rooftop = (', '.join(rooftop))
+    terrace_balcony = (', '.join(terrace_balcony))
+    restaurants = (', '.join(restaurants))
+    storage = (', '.join(storage))
+
+
+    room_data = {
+
+        # "id": id,
+        "title_room": title_room,
+        "name_room": name_room,
+        "type_house": type_house,
+        "night_price": night_price,
+        "month_price": month_price,
+        "currency": currency,
+        "rating": rating,
+        "reviews": reviews,
+        "guest_favorite": guest_favorite,
+        "guest": guest,
+        "bedroom": bedroom,
+        "bed": bed,
+        "bath": bath,
+        "parking": parking,
+        "kitchen": kitchen,
+        "view": view,
+        "workspace": workspace,
+        "rooftop": rooftop,
+        "terrace_balcony": terrace_balcony,
+        "restaurants": restaurants,
+        "storage": storage,
+        "sqm": sqm,
+        # "url_room": url_room,
+        # "location": location,
+        "obj_date_update": obj_date_update,
+        "currency" : currency 
+
+                }
+       
+
+    # # Обновляем или добавляем данные
+    # data_room = asyncio.run(get_rooms_by_id(id))
+    # # Update data to object - обновляем данные по id
+    # if data_room.obj_date_update is not None:
+    # Update data room
+    asyncio.run(update_rooms(id, room_data))
+    print(f"\nUpdate Room {id}\n")
 
 
 
 
 
 
-
-
-
-
-
-
-
-    # sqm площадь не нашел, в одном месте видел в виде текста (15 sqm, 15sqm) м²
-    print("sqm:", "None")
 
     return
 
 
+#
+# 1. Home (House, Townhouse, Villa, Bungalow, Cottage, Cabin, Entire Cabin, Barn, Home)
+# 2. Alternative Status (Treehouse, Hut, Tent, Farmstay, Farm Stay)
+# 3. Apartment (Apartment, Entire Condo, Guest Suite)
+# 4. Hospitality (Hotel, Guesthouse, Homestay)
+# 5. Miscellaneous (Place) is a general term for any type of accommodation, unless a specific category is specified.
+#
 
+# id
+# title_room
+# name_room
+# type_house
+# night_price
+# month_price
+# currency
+# rating
+# reviews
+# guest_favorite
+# guest
+# bedroom
+# bed
+# bath
+# parking
+# kitchen
+# view
+# workspace
+# rooftop
+# terrace_balcony
+# restaurants
+# storage
+# sqm

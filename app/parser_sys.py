@@ -28,10 +28,11 @@ def begin():
             options.add_argument(arg)
             #print(arg)
     ####
-    add_options(options, "--disable-webgl", "--disable-gpu", "--disable-3d-apis", "--enable-virtual-keyboard", "--mute-audio", "--disable-plugins-discovery", "--profile-directory=Default", "disable-infobars", "start-maximized", "--disable-blink-features=AutomationControlled", f"--user-agent={ua.random}", f"user-data-dir=./profiles/{prof}/") # , "--incognito", f"--proxy-server={PROXY}", "--headless=new")
+    add_options(options, "--disable-webgl", "--disable-gpu", "--disable-3d-apis", "--enable-virtual-keyboard", "--mute-audio", "--disable-plugins-discovery", "--profile-directory=Default", "disable-infobars", "start-maximized", "--disable-blink-features=AutomationControlled", f"--user-agent={ua.random}", f"user-data-dir=./profiles/{prof}/", "--headless=new") # , "--incognito", f"--proxy-server={PROXY}", "--headless=new")
     ####
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option("useAutomationExtension", False)
+    options.add_argument("--no-sandbox")  # Отключение режима песочницы (sandbox)
     driver = webdriver.Chrome(options=options)
     # driver.delete_all_cookies()
     driver.set_window_size(1200,800)
@@ -88,6 +89,20 @@ def str_int(num: str) -> float:
     float_num_str = str_num.group(1).replace(',', '')
     try:
         float_num = float(float_num_str)
+        return float_num
+    except ValueError:
+        return None
+    
+# GET INTER at STR - Из строки получаем только целое число
+def str_inter(num: str) -> int:
+    pattern = r"(\d{1,3}(?:,\d{3})*(?:\.\d+)?)"
+    num = re.sub(r"[^\d.,]", "", num)
+    str_num = re.search(pattern, num)
+    if not str_num:
+        return None
+    float_num_str = str_num.group(1).replace(',', '')
+    try:
+        float_num = int(float_num_str)
         return float_num
     except ValueError:
         return None

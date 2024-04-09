@@ -106,7 +106,7 @@ async def adding_rooms(new_data_room) -> bool:
 async def get_rooms_by_location(country: int):
     async_session = await create_async_engine_and_session()
     async with async_session() as session:
-        query = select(Rooms).filter(Rooms.country == country)
+        query = select(Rooms).filter(Rooms.location == country)
         result = await session.execute(query)
         data = result.scalars().all()  # Получение всех записей
         return data # Если не будет записей, то вернет пустой список

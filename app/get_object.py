@@ -15,6 +15,8 @@ import re
 def get_data_obj():
     confirm = False
     location = "Bali-Province--Indonesia"
+    time_correction = +8
+    currency = "USD"
     data_room = asyncio.run(get_rooms_by_location(location))
     if data_room == []:
         print(f"Error: There is no such location - {location}")
@@ -43,7 +45,7 @@ def get_data_obj():
         # Scroll page
         #scroll(driver)
         # Find data room and save to DB
-        find_data_object(driver, url_room)#, location, time_correction)
+        find_data_object(driver, id, url_room, location, time_correction, currency)
         # quick_sleep(1, 2)
 
         #quick_sleep(500, 600)

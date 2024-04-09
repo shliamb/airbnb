@@ -12,10 +12,10 @@ def get_list_data():
     checkin_date = "[]" # Он сам ставит на 1 месяц 
     checkout_date = "[]"
     guests = 0 # Гости Сколько гостей устанавливать в поиске?
-    time_correction = +5
+    time_correction = +8
     currency = "USD"
     price_min = "10" # Не уверен что стоит вообще собирать от 10$ за ночь, там амбар сдают))
-    price_max = "110"
+    price_max = "11"
     room_types = "Entire home%2Fapt" # Весь дом целиком
     # Добавить в таблицу Task ячейку 
 
@@ -34,20 +34,23 @@ def get_list_data():
             break
         # Go to URL
         go_url(driver, url)
-        # Wait time
         quick_sleep(5, 6)
-        # Scroll page
-        #scroll(driver)
         # Find data room and save to DB
         find_data_room(driver, location, time_correction, currency)
-        #quick_sleep(1, 2)
         # Find url next page
         url = get_url_next_page(driver)
         if url == None:
-            # Close Driver Chrome
-            end_close(driver)
-            break
-        #quick_sleep(1, 2)
+            if int(price_max) < 15000:
+                price_min = str(int(price_min) + 1)
+                price_max = str(int(price_max) + 1)
+                url = build_url(location, checkin_date, checkout_date, guests,\
+                        currency, price_min, price_max, room_types)
+                # Build Driver Chrome
+                driver = begin()
+            else:
+                # Close Driver Chrome
+                end_close(driver)
+                break
 
     confirm = True
     return confirm
@@ -91,8 +94,8 @@ if __name__ == "__main__":
 
 
 
-
-
+# # Scroll page
+# scroll(driver)
 
 # # Build Driver Chrome  - запуск настроек, создание экземпляров, драйвер
 # driver = begin()
