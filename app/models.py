@@ -52,6 +52,17 @@ class Rooms(Base):
     obj_date_update = Column(sqlalchemy.DateTime, nullable=True) 
     list_date_update = Column(sqlalchemy.DateTime, nullable=True)
 
+
+# Save parse positions
+class Positions(Base):
+    __tablename__ = 'positions'
+    id = Column(sqlalchemy.Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
+    date = Column(sqlalchemy.DateTime, nullable=True)
+    price_min = Column(sqlalchemy.Integer, default=10, server_default="10", nullable=False)
+    price_max = Column(sqlalchemy.Integer, default=11, server_default="11", nullable=False)
+    currency = Column(sqlalchemy.String(10), default="USD", server_default="USD", nullable=False)
+
+
 # Task
 class Task(Base):
     __tablename__ = 'task'

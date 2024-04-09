@@ -33,10 +33,12 @@ def begin():
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option("useAutomationExtension", False)
     options.add_argument("--no-sandbox")  # Отключение режима песочницы (sandbox)
+    options.add_argument('--disable-dev-shm-usage')
     driver = webdriver.Chrome(options=options)
     # driver.delete_all_cookies()
     driver.set_window_size(1200,800)
     driver.set_window_position(0,0)
+    print("info: Open driver Chrome")
     return driver
 ####
 
@@ -65,6 +67,7 @@ def quick_sleep(mi: int, ma: int) -> bool:
 def response_code(url: str) -> int:
     response = requests.get(url)
     code = response.status_code
+    print("info: Get response code url")
     return code or None
 
 # GOING TO THE SITE
@@ -73,10 +76,11 @@ def go_url(driver, url: str) -> bool:
     code = response_code(url)
     if code == 200:
         driver.get(url)
+        print("info: Going to the url")
         confirmation = True
     else:
         confirmation = False
-        print(f"Error: server back code response - {code}")
+        print(f"Error: Server back code response - {code}")
     return confirmation
 
 # GET FLOAT at STR - Из строки получаем только не целое число
@@ -114,6 +118,7 @@ def day_utcnow(time_correction: str) -> datetime:
     a = a + timedelta(hours=time_correction)
     day_str = a.strftime("%Y-%m-%d %H:%M:%S")
     day = datetime.strptime(day_str, '%Y-%m-%d %H:%M:%S')
+    print("info: Getting the day and time from the server")
     return day or None
 
 # UNFORMAT TIME
@@ -146,12 +151,15 @@ def scroll(driver):
         scroll_height = driver.execute_script("return document.body.scrollHeight;")
         # Прервать цикл, если достигнут конец страницы
         if (screen_height * i) > scroll_height:
+            print("info: Scrolling is comlite")
             break
 
 # CLOSE DRIVER CHROME
 def end_close(driver):
     driver.close()
     driver.quit()
+    print("info: Close driver Chrome")
+    return
 
 
 

@@ -25,31 +25,34 @@ def get_list_data():
     driver = begin()
 
     while True:
-        # Response code
-        code = response_code(url)
-        if code != 200:
-            print(f"\nHTTP response code: {code}\n")
+        code = go_url(driver, url)
+        if code is False:
+            print(f"\nError: The url does not open correctly\n")
             # Close Driver Chrome
             end_close(driver)
             break
-        # Go to URL
-        go_url(driver, url)
         quick_sleep(5, 6)
         # Find data room and save to DB
-        find_data_room(driver, location, time_correction, currency)
+        find_data_room(driver, location, time_correction, price_min, price_max)
         # Find url next page
         url = get_url_next_page(driver)
         if url == None:
             if int(price_max) < 15000:
+                # Close Driver Chrome
+                end_close(driver)
                 price_min = str(int(price_min) + 1)
                 price_max = str(int(price_max) + 1)
+                print(f"info: from {price_min}$ to {price_max}$")
                 url = build_url(location, checkin_date, checkout_date, guests,\
                         currency, price_min, price_max, room_types)
+                quick_sleep(1, 2)
                 # Build Driver Chrome
                 driver = begin()
+                quick_sleep(1, 2)
             else:
                 # Close Driver Chrome
                 end_close(driver)
+                print(f"\ninfo: The search for objects has been completed\n")
                 break
 
     confirm = True

@@ -6,7 +6,7 @@ from sqlalchemy import select, insert, update, join, func
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from models import Base, Users, Rooms, Task
+from models import Base, Users, Rooms, Task, Positions
 from keys import user_db, paswor_db
 
 # from dotenv import load_dotenv
@@ -29,6 +29,7 @@ async def get_users_by_id(id: int):
         query = select(Users).filter(Users.id == id)
         result = await session.execute(query)
         data = result.scalar_one_or_none()  # - это метод SQLAlchemy, который возвращает ровно один результат из результата запроса или None, если запрос не вернул ни одного результата.
+        logging.info(f"Read Users")
         return data or None
 
 # Update User Data
@@ -70,6 +71,7 @@ async def get_rooms_by_id(id: int):
         query = select(Rooms).filter(Rooms.id == id)
         result = await session.execute(query)
         data = result.scalar_one_or_none()
+        logging.info(f"Read Rooms")
         return data or None
 
 # Update Rooms Data
@@ -121,6 +123,7 @@ async def get_task_by_id(id: int):
         query = select(Task).filter(Task.id == id)
         result = await session.execute(query)
         data = result.scalar_one_or_none()
+        logging.info(f"Read Task")
         return data or None
 
 # Update Task
@@ -151,4 +154,47 @@ async def adding_task(task_data) -> bool:
             logging.info("Adding one task to DB")
         except Exception as e:
             logging.error(f"Failed to add task, errror:: {e}")
+    return confirmation
+
+
+
+#### Positions #### 
+# Read Positions
+async def get_position(id: int):
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = select(Positions).filter(Positions.id == id)
+        result = await session.execute(query)
+        data = result.scalar_one_or_none()
+        logging.info(f"Read Positions")
+        return data or None
+
+# Update Positions
+async def update_position(id: int, updated_task_data) -> bool: 
+    async_session = await create_async_engine_and_session()
+    confirmation = False
+    async with async_session() as session:
+        try:
+            query = update(Positions).where(Positions.id == id).values(**updated_task_data)
+            await session.execute(query)
+            await session.commit()
+            confirmation = True
+            logging.info(f"Positions is update")
+        except Exception as e:
+            logging.error(f"Failed to update Positions, error: {e}")
+    return confirmation
+
+# Add Positions
+async def adding_position(task_data) -> bool:
+    async_session = await create_async_engine_and_session()
+    confirmation = False
+    async with async_session() as session:
+        try:
+            query = insert(Positions).values(**task_data)
+            await session.execute(query)
+            await session.commit()
+            confirmation = True
+            logging.info("Adding Positionsto DB")
+        except Exception as e:
+            logging.error(f"Failed to add Positions, errror:: {e}")
     return confirmation

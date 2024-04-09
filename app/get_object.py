@@ -19,7 +19,7 @@ def get_data_obj():
     currency = "USD"
     data_room = asyncio.run(get_rooms_by_location(location))
     if data_room == []:
-        print(f"Error: There is no such location - {location}")
+        print(f"Error: There is no result for this location - {location}")
         return
     # Перебор по полученым id из базы входящей категории
     for data in data_room:
@@ -31,15 +31,13 @@ def get_data_obj():
 
         # Build Driver Chrome
         driver = begin()
-        # Response code
-        code = response_code(url_room)
-        if code != 200:
-            print(f"\nHTTP response code: {code}\n")
+        # Go to URL
+        code = go_url(driver, url_room)
+        if code is False:
+            print(f"\nError: The url does not open correctly\n")
             # Close Driver Chrome
             end_close(driver)
             break
-        # Go to URL
-        go_url(driver, url_room)
         # Wait time
         quick_sleep(5, 6)
         # Scroll page

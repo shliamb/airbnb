@@ -6,22 +6,24 @@ def run():
     # Запуск обхода списков по поиску
     complite_list = get_list_data()
     if complite_list is False:
-        print("Error, ...1")
+        print("Error: The crawl of the lists in the search was completed unsuccessfully")
         return
 
-    # Не совсем определился по какому параметру выбрать разделение всех объектов в базе не части, так как
-    # закидывать в оперативку все id не очень умно, то ли по локациям, то ли по ценам, то ли по типу недвижемости
-
-    # Так же нужно как то реализовать запись в таблицу Task текущую итерацию, к примеру предел сумм поиска
-    # для того, что бы, при возникновении сбоя, следующий обход начать с того места где остановились.
-    
     # Запуск детального переобхода объектов
     complite_obj = get_data_obj()
     if complite_obj is False:
-        print("Error, ...2")
+        print("Error: Object traversal failed")
         return
 
 
 
 if __name__ == "__main__":
     run()
+
+
+
+
+
+
+
+
