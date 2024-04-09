@@ -1,5 +1,6 @@
 from worker_db import get_rooms_by_id, get_rooms_by_location#, update_rooms, adding_rooms
 from datetime import datetime, timezone, timedelta
+from parser_sys import str_inter
 import asyncio
 import time
 import random
@@ -10,6 +11,41 @@ import re
 
 
 
+id = 1058475485307739267
+data_room = asyncio.run(get_rooms_by_id(id))
+if data_room is not None:
+    pass
+    print()
+    print(data_room.title_room)
+    print(data_room.name_room)
+    print(data_room.type_house)
+    print(data_room.night_price)
+    print(data_room.month_price)
+    print(data_room.currency)
+    print(data_room.rating)
+    print(data_room.reviews)
+    print(data_room.guest_favorite)
+    print(data_room.guest)
+    print(data_room.bedroom)
+    print(data_room.bed)
+    print(data_room.bath)
+    print(data_room.parking)
+    print(data_room.kitchen)
+    print(data_room.view)
+    print(data_room.workspace)
+    print(data_room.rooftop)
+    print(data_room.terrace_balcony)
+    print(data_room.restaurants)
+    print(data_room.storage)
+    print(data_room.sqm)
+
+    print(data_room.url_room)
+    print(data_room.location)
+    print(data_room.obj_date_update)
+    print(data_room.currency)
+    print()
+else:
+    print("None data, sorry..")
 
 
 
@@ -199,10 +235,10 @@ import re
 
 
 
-location = "Bali-Province--Indonesia"
+# location = "Bali-Province--Indonesia"
 
 
-data_room = asyncio.run(get_rooms_by_location(location))
+# data_room = asyncio.run(get_rooms_by_location(location))
 
 # for data in data_room:
 #     id = data.id
@@ -211,15 +247,15 @@ data_room = asyncio.run(get_rooms_by_location(location))
 
 #data_room = [...] # Здесь должен быть ваш список объектов
 
-# Откроем файл test.txt для записи
-with open('test.txt', 'w') as file:
-    for data in data_room:
-        id = data.id  # Получаем ID
-        url = data.url_room  # URL не используется в данном примере, но вы могли бы также записать его в файл
-        print(id)  # Выводим ID на экран (это можно убрать, если не нужно)
+# # Откроем файл test.txt для записи
+# with open('test.txt', 'w') as file:
+#     for data in data_room:
+#         id = data.id  # Получаем ID
+#         url = data.url_room  # URL не используется в данном примере, но вы могли бы также записать его в файл
+#         print(id)  # Выводим ID на экран (это можно убрать, если не нужно)
         
-        # Записываем ID в файл, добавляя символ новой строки после каждого ID
-        file.write(str(id) + '\n')
+#         # Записываем ID в файл, добавляя символ новой строки после каждого ID
+#         file.write(str(id) + '\n')
 
 
 

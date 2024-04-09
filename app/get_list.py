@@ -1,11 +1,16 @@
 from parser_sys import ( go_url, begin, end_close, quick_sleep, response_code, scroll)
-from parser_airbnb import ( build_url, quick_sleep, find_data_room, get_url_next_page)
+from parser_airbnb import ( build_url, quick_sleep, find_data_room, get_url_next_page, get_position)
+from worker_db import update_position
+from parser_sys import day_utcnow
+import asyncio
 
 
 
 #### GETTING DATA FOR ALL ROOMS ####
 # Build 1rst URL to citi
 def get_list_data():
+    print()
+    print("info: Starting getting lists of id and url objects")
     confirm = False
     # DATA FOR SEARCH URL
     location = "Bali-Province--Indonesia" # Bali Как точно надо? 
@@ -14,10 +19,21 @@ def get_list_data():
     guests = 0 # Гости Сколько гостей устанавливать в поиске?
     time_correction = +8
     currency = "USD"
-    price_min = "10" # Не уверен что стоит вообще собирать от 10$ за ночь, там амбар сдают))
-    price_max = "11"
     room_types = "Entire home%2Fapt" # Весь дом целиком
-    # Добавить в таблицу Task ячейку 
+
+
+
+    data_position = asyncio.run(get_position(1))
+    if data_position is not None:
+        price_min = str(data_position.price_min)
+        price_max = str(data_position.price_max)
+        print(f"info: Getting saved data from the last session. {price_min}$, {price_max}$")
+    else:
+        price_min = "10" # Не уверен что стоит вообще собирать от 10$ за ночь, там амбар сдают))
+        price_max = "11"
+        print("info: It's first running. price_min = 10$, price_max = 11$")
+
+
 
     url = build_url(location, checkin_date, checkout_date, guests,\
                      currency, price_min, price_max, room_types)
@@ -37,7 +53,7 @@ def get_list_data():
         # Find url next page
         url = get_url_next_page(driver)
         if url == None:
-            if int(price_max) < 15000:
+            if int(price_max) < 13:
                 # Close Driver Chrome
                 end_close(driver)
                 price_min = str(int(price_min) + 1)
@@ -50,9 +66,15 @@ def get_list_data():
                 driver = begin()
                 quick_sleep(1, 2)
             else:
+                min = 10
+                max = 11
+                list_date_update = day_utcnow(time_correction)
+                price_data = {"date": list_date_update, "price_min": min, "price_max": max}
+                asyncio.run(update_position(1, price_data))
+                print(f"info: Update min = 10$ and max = 11$ to the database")
                 # Close Driver Chrome
                 end_close(driver)
-                print(f"\ninfo: The search for objects has been completed\n")
+                print(f"\ninfo: The search list for objects has been completed\n")
                 break
 
     confirm = True
