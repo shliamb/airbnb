@@ -9,7 +9,7 @@ def profil() -> str:
     profil.counter += 1
     i = profil.counter
 
-    if i >= 30:
+    if i >= 50:
         folder_path = "./profiles/"
         for item_name in os.listdir(folder_path):
             item_path = os.path.join(folder_path, item_name)
