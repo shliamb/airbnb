@@ -14,19 +14,34 @@ import re
 # Получение id по location переданной в запущенной функции запуска данного этапа
 
 
-def get_data_obj():
+def get_data_obj(data_room):
     confirm = False
     location = "Bali-Province--Indonesia"
     time_correction = +8
     currency = "USD"
-    data_room = asyncio.run(get_rooms_by_location(location))
-    if data_room == []:
-        print(f"Error: There is no result for this location - {location}")
-        return
+    # data_room = asyncio.run(get_rooms_by_location(location))
+
+
+    # # Итерация по списку словарей для извлечения значений
+    # for data_id in data_room:
+    #     # Получение значения id и url_room для текущего словаря
+    #     id_value = data_id["id"]
+    #     url_room_value = data_id["url_room"]
+        
+    #     # Теперь вы можете использовать значения id и url_room как вам нужно
+    #     print(f"ID: {id_value}, URL: {url_room_value}")
+
+
+
+
+
+    # if data_room == []:
+    #     print(f"Error: There is no result for this location - {location}")
+    #     return
     # Перебор по полученым id из базы входящей категории
     for data in data_room:
-        id = data.id
-        url = data.url_room
+        id = data["id"]
+        url = data["url_room"]
 
         pattern = r'(/rooms/\d+)'
         url_room = re.sub(pattern, r'\1/amenities', url)

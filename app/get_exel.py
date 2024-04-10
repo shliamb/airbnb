@@ -1,28 +1,41 @@
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
 from worker_db import get_all_rooms_and_airdna
 import asyncio
+import shutil
 
+
+# Путь к исходному файлу и новое имя файла
+sourcefile = "./file/The Heigts анализ_research.xlsx"
+newfile = "./file/data.xlsx"
+# Копирование файла
+shutil.copy(sourcefile, newfile)
+# Загрузка скопированного файла
+workbook = load_workbook(filename=newfile)
+# Выбор активного листа или листа по имени
+sheet = workbook["расчет ADR и OccupancyADR and O"] 
+
+# A B C D E F G H I J K L M N O P Q R S T U V
+# 11
+# 12
+# 13
+
+# cell_to_update = sheet['B11']
+# cell_to_update.value = "Новые данныеdfd f"
 
 data = asyncio.run(get_all_rooms_and_airdna())
 
 all_static = []
 number = 0
 
-all_static.append(["№", "Объект / Object", "Локация/ Location", "Категория", "Число br / Quantity of br", "Срок размещения / Listing period",\
+all_static.append(["Объект / Object", "Локация/ Location", "Категория", "Число br / Quantity of br", "Срок размещения / Listing period",\
                     "Средняя цена юнита за сутки, $ / ADR", "Загрузка средняя фактическая / Actual average occupancy",\
                     "Выручка историческая / Historical value", "Цена за месяц, $", "Площадь, м2",\
                     "Вид","P","Ресторан/Restraunt", "Бассейн / Pool", "Кухня / Kitchen",\
                     "Коворкинг/coworking", "Руфтоп/ rooftop", "Балкон, терасса/ Balcony or terrace", "камера хранения/ storage room",\
                     "Рейтинг отзывов", "Источник данных"])
 
-# Создание новой книги Excel
-wb = Workbook()
-ws = wb.active  # Получение активного листа
-
-
 for n, a in data:
-    number += 1 # №
     object =  f"{n.title_room} {n.url_room}" # f"{n.title_room} + " # Объект / Object
     location = f"https://www.google.com/maps?q={a.location_lat},{a.location_lng}" #"ссылка на карту" # Локация/ Location
     type_house = n.type_house # Категория
@@ -45,20 +58,58 @@ for n, a in data:
     rating = f"{n.rating}, {n.reviews}" # Рейтинг отзывов
     data_source = "Источник данных" # Источник данных
 
-
-    all_static.append([number, object, location, type_house, bedrooms, list_per, adr, actual_aver,\
+    all_static.append([object, location, type_house, bedrooms, list_per, adr, actual_aver,\
      historic, price_month, sqm, view, parking, restraunt, pool, kitchen, coworking, rooftop, \
         balcony_terrace, storage, rating, data_source]) # added user data
 
 
 
-# # Заполнение листа данными
+# A B C D E F G H I J K L M N O P Q R S T U V
+# 11
+# 12
+# 13
+
+# cell_to_update = sheet['B11']
+# cell_to_update.value = "Новые данныеdfd f"
+
 for row in all_static:
-    ws.append(row)
+    print(row)
 
 
-# Сохранение книги Excel в файл
-file_path = './file/data.xlsx'  # Укажите путь и имя файла, если нужно сохранить в определенной папке
-wb.save(file_path)
 
-print(f'Таблица успешно сохранена в файл {file_path}')
+
+
+
+
+
+
+# Сохраните файл
+workbook.save(filename=newfile)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # # Заполнение листа данными
+# for row in all_static:
+#     ws.append(row)
+
+
+# # Сохранение книги Excel в файл
+# file_path = './file/data.xlsx'  # Укажите путь и имя файла, если нужно сохранить в определенной папке
+# wb.save(file_path)
+
+# print(f'Таблица успешно сохранена в файл {file_path}')

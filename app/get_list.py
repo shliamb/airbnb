@@ -10,6 +10,8 @@ import asyncio
 #### GETTING DATA FOR ALL ROOMS ####
 # Build 1rst URL to citi
 def get_list_data():
+    data_id =[]
+    i = 0
     print()
     print("info: Starting getting lists of id and url objects")
     confirm = False
@@ -42,21 +44,31 @@ def get_list_data():
     driver = begin()
 
     while True:
+
+        
         code = go_url(driver, url)
         if code is False:
             print(f"\nError: The url does not open correctly\n")
             # Close Driver Chrome
             end_close(driver)
-            confirm = False
-            return confirm
+            break
+        
         quick_sleep(5, 6)
         scroll(driver)
+
         # Find data room and save to DB
-        find_data_room(driver, location, time_correction, price_min, price_max)
+        data_id = find_data_room(driver, location, time_correction, price_min, price_max)
+
+        if i >= 10:
+            print(Back.BLUE + f"info: {i} iterations have been completed.")
+            print(Style.RESET_ALL)
+            break
+        i += 1
         # Find url next page
         url = get_url_next_page(driver)
         if url == None:
-            if int(price_max) < 13:
+            #i += 1
+            if int(price_max) < 16000:
                 # Close Driver Chrome
                 end_close(driver)
                 price_min = str(int(price_min) + 1)
@@ -77,12 +89,11 @@ def get_list_data():
                 print(f"info: Update min = 10$ and max = 11$ to the database")
                 # Close Driver Chrome
                 end_close(driver)
-                # Надо удалять профиля в папке, они сами появятся при работе. Но удалять надо, иначе блокирует через какое то время.
                 print(Back.BLUE + "info: The search list for objects has been completed")
                 print(Style.RESET_ALL)
-                confirm = True
-                return confirm
-
+                return data_id
+            
+    return data_id
 
 if __name__ == "__main__":
     get_list_data()

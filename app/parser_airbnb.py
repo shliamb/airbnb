@@ -61,6 +61,7 @@ def rating_clean(num: str) -> float | int:
 # FIND TEXT LIST FIXED BT4  -  Сбор со страниц поиска id и url
 # Позже сделать входные параметры в виде словаря для легкой подстройки к изменениям на сайте
 def find_data_room(driver, country, time_correction, price_min, price_max):
+    data_id = []
     print("\ninfo: Getting data (id, url) of objects in the search")
     html = driver.page_source
     nand = BeautifulSoup(html, 'lxml')
@@ -99,6 +100,12 @@ def find_data_room(driver, country, time_correction, price_min, price_max):
         # Preparing data for the room - Готовим данные 
         room_data = {"id": id, "url_room": url_room, "location": country, "list_date_update": list_date_update}
         
+
+        # Добавление словаря с текущими id и url_room в список
+        data_frame = {"id": id, "url_room": url_room}
+        data_id.append(data_frame)
+
+
         # Обновляем или добавляем данные
         data_room = asyncio.run(get_rooms_by_id(id))
 
@@ -131,7 +138,7 @@ def find_data_room(driver, country, time_correction, price_min, price_max):
 
 
 
-    return
+    return data_id
 
 
 
