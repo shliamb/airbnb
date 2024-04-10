@@ -24,13 +24,13 @@ Column = sqlalchemy.Column
 # Rooms - Main
 class Rooms(Base):
     __tablename__ = 'rooms_id'
-    id = Column(sqlalchemy.BigInteger, primary_key=True, unique=True, nullable=False, index=True) # id rooms or any data id
+    id = Column(sqlalchemy.BigInteger, primary_key=True, unique=True, nullable=False, index=True)
     title_room = Column(sqlalchemy.String(500), nullable=True)
     name_room = Column(sqlalchemy.String(500), nullable=True)
     type_house = Column(sqlalchemy.String(500), nullable=True)
     night_price = Column(sqlalchemy.Float, default=0, server_default="0", nullable=False)
     month_price = Column(sqlalchemy.Float, default=0, server_default="0", nullable=False)
-    currency = Column(sqlalchemy.String(10), default="USD", server_default="USD", nullable=False) # берем из настроек или url
+    currency = Column(sqlalchemy.String(10), default="USD", server_default="USD", nullable=False)
     rating = Column(sqlalchemy.Float, nullable=True)
     reviews = Column(sqlalchemy.Integer, nullable=True)
     guest_favorite = Column(sqlalchemy.Float, nullable=True)
@@ -48,18 +48,7 @@ class Rooms(Base):
     storage = Column(sqlalchemy.String(500), nullable=True)
     sqm = Column(sqlalchemy.String(500), nullable=True)
     url_room = Column(sqlalchemy.String(2000), nullable=False) 
-    location = Column(sqlalchemy.String(500), nullable=False) # Bali - например, иначе потом хер найдешь из настроек или url
-    ####
-    obj_date_update = Column(sqlalchemy.DateTime, nullable=True) 
-    list_date_update = Column(sqlalchemy.DateTime, nullable=True)
-    airdna = relationship("Airdna", back_populates="rooms_airbnb", uselist=False)
-
-
-# Airdna data
-class Airdna(Base):
-    __tablename__ = 'airdna'
-    id = Column(sqlalchemy.BigInteger, ForeignKey('rooms_id.id'), primary_key=True) # airbnb_property_id
-    date = Column(sqlalchemy.DateTime, nullable=True)
+    location = Column(sqlalchemy.String(500), nullable=False)
     revenue_ltm = Column(sqlalchemy.BigInteger, nullable=True)
     revenue_potential_ltm = Column(sqlalchemy.BigInteger, nullable=True)
     occupancy_rate_ltm = Column(sqlalchemy.Float, nullable=True)
@@ -67,8 +56,28 @@ class Airdna(Base):
     days_available_ltm = Column(sqlalchemy.BigInteger, nullable=True)
     location_lat = Column(sqlalchemy.Float, nullable=True)
     location_lng = Column(sqlalchemy.Float, nullable=True)
+    is_parse = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False)
+    is_done = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False)
     ####
-    rooms_airbnb = relationship("Rooms", back_populates="airdna")
+    obj_date_update = Column(sqlalchemy.DateTime, nullable=True) 
+    list_date_update = Column(sqlalchemy.DateTime, nullable=True)
+    # airdna = relationship("Airdna", back_populates="rooms_airbnb", uselist=False)
+
+
+# # Airdna data
+# class Airdna(Base):
+#     __tablename__ = 'airdna'
+#     id = Column(sqlalchemy.BigInteger, ForeignKey('rooms_id.id'), primary_key=True) # airbnb_property_id
+#     date = Column(sqlalchemy.DateTime, nullable=True)
+#     revenue_ltm = Column(sqlalchemy.BigInteger, nullable=True)
+#     revenue_potential_ltm = Column(sqlalchemy.BigInteger, nullable=True)
+#     occupancy_rate_ltm = Column(sqlalchemy.Float, nullable=True)
+#     average_daily_rate_ltm = Column(sqlalchemy.BigInteger, nullable=True)
+#     days_available_ltm = Column(sqlalchemy.BigInteger, nullable=True)
+#     location_lat = Column(sqlalchemy.Float, nullable=True)
+#     location_lng = Column(sqlalchemy.Float, nullable=True)
+#     ####
+#     rooms_airbnb = relationship("Rooms", back_populates="airdna")
 
 
 # Save parse positions

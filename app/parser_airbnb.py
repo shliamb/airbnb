@@ -61,8 +61,8 @@ def rating_clean(num: str) -> float | int:
 # FIND TEXT LIST FIXED BT4  -  Сбор со страниц поиска id и url
 # Позже сделать входные параметры в виде словаря для легкой подстройки к изменениям на сайте
 def find_data_room(driver, country, time_correction, price_min, price_max):
-    data_id = []
-    print("\ninfo: Getting data (id, url) of objects in the search")
+    complite = False
+    print("\ninfo: Go parsing list home in the search.")
     html = driver.page_source
     nand = BeautifulSoup(html, 'lxml')
     quick_sleep(2, 3)
@@ -100,18 +100,10 @@ def find_data_room(driver, country, time_correction, price_min, price_max):
         # Preparing data for the room - Готовим данные 
         room_data = {"id": id, "url_room": url_room, "location": country, "list_date_update": list_date_update}
         
-
-        # Добавление словаря с текущими id и url_room в список
-        data_frame = {"id": id, "url_room": url_room}
-        data_id.append(data_frame)
-
-
         # Обновляем или добавляем данные
         data_room = asyncio.run(get_rooms_by_id(id))
-
         # Update data to room, if is outdated
         if data_room is not None:
-
             # Update data list
             asyncio.run(update_rooms(id, room_data))
             print(f"info: Update {id} and url to the database")
@@ -134,18 +126,17 @@ def find_data_room(driver, country, time_correction, price_min, price_max):
             price_data = {"id": 1, "date": list_date_update, "price_min": min, "price_max": max}
             asyncio.run(adding_position(price_data))
             print(f"info: Added min - max to the database")
+        
+        complite = True
 
-
-
-
-    return data_id
-
-
+    return complite
 
 
 
 
 
+
+# ******************************************
 
 
 
@@ -155,10 +146,10 @@ def find_data_room(driver, country, time_correction, price_min, price_max):
 
 
 # FIND TEXT FIXED OBJECT BT4  -  Сбор и сохранение данных на странице заведения
-# Позже сделать входные параметры в виде словаря для легкой подстройки к изменениям на сайте
 def find_data_object(driver, id, url_room, location, time_correction, currency):#, country, time_correction):
+    confirmation = False
     print("-------------")
-    print("info: Get data at url object")
+    print("info: Get data for Object")
     html = driver.page_source
     nand = BeautifulSoup(html, 'lxml')
     #quick_sleep(2, 3)
@@ -276,26 +267,6 @@ def find_data_object(driver, id, url_room, location, time_correction, currency):
     # url
     print("url:", url_room)
 
-
-
-
-
-
-    # # Initialize del_text before the if statement
-    # del_text = None  # or an appropriate default value, such as an empty list
-
-    # # ... your existing code ...
-
-    # if amenities_data is not None:
-    #     del_text = amenities_data.find_all("del")
-    # else:
-    #     # Handle the situation when amenities_data is None
-    #     print("No amenities data found")
-
-    # # Now you can safely check if del_text is not None because it has been initialized
-    # if del_text is not None:
-    #     # ... do something with del_text ...
-    #     pass
 
 
 
@@ -571,7 +542,8 @@ def find_data_object(driver, id, url_room, location, time_correction, currency):
         # "url_room": url_room,
         # "location": location,
         "obj_date_update": obj_date_update,
-        "currency" : currency 
+        "currency" : currency,
+        "is_parse" : True
 
                 }
        
@@ -582,15 +554,10 @@ def find_data_object(driver, id, url_room, location, time_correction, currency):
     # if data_room.obj_date_update is not None:
     # Update data room
     asyncio.run(update_rooms(id, room_data))
-    print(f"info: Updated Data  at object {id}")
+    print(f"info: Updated Data  at Object {id}")
 
-
-
-
-
-
-
-    return
+    confirmation = True
+    return confirmation
 
 
 #

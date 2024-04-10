@@ -6,7 +6,7 @@ from sqlalchemy import select, insert, update, join, func
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from models import Base, Users, Rooms, Task, Positions, Airdna
+from models import Base, Users, Rooms, Task, Positions
 from keys import user_db, paswor_db
 
 # from dotenv import load_dotenv
@@ -89,6 +89,23 @@ async def update_rooms(id: int, updated_data_room) -> bool:
             logging.error(f"Failed to update rooms data, error: {e}")
     return confirmation
 
+
+# Update ALL Rooms Data
+async def update_all_rooms(updated_data_room) -> bool:
+    async_session = await create_async_engine_and_session()
+    confirmation = False
+    async with async_session() as session:
+        try:
+            query = update(Rooms).values(**updated_data_room)
+            await session.execute(query)
+            await session.commit()
+            confirmation = True
+            logging.info(f"All rooms data is updated")
+        except Exception as e:
+            logging.error(f"Failed to update all rooms data, error: {e}")
+    return confirmation
+
+
 # Add Rooms to DB
 async def adding_rooms(new_data_room) -> bool:
     async_session = await create_async_engine_and_session()
@@ -109,6 +126,24 @@ async def get_rooms_by_location(country: int):
     async_session = await create_async_engine_and_session()
     async with async_session() as session:
         query = select(Rooms).filter(Rooms.location == country)
+        result = await session.execute(query)
+        data = result.scalars().all()  # Получение всех записей
+        return data # Если не будет записей, то вернет пустой список
+    
+# Read All Rooms
+async def get_all_rooms():
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = select(Rooms)
+        result = await session.execute(query)
+        data = result.scalars().all()  # Получение всех записей
+        return data # Если не будет записей, то вернет пустой список
+
+# Read All Rooms For False in is_parse
+async def get_rooms_by_false_parse():
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = select(Rooms).filter(Rooms.is_parse == False)
         result = await session.execute(query)
         data = result.scalars().all()  # Получение всех записей
         return data # Если не будет записей, то вернет пустой список
@@ -210,71 +245,85 @@ async def adding_position(task_data) -> bool:
     return confirmation
 
 
-#### AIRDNA ####  
-# Read Airdna
-async def get_airdna(id: int):
-    async_session = await create_async_engine_and_session()
-    async with async_session() as session:
-        query = select(Airdna).filter(Airdna.id == id)
-        result = await session.execute(query)
-        data = result.scalar_one_or_none()
-        logging.info(f"Read Airdna data")
-        return data or None
 
-# Get ALL Airdna
-async def get_all_airdna():
-    async_session = await create_async_engine_and_session()
-    async with async_session() as session:
-        query = select(Airdna)
-        result = await session.execute(query)
-        data = result.scalars().all()
-        logging.info(f"Read all Airdna data")
-        return data or None
 
-# Update Airdna
-async def update_airdna(id: int, updated_task_data) -> bool: 
-    async_session = await create_async_engine_and_session()
-    confirmation = False
-    async with async_session() as session:
-        try:
-            query = update(Airdna).where(Airdna.id == id).values(**updated_task_data)
-            await session.execute(query)
-            await session.commit()
-            confirmation = True
-            logging.info(f"Data Airdna is update")
-        except Exception as e:
-            logging.error(f"Failed to update data Airdna, error: {e}")
-    return confirmation
 
-# Add Airdna
-async def adding_airdna(task_data) -> bool:
-    async_session = await create_async_engine_and_session()
-    confirmation = False
-    async with async_session() as session:
-        try:
-            query = insert(Airdna).values(**task_data)
-            await session.execute(query)
-            await session.commit()
-            confirmation = True
-            logging.info("Adding data Airdna DB")
-        except Exception as e:
-            logging.error(f"Failed to add data Airdna, errror:: {e}")
-    return confirmation
 
-# ADMIN Read all settings and users an id
-async def get_all_rooms_and_airdna():
-    async_session = await create_async_engine_and_session()
-    async with async_session() as session:
 
-        query = (
-            select(Rooms, Airdna)
-            .join(Airdna)
-        )
 
-        # for user_telegram, settings in data:
-        #     print("User:", user_telegram.id, user_telegram.is_admin, user_telegram.full_name,\
-        #            user_telegram.name)
-        #     print("Settings:", settings.id, settings.temp_chat, settings.money)
-        result = await session.execute(query)
-        data = result.fetchall()  # Получение всех строк
-        return data
+
+
+
+
+
+
+
+
+# #### AIRDNA ####  
+# # Read Airdna
+# async def get_airdna(id: int):
+#     async_session = await create_async_engine_and_session()
+#     async with async_session() as session:
+#         query = select(Airdna).filter(Airdna.id == id)
+#         result = await session.execute(query)
+#         data = result.scalar_one_or_none()
+#         logging.info(f"Read Airdna data")
+#         return data or None
+
+# # Get ALL Airdna
+# async def get_all_airdna():
+#     async_session = await create_async_engine_and_session()
+#     async with async_session() as session:
+#         query = select(Airdna)
+#         result = await session.execute(query)
+#         data = result.scalars().all()
+#         logging.info(f"Read all Airdna data")
+#         return data or None
+
+# # Update Airdna
+# async def update_airdna(id: int, updated_task_data) -> bool: 
+#     async_session = await create_async_engine_and_session()
+#     confirmation = False
+#     async with async_session() as session:
+#         try:
+#             query = update(Airdna).where(Airdna.id == id).values(**updated_task_data)
+#             await session.execute(query)
+#             await session.commit()
+#             confirmation = True
+#             logging.info(f"Data Airdna is update")
+#         except Exception as e:
+#             logging.error(f"Failed to update data Airdna, error: {e}")
+#     return confirmation
+
+# # Add Airdna
+# async def adding_airdna(task_data) -> bool:
+#     async_session = await create_async_engine_and_session()
+#     confirmation = False
+#     async with async_session() as session:
+#         try:
+#             query = insert(Airdna).values(**task_data)
+#             await session.execute(query)
+#             await session.commit()
+#             confirmation = True
+#             logging.info("Adding data Airdna DB")
+#         except Exception as e:
+#             logging.error(f"Failed to add data Airdna, errror:: {e}")
+#     return confirmation
+
+# # ADMIN Read all settings and users an id
+# async def get_all_rooms_and_airdna():
+#     async_session = await create_async_engine_and_session()
+#     async with async_session() as session:
+
+#         query = (
+#             select(Rooms, Airdna)
+#             .join(Airdna)
+#         )
+
+#         # for user_telegram, settings in data:
+#         #     print("User:", user_telegram.id, user_telegram.is_admin, user_telegram.full_name,\
+#         #            user_telegram.name)
+#         #     print("Settings:", settings.id, settings.temp_chat, settings.money)
+#         result = await session.execute(query)
+#         data = result.fetchall()  # Получение всех строк
+#         return data

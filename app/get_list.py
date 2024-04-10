@@ -11,7 +11,7 @@ import asyncio
 # Build 1rst URL to citi
 def get_list_data():
     data_id =[]
-    i = 0
+    i = 1
     print()
     print("info: Starting getting lists of id and url objects")
     confirm = False
@@ -23,6 +23,7 @@ def get_list_data():
     time_correction = +8
     currency = "USD"
     room_types = "Entire home%2Fapt" # Весь дом целиком
+    ppp = 3 # Циклов и пойдет обходить сами обхекты. Считает не нахождение ссылки Next +1.
 
 
 
@@ -44,8 +45,6 @@ def get_list_data():
     driver = begin()
 
     while True:
-
-        
         code = go_url(driver, url)
         if code is False:
             print(f"\nError: The url does not open correctly\n")
@@ -57,17 +56,16 @@ def get_list_data():
         scroll(driver)
 
         # Find data room and save to DB
-        data_id = find_data_room(driver, location, time_correction, price_min, price_max)
-
-        if i >= 10:
-            print(Back.BLUE + f"info: {i} iterations have been completed.")
-            print(Style.RESET_ALL)
-            break
-        i += 1
-        # Find url next page
+        find_data_room(driver, location, time_correction, price_min, price_max)
         url = get_url_next_page(driver)
         if url == None:
-            #i += 1
+            if i >= ppp:
+                print(Back.BLUE + f"info: {i} from {ppp} iterations completed. Go to parse Objects.")
+                print(Style.RESET_ALL)
+                i = 0
+                confirm = True
+                break
+            i += 1
             if int(price_max) < 16000:
                 # Close Driver Chrome
                 end_close(driver)
@@ -91,9 +89,9 @@ def get_list_data():
                 end_close(driver)
                 print(Back.BLUE + "info: The search list for objects has been completed")
                 print(Style.RESET_ALL)
-                return data_id
+                return
             
-    return data_id
+    return confirm
 
 if __name__ == "__main__":
     get_list_data()
