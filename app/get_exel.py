@@ -1,9 +1,10 @@
 from openpyxl import Workbook
-from worker_db import get_all_rooms
+from openpyxl.styles import Font
+from worker_db import get_all_rooms_and_airdna
 import asyncio
 
 
-data = asyncio.run(get_all_rooms())
+data = asyncio.run(get_all_rooms_and_airdna())
 
 all_static = []
 number = 0
@@ -15,17 +16,21 @@ all_static.append(["№", "Объект / Object", "Локация/ Location", "
                     "Коворкинг/coworking", "Руфтоп/ rooftop", "Балкон, терасса/ Balcony or terrace", "камера хранения/ storage room",\
                     "Рейтинг отзывов", "Источник данных"])
 
-for n in data:
+# Создание новой книги Excel
+wb = Workbook()
+ws = wb.active  # Получение активного листа
+
+
+for n, a in data:
     number += 1 # №
-    # object = f"{n.title_room}\n  {n.url_room}" # Объект / Object
-    object = n.title_room # Объект / Object
-    location = "ссылка на карту" # Локация/ Location
+    object =  f"{n.title_room} {n.url_room}" # f"{n.title_room} + " # Объект / Object
+    location = f"https://www.google.com/maps?q={a.location_lat},{a.location_lng}" #"ссылка на карту" # Локация/ Location
     type_house = n.type_house # Категория
     bedrooms = n.bedroom # Число br / Quantity of br
-    list_per = "Срок размещения" # Срок размещения / Listing period
-    adr = "Средняя цена юнита за сутки" # Средняя цена юнита за сутки, $ / ADR
-    actual_aver = "Загрузка средняя фактическая" # Загрузка средняя фактическая / Actual average occupancy
-    historic = "Выручка историческая" # Выручка историческая / Historical value
+    list_per = a.days_available_ltm #"Срок размещения" # Срок размещения / Listing period
+    adr = a.average_daily_rate_ltm #"Средняя цена юнита за сутки" # Средняя цена юнита за сутки, $ / ADR
+    actual_aver = a.occupancy_rate_ltm #"Загрузка средняя фактическая" # Загрузка средняя фактическая / Actual average occupancy
+    historic = a.revenue_ltm #"Выручка историческая" # Выручка историческая / Historical value
     price_month = "Цена за месяц" # Цена за месяц, $
     sqm = n.sqm # Площадь, м2
     view = n.view # Вид
@@ -37,7 +42,7 @@ for n in data:
     rooftop = n.rooftop# Руфтоп/ rooftop
     balcony_terrace = n.terrace_balcony# Балкон, терасса/ Balcony or terrace
     storage = n.storage # камера хранения/ storage room
-    rating = n.rating # Рейтинг отзывов
+    rating = f"{n.rating}, {n.reviews}" # Рейтинг отзывов
     data_source = "Источник данных" # Источник данных
 
 
@@ -46,9 +51,6 @@ for n in data:
         balcony_terrace, storage, rating, data_source]) # added user data
 
 
-# Создание новой книги Excel
-wb = Workbook()
-ws = wb.active  # Получение активного листа
 
 # # Заполнение листа данными
 for row in all_static:

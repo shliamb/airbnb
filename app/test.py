@@ -10,13 +10,43 @@ import re
 from colorama import Fore, Back, Style
 from options_chrome import profil
 
-profil.counter = 0
+# profil.counter = 0
 
 
-profil()
-profil()
-profil()
-profil()
+# profil()
+# profil()
+# profil()
+# profil()
+
+
+# import glob
+# import os
+
+# # Путь к папке, в которой нужно искать файлы
+# folder_path = "./json/"
+
+# # Поиск всех файлов с расширением .json в указанной папке
+# json_files = glob.glob(os.path.join(folder_path, '*.json'))
+
+# # Вывод списка названий файлов .json
+# for file_path in json_files:
+#     print(os.path.basename(file_path))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -221,6 +221,16 @@ async def get_airdna(id: int):
         logging.info(f"Read Airdna data")
         return data or None
 
+# Get ALL Airdna
+async def get_all_airdna():
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = select(Airdna)
+        result = await session.execute(query)
+        data = result.scalars().all()
+        logging.info(f"Read all Airdna data")
+        return data or None
+
 # Update Airdna
 async def update_airdna(id: int, updated_task_data) -> bool: 
     async_session = await create_async_engine_and_session()
@@ -251,13 +261,20 @@ async def adding_airdna(task_data) -> bool:
             logging.error(f"Failed to add data Airdna, errror:: {e}")
     return confirmation
 
-
-async def get_all_airdna():
+# ADMIN Read all settings and users an id
+async def get_all_rooms_and_airdna():
     async_session = await create_async_engine_and_session()
     async with async_session() as session:
-        query = select(Airdna)
+
+        query = (
+            select(Rooms, Airdna)
+            .join(Airdna)
+        )
+
+        # for user_telegram, settings in data:
+        #     print("User:", user_telegram.id, user_telegram.is_admin, user_telegram.full_name,\
+        #            user_telegram.name)
+        #     print("Settings:", settings.id, settings.temp_chat, settings.money)
         result = await session.execute(query)
-        data = result.scalars().all()
-        logging.info(f"Read Airdna data")
-        return data or None
-    
+        data = result.fetchall()  # Получение всех строк
+        return data
