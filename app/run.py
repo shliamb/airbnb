@@ -1,6 +1,7 @@
 from get_list import get_list_data
 from get_object import get_data_obj
 from parser_sys import quick_sleep
+from colorama import Fore, Back, Style
 import time
 
 
@@ -18,7 +19,8 @@ def run():
         print("Error: Object traversal failed")
         return
     #quick_sleep(2,3)
-    print("Info: Parsing is complit.")
+    print(Back.BLUE + "Info: Parsing is complit.")
+    print(Style.RESET_ALL)
 
 
 if __name__ == "__main__":

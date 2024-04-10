@@ -20,7 +20,7 @@ all_static.append(["№", "Объект / Object", "Локация/ Location", "
 
 
             # "id": id,
-            # "revenue_ltm": revenue_ltm,
+                        # "revenue_ltm": revenue_ltm,
             # "revenue_potential_ltm": revenue_potential_ltm,
                         # "occupancy_rate_ltm": occupancy_rate_ltm,
                         # "average_daily_rate_ltm": average_daily_rate_ltm,
@@ -37,10 +37,10 @@ for n in data:
     location = "ссылка на карту" # Локация/ Location
     type_house = n.type_house # Категория
     bedrooms = n.bedroom # Число br / Quantity of br
-    list_per = "Срок размещения" # Срок размещения / Listing period
-    adr = a.average_daily_rate_ltm # Средняя цена юнита за сутки, $ / ADR
-    actual_aver = a.occupancy_rate_ltm # Загрузка средняя фактическая / Actual average occupancy
-    historic = "Выручка историческая" # Выручка историческая / Historical value
+    #list_per = a.days_available_ltm #"Срок размещения" # Срок размещения / Listing period - days ev
+    #adr = a.average_daily_rate_ltm # Средняя цена юнита за сутки, $ / ADR
+    #actual_aver = a.occupancy_rate_ltm # Загрузка средняя фактическая / Actual average occupancy
+    #historic = a.revenue_ltm # "Выручка историческая" # Выручка историческая / Historical value - revenue_ltm
     price_month = "Цена за месяц" # Цена за месяц, $
     sqm = n.sqm # Площадь, м2
     view = n.view # Вид
@@ -57,9 +57,9 @@ for n in data:
     #print(n.id)
 
 
-    all_static.append([number, object, location, type_house, bedrooms, list_per, adr, actual_aver,\
-     historic, price_month, sqm, view, parking, restraunt, pool, kitchen, coworking, rooftop, \
-        balcony_terrace, storage, rating, data_source]) # added user data
+    # all_static.append([number, object, location, type_house, bedrooms, list_per, adr, actual_aver,\
+    #  historic, price_month, sqm, view, parking, restraunt, pool, kitchen, coworking, rooftop, \
+    #     balcony_terrace, storage, rating, data_source]) # added user data
 
 
 # Create csv file

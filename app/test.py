@@ -7,7 +7,29 @@ import random
 import sys
 # from tqdm import tqdm
 import re
+from colorama import Fore, Back, Style
+from options_chrome import profil
 
+profil.counter = 0
+
+
+profil()
+profil()
+profil()
+profil()
+
+
+
+# print(Fore.RED + 'some red text')
+
+# print("fdfd")
+# print(Back.RED + 'and with a green background')
+# print(Style.DIM + 'and in dim text')
+# print(Style.RESET_ALL)
+
+# print(Back.BLUE + 'and with a green background')
+# print(Style.RESET_ALL)
+# print('back to normal now')
 
 
 # [

@@ -12,6 +12,8 @@ import sys
 import re
 # import pandas as pd
 
+profil.counter = 0 # Счетчик, по достяжении которого, удаляются профиля
+
 
 #### SYSTEM FUNCTIONS ####
 

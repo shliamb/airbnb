@@ -1,7 +1,8 @@
 from parser_sys import ( go_url, begin, end_close, quick_sleep, response_code, scroll)
 from parser_airbnb import ( find_data_object, build_url, quick_sleep, find_data_room, get_url_next_page)
 from worker_db import get_rooms_by_location
-from get_list import get_list_data
+# from get_list import get_list_data
+from colorama import Fore, Back, Style
 import asyncio
 import re
 
@@ -51,8 +52,9 @@ def get_data_obj():
         print()
         # Close Driver Chrome
         end_close(driver)
-        print(f"\ninfo: The search parametrs for objects has been completed\n")
 
+    print(Back.BLUE + "info: The search parametrs for objects has been completed")
+    print(Style.RESET_ALL)
     confirm = True
     return confirm
 

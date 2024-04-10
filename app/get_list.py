@@ -2,6 +2,7 @@ from parser_sys import ( go_url, begin, end_close, quick_sleep, response_code, s
 from parser_airbnb import ( build_url, quick_sleep, find_data_room, get_url_next_page, get_position)
 from worker_db import update_position
 from parser_sys import day_utcnow
+from colorama import Fore, Back, Style
 import asyncio
 
 
@@ -46,7 +47,8 @@ def get_list_data():
             print(f"\nError: The url does not open correctly\n")
             # Close Driver Chrome
             end_close(driver)
-            break
+            confirm = False
+            return confirm
         quick_sleep(5, 6)
         scroll(driver)
         # Find data room and save to DB
@@ -76,11 +78,11 @@ def get_list_data():
                 # Close Driver Chrome
                 end_close(driver)
                 # Надо удалять профиля в папке, они сами появятся при работе. Но удалять надо, иначе блокирует через какое то время.
-                print(f"\ninfo: The search list for objects has been completed\n")
-                break
+                print(Back.BLUE + "info: The search list for objects has been completed")
+                print(Style.RESET_ALL)
+                confirm = True
+                return confirm
 
-    confirm = True
-    return confirm
 
 if __name__ == "__main__":
     get_list_data()
