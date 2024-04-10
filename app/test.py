@@ -10,42 +10,92 @@ import re
 
 
 
+# [
+#   {
+#     "property_id": "abnb_13962793",
+#     "airbnb_property_id": "13962793",
+#     "vrbo_property_id": null,
+#     "listing_type": "entire_place",
+#     "bedrooms": 2,
+#     "bathrooms": 1,
+#     "accommodates": 3,
+#     "rating": 4.9,
+#     "reviews": 374,
+#     "title": "Pondok Prapen -Ubud Center Private Pool Villa",
+#     "revenue_ltm": 1057925600,
+#     "revenue_potential_ltm": 1071900000,
+#     "occupancy_rate_ltm": 97.5,
+#     "average_daily_rate_ltm": 3014024,
+#     "days_available_ltm": 360,
+#     "images": [
+#       "htlarge",
+#       "hteg"
+#     ],
+#     "market_id": 32,
+#     "market_name": "Bali",
+#     "location": {
+#       "lat": -8.50222,
+#       "lng": 115.26749
+#     },
+#     "currency": "idr"
+#   },
+# ...
 
-id = 1058475485307739267
-data_room = asyncio.run(get_rooms_by_id(id))
-if data_room is not None:
-    pass
-    print()
-    print(data_room.title_room)
-    print(data_room.name_room)
-    print(data_room.type_house)
-    print(data_room.night_price)
-    print(data_room.month_price)
-    print(data_room.currency)
-    print(data_room.rating)
-    print(data_room.reviews)
-    print(data_room.guest_favorite)
-    print(data_room.guest)
-    print(data_room.bedroom)
-    print(data_room.bed)
-    print(data_room.bath)
-    print(data_room.parking)
-    print(data_room.kitchen)
-    print(data_room.view)
-    print(data_room.workspace)
-    print(data_room.rooftop)
-    print(data_room.terrace_balcony)
-    print(data_room.restaurants)
-    print(data_room.storage)
-    print(data_room.sqm)
 
-    print(data_room.url_room)
-    print(data_room.location)
-    print(data_room.obj_date_update)
-    print(data_room.currency)
-    print()
-else:
-    print("None data, sorry..")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# for n in range(2,-10):
+#     print(n)
+
+
+# id = 1058475485307739267
+# data_room = asyncio.run(get_rooms_by_id(id))
+# if data_room is not None:
+#     pass
+#     print()
+#     print(data_room.title_room)
+#     print(data_room.name_room)
+#     print(data_room.type_house)
+#     print(data_room.night_price)
+#     print(data_room.month_price)
+#     print(data_room.currency)
+#     print(data_room.rating)
+#     print(data_room.reviews)
+#     print(data_room.guest_favorite)
+#     print(data_room.guest)
+#     print(data_room.bedroom)
+#     print(data_room.bed)
+#     print(data_room.bath)
+#     print(data_room.parking)
+#     print(data_room.kitchen)
+#     print(data_room.view)
+#     print(data_room.workspace)
+#     print(data_room.rooftop)
+#     print(data_room.terrace_balcony)
+#     print(data_room.restaurants)
+#     print(data_room.storage)
+#     print(data_room.sqm)
+
+#     print(data_room.url_room)
+#     print(data_room.location)
+#     print(data_room.obj_date_update)
+#     print(data_room.currency)
+#     print()
+# else:
+#     print("None data, sorry..")
 
 
 

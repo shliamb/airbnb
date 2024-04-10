@@ -20,6 +20,7 @@ Base = declarative_base()
 Column = sqlalchemy.Column
 ####
 
+
 # Rooms - Main
 class Rooms(Base):
     __tablename__ = 'rooms_id'
@@ -48,9 +49,26 @@ class Rooms(Base):
     sqm = Column(sqlalchemy.String(500), nullable=True)
     url_room = Column(sqlalchemy.String(2000), nullable=False) 
     location = Column(sqlalchemy.String(500), nullable=False) # Bali - например, иначе потом хер найдешь из настроек или url
-
+    ####
     obj_date_update = Column(sqlalchemy.DateTime, nullable=True) 
     list_date_update = Column(sqlalchemy.DateTime, nullable=True)
+    airdna = relationship("Airdna", back_populates="rooms_airbnb", uselist=False)
+
+
+# Airdna data
+class Airdna(Base):
+    __tablename__ = 'airdna'
+    id = Column(sqlalchemy.BigInteger, ForeignKey('rooms_id.id'), primary_key=True) # airbnb_property_id
+    date = Column(sqlalchemy.DateTime, nullable=True)
+    revenue_ltm = Column(sqlalchemy.BigInteger, nullable=True)
+    revenue_potential_ltm = Column(sqlalchemy.BigInteger, nullable=True)
+    occupancy_rate_ltm = Column(sqlalchemy.Float, nullable=True)
+    average_daily_rate_ltm = Column(sqlalchemy.BigInteger, nullable=True)
+    days_available_ltm = Column(sqlalchemy.BigInteger, nullable=True)
+    location_lat = Column(sqlalchemy.Float, nullable=True)
+    location_lng = Column(sqlalchemy.Float, nullable=True)
+    ####
+    rooms_airbnb = relationship("Rooms", back_populates="airdna")
 
 
 # Save parse positions
@@ -74,6 +92,7 @@ class Task(Base):
     ####
     users_task = relationship("Users", back_populates="task")
 
+
 # Users
 class Users(Base):
     __tablename__ = 'users'
@@ -85,10 +104,7 @@ class Users(Base):
     date_visit = Column(sqlalchemy.DateTime, nullable=True)
     is_admin = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False)
     is_block = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False)
-    
-    # +3 часа или - 4 часа пояса часового...
-    # time_correction = Column(sqlalchemy.Integer, default=+5, server_default="+5", nullable=False)
-
+    time_correction = Column(sqlalchemy.Integer, default=+5, server_default="+5", nullable=False) # +3 часа или - 4 часа пояса часового...
     # Настройки по умолчанию, что бы каждый раз не набирать
     checkin_date = Column(sqlalchemy.DateTime, nullable=True) # "2024-05-01"
     checkout_date = Column(sqlalchemy.DateTime, nullable=True) # "2024-05-07"

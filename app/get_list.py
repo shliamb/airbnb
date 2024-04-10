@@ -48,6 +48,7 @@ def get_list_data():
             end_close(driver)
             break
         quick_sleep(5, 6)
+        scroll(driver)
         # Find data room and save to DB
         find_data_room(driver, location, time_correction, price_min, price_max)
         # Find url next page
@@ -74,6 +75,7 @@ def get_list_data():
                 print(f"info: Update min = 10$ and max = 11$ to the database")
                 # Close Driver Chrome
                 end_close(driver)
+                # Надо удалять профиля в папке, они сами появятся при работе. Но удалять надо, иначе блокирует через какое то время.
                 print(f"\ninfo: The search list for objects has been completed\n")
                 break
 

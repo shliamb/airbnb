@@ -42,7 +42,7 @@ def get_data_obj():
         # Wait time
         quick_sleep(5, 6)
         # Scroll page
-        #scroll(driver)
+        scroll(driver)
         # Find data room and save to DB
         find_data_object(driver, id, url_room, location, time_correction, currency)
         # quick_sleep(1, 2)
