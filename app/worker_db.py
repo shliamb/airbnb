@@ -139,6 +139,15 @@ async def get_all_rooms():
         data = result.scalars().all()  # Получение всех записей
         return data # Если не будет записей, то вернет пустой список
 
+# Read All Rooms hwo Title is not None
+async def get_all_rooms_not_None():
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = select(Rooms).filter(Rooms.title_room.isnot(None))
+        result = await session.execute(query)
+        data = result.scalars().all()  # Получение всех записей
+        return data # Если не будет записей, то вернет пустой список
+
 # Read All Rooms For False in is_parse
 async def get_rooms_by_false_parse():
     async_session = await create_async_engine_and_session()

@@ -1,6 +1,6 @@
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
-from worker_db import get_all_rooms
+from worker_db import get_all_rooms_not_None
 import asyncio
 import shutil
 
@@ -15,7 +15,7 @@ def get_exel_file():
     # Выбор активного листа или листа по имени
     sheet = workbook["расчет ADR и OccupancyADR and O"] 
 
-    data = asyncio.run(get_all_rooms()) # Получаем даные из базы
+    data = asyncio.run(get_all_rooms_not_None()) # Получаем даные из базы
 
     all_static = []
     number = 0
@@ -73,7 +73,7 @@ def get_exel_file():
 
     workbook.save(filename=newfile)
     print("info: Exel file is complite")
-    return
+    return newfile
 
 
 
