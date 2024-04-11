@@ -13,15 +13,14 @@ def run():
 
 
 
-        # Запуск обхода списков по поиску
+        # # Запуск обхода списков по поиску
         data_id = get_list_data()
         if data_id is False:
             print("Error: The crawl of the lists in the search was completed unsuccessfully")
             return
 
         data_room = asyncio.run(get_rooms_by_false_parse())
-        if data_room != None:
-
+        if data_room is None:
             data = {"is_parse": False}
             asyncio.run(update_all_rooms(data))
             print(Back.RED + "info: Zeroing object parsing")

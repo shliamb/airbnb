@@ -1,13 +1,13 @@
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
-from worker_db import get_all_rooms_not_None
+from worker_db import get_all_rooms_not_None, get_rooms_sorted_by_bedroom_asc, get_rooms_sorted_by_price_asc
 import asyncio
 import shutil
 
 def get_exel_file():
     # Путь к исходному файлу и новое имя файла
     sourcefile = "./file/The Heigts анализ_research.xlsx"
-    newfile = "./file/data.xlsx"
+    newfile = "./file/stat_data.xlsx"
     # Копирование файла
     shutil.copy(sourcefile, newfile)
     # Загрузка скопированного файла
@@ -15,23 +15,24 @@ def get_exel_file():
     # Выбор активного листа или листа по имени
     sheet = workbook["расчет ADR и OccupancyADR and O"] 
 
-    data = asyncio.run(get_all_rooms_not_None()) # Получаем даные из базы
+    data = asyncio.run(get_rooms_sorted_by_bedroom_asc()) # Получаем даные из базы
 
     all_static = []
     number = 0
+
 
     # Собираем ячейки
     for n in data:
         number += 1
         object =  [f"{n.title_room}", f"{n.url_room}"] # f"{n.title_room} + " # Объект / Object
-        location = f"https://www.google.com/maps?q={n.location_lat},{n.location_lng}" #"ссылка на карту" # Локация/ Location
+        location =   n.location  #  f"https://www.google.com/maps?q={n.location_lat},{n.location_lng}" #"ссылка на карту" # Локация/ Location
         type_house = n.type_house # Категория
-        bedrooms = n.bedroom # Число br / Quantity of br
+        bedrooms = 1 if n.bedroom == 0 else n.bedroom # Число br / Quantity of br
         list_per = n.days_available_ltm #"Срок размещения" # Срок размещения / Listing period
         adr = n.average_daily_rate_ltm #"Средняя цена юнита за сутки" # Средняя цена юнита за сутки, $ / ADR
         actual_aver = n.occupancy_rate_ltm #"Загрузка средняя фактическая" # Загрузка средняя фактическая / Actual average occupancy
         historic = n.revenue_ltm #"Выручка историческая" # Выручка историческая / Historical value
-        price_month = n.month_price # Цена за месяц, $
+        price_month = ""# n.month_price # Цена за месяц, $
         sqm = n.sqm # Площадь, м2
         view = n.view # Вид
         parking = n.parking # P
@@ -43,7 +44,7 @@ def get_exel_file():
         balcony_terrace = n.terrace_balcony# Балкон, терасса/ Balcony or terrace
         storage = n.storage # камера хранения/ storage room
         rating = f"{n.rating} stars, {n.reviews} reviews" # Рейтинг отзывов
-        data_source = "Источник данных" # Источник данных
+        data_source = "" # Источник данных
 
         all_static.append([number, object, location, type_house, bedrooms, list_per, adr, actual_aver,\
         historic, price_month, sqm, view, parking, restraunt, pool, kitchen, coworking, rooftop, \
@@ -63,7 +64,7 @@ def get_exel_file():
                 cell_to_update.font = Font(color="0000FF", underline="single")
             elif alb[k] == "C":
                 cell_to_update = sheet[f"{alb[k]}{f}"]
-                cell_to_update.value = "map"
+                cell_to_update.value = s
                 cell_to_update.hyperlink = s
                 cell_to_update.font = Font(color="0000FF", underline="single")
             else:

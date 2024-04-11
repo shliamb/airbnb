@@ -157,7 +157,6 @@ async def get_rooms_by_false_parse():
         data = result.scalars().all()  # Получение всех записей
         return data # Если не будет записей, то вернет пустой список
 
-
 # Read All Rooms
 async def get_all_rooms():
     async_session = await create_async_engine_and_session()
@@ -166,6 +165,37 @@ async def get_all_rooms():
         result = await session.execute(query)
         data = result.scalars().all()
         return data
+
+# Get Count All Rooms hwo not None
+async def get_count_rooms_not_None():
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        # Используем func.count() для подсчета записей
+        query = select(func.count()).select_from(Rooms).filter(Rooms.title_room.isnot(None))
+        result = await session.execute(query)
+        count = result.scalar()  # Получаем количество записей как скалярное значение
+        return count
+
+# Get_rooms_sorted_by_price_asc
+async def get_rooms_sorted_by_price_asc():
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        # Добавляем сортировку записей по цене за ночь от меньшей к большей
+        query = select(Rooms).filter(Rooms.title_room.isnot(None)).order_by(Rooms.night_price.asc()) # desc()
+        result = await session.execute(query)
+        rooms_sorted = result.scalars().all()  # Получаем отсортированный список комнат
+        return rooms_sorted
+
+
+# Get_rooms_sorted_by_bedroom_asc
+async def get_rooms_sorted_by_bedroom_asc():
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        # Добавляем сортировку записей по цене за ночь от меньшей к большей
+        query = select(Rooms).filter(Rooms.title_room.isnot(None)).order_by(Rooms.bedroom.asc()) # asc() # desc()
+        result = await session.execute(query)
+        rooms_sorted = result.scalars().all()  # Получаем отсортированный список комнат
+        return rooms_sorted
 
 
 

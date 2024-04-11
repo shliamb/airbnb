@@ -64,22 +64,6 @@ class Rooms(Base):
     # airdna = relationship("Airdna", back_populates="rooms_airbnb", uselist=False)
 
 
-# # Airdna data
-# class Airdna(Base):
-#     __tablename__ = 'airdna'
-#     id = Column(sqlalchemy.BigInteger, ForeignKey('rooms_id.id'), primary_key=True) # airbnb_property_id
-#     date = Column(sqlalchemy.DateTime, nullable=True)
-#     revenue_ltm = Column(sqlalchemy.BigInteger, nullable=True)
-#     revenue_potential_ltm = Column(sqlalchemy.BigInteger, nullable=True)
-#     occupancy_rate_ltm = Column(sqlalchemy.Float, nullable=True)
-#     average_daily_rate_ltm = Column(sqlalchemy.BigInteger, nullable=True)
-#     days_available_ltm = Column(sqlalchemy.BigInteger, nullable=True)
-#     location_lat = Column(sqlalchemy.Float, nullable=True)
-#     location_lng = Column(sqlalchemy.Float, nullable=True)
-#     ####
-#     rooms_airbnb = relationship("Rooms", back_populates="airdna")
-
-
 # Save parse positions
 class Positions(Base):
     __tablename__ = 'positions'

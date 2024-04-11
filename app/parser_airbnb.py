@@ -497,6 +497,34 @@ def find_data_object(driver, id, url_room, location, time_correction, currency):
 
 
 
+    # location
+    loc_room = None
+    text_loc = el.find("div", {"data-section-id": "LOCATION_DEFAULT"})
+    if text_loc != None:
+        text_loc_2 = text_loc.find("h3", {"elementtiming": "LCP-target"})
+        if text_loc_2 != None:
+            loc_room = text_loc_2.text.strip()
+            print(f"location: {loc_room}")
+    if loc_room == None:
+        text_loc3 = el.find("div", {"data-section-id": "LOCATION_DEFAULT"})
+        if text_loc != None:
+            text_loc_1 = text_loc3.find("div", {"class": "_152qbzi"})
+            if text_loc_1 != None:
+                loc_room = text_loc_1.text.strip()
+                print(f"location: {loc_room}")
+    else:
+        loc_room = ""
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -540,7 +568,7 @@ def find_data_object(driver, id, url_room, location, time_correction, currency):
         "storage": storage,
         "sqm": sqm,
         # "url_room": url_room,
-        # "location": location,
+        "location": loc_room,
         "obj_date_update": obj_date_update,
         "currency" : currency,
         "is_parse" : True

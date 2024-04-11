@@ -23,7 +23,7 @@ def get_list_data():
     time_correction = +8
     currency = "USD"
     room_types = "Entire home%2Fapt" # Весь дом целиком
-    ppp = 3 # Циклов и пойдет обходить сами обхекты. Считает не нахождение ссылки Next +1.
+    ppp = 20 # Циклов и пойдет обходить сами обхекты. Считает не нахождение ссылки Next +1.
 
 
 
@@ -66,6 +66,7 @@ def get_list_data():
                 confirm = True
                 break
             i += 1
+            print(f"info: {i} from {ppp} iterations completed. Go to parse Objects.")
             if int(price_max) < 16000:
                 # Close Driver Chrome
                 end_close(driver)
