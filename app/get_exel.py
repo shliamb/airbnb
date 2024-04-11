@@ -1,10 +1,10 @@
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
-from worker_db import get_all_rooms_not_None, get_rooms_sorted_by_bedroom_asc, get_rooms_sorted_by_price_asc
+from worker_db import get_all_rooms_not_None, get_rooms_sorted_by_bedroom_asc, get_rooms_sorted_by_bedroom_desc
 import asyncio
 import shutil
 
-def get_exel_file():
+def get_exel_file(choice):
     # Путь к исходному файлу и новое имя файла
     sourcefile = "./file/The Heigts анализ_research.xlsx"
     newfile = "./file/stat_data.xlsx"
@@ -15,7 +15,13 @@ def get_exel_file():
     # Выбор активного листа или листа по имени
     sheet = workbook["расчет ADR и OccupancyADR and O"] 
 
-    data = asyncio.run(get_rooms_sorted_by_bedroom_asc()) # Получаем даные из базы
+    if choice == "1":
+        data = asyncio.run(get_all_rooms_not_None()) 
+    elif choice == "2":
+        data = asyncio.run(get_rooms_sorted_by_bedroom_asc())
+    elif choice == "3":
+        data = asyncio.run(get_rooms_sorted_by_bedroom_desc()) 
+
 
     all_static = []
     number = 0
@@ -25,7 +31,11 @@ def get_exel_file():
     for n in data:
         number += 1
         object =  [f"{n.title_room}", f"{n.url_room}"] # f"{n.title_room} + " # Объект / Object
-        location =   n.location  #  f"https://www.google.com/maps?q={n.location_lat},{n.location_lng}" #"ссылка на карту" # Локация/ Location
+        if n.location_lat == None:
+            url_location = None
+        else:
+            url_location = f"{n.location_lat},{n.location_lng}"
+        location = [f"{n.location}", f"{url_location}"]             #  f"https://www.google.com/maps?q={n.location_lat},{n.location_lng}" #"ссылка на карту" # Локация/ Location
         type_house = n.type_house # Категория
         bedrooms = 1 if n.bedroom == 0 else n.bedroom # Число br / Quantity of br
         list_per = n.days_available_ltm #"Срок размещения" # Срок размещения / Listing period
@@ -60,13 +70,17 @@ def get_exel_file():
             if alb[k] == "B":
                 cell_to_update = sheet[f"{alb[k]}{f}"]
                 cell_to_update.value = s[0]
-                cell_to_update.hyperlink = f"{s[1]}"
+                cell_to_update.hyperlink = s[1]
                 cell_to_update.font = Font(color="0000FF", underline="single")
             elif alb[k] == "C":
-                cell_to_update = sheet[f"{alb[k]}{f}"]
-                cell_to_update.value = s
-                cell_to_update.hyperlink = s
-                cell_to_update.font = Font(color="0000FF", underline="single")
+                if s[1] == "None":
+                    cell_to_update = sheet[f"{alb[k]}{f}"]   # 'B11'
+                    cell_to_update.value = s[0]
+                else:
+                    cell_to_update = sheet[f"{alb[k]}{f}"]
+                    cell_to_update.value = s[0]
+                    cell_to_update.hyperlink = f"https://www.google.com/maps?q={s[1]}"
+                    cell_to_update.font = Font(color="0000FF", underline="single")
             else:
                 cell_to_update = sheet[f"{alb[k]}{f}"]   # 'B11'
                 cell_to_update.value = s

@@ -21,7 +21,11 @@ def transfer_json():
             up_db = not_found = 0 # Обнуление счетчиков
             # Извлечение данных из каждого элемента списка
             for item in data:
-                id = int(item.get('airbnb_property_id'))
+                id = item.get('airbnb_property_id')
+                if id is not None:
+                    id = int(id)
+                else:
+                    id = 0
                 revenue_ltm = int(item.get('revenue_ltm'))
                 revenue_potential_ltm  = int(item.get('revenue_potential_ltm'))
                 occupancy_rate_ltm = float(item.get('occupancy_rate_ltm'))

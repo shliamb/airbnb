@@ -187,6 +187,18 @@ async def get_rooms_sorted_by_price_asc():
         return rooms_sorted
 
 
+# Get_rooms_sorted_by_bedroom_desc
+async def get_rooms_sorted_by_bedroom_desc():
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        # Добавляем сортировку записей по цене за ночь от меньшей к большей
+        query = select(Rooms).filter(Rooms.title_room.isnot(None)).order_by(Rooms.bedroom.desc()) # asc() # desc()
+        result = await session.execute(query)
+        rooms_sorted = result.scalars().all()  # Получаем отсортированный список комнат
+        return rooms_sorted
+
+
+
 # Get_rooms_sorted_by_bedroom_asc
 async def get_rooms_sorted_by_bedroom_asc():
     async_session = await create_async_engine_and_session()
