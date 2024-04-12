@@ -5,6 +5,7 @@ import telebot
 from telebot import types
 from telebot.types import BotCommand
 import asyncio
+import time
 
 # Токен, который вы получили от BotFather
 TOKEN = telegram
@@ -97,5 +98,23 @@ def query_handler(call):
 # def echo_all(message):
 #     bot.reply_to(message, message.text)
 
-# Запуск бота
-bot.polling()
+# # Запуск бота
+# bot.polling()
+
+
+
+max_attempts = 5
+attempts = 0
+
+while attempts < max_attempts:
+    try:
+        print("info: start bot")
+        bot.polling()
+        break
+    except Exception as e:
+        attempts += 1
+        print(f"Произошла ошибка: {e}. Попытка {attempts} из {max_attempts}. Повторная попытка через 5 секунд...")
+        time.sleep(5)
+
+if attempts == max_attempts:
+    print("Превышено максимальное количество попыток. Завершение работы.")

@@ -21,12 +21,38 @@ Column = sqlalchemy.Column
 ####
 
 
-# Rooms - Main
-class Rooms(Base):
-    __tablename__ = 'rooms_id'
+
+# ID - id и url объекта, не связанная таблица. id в таблицах FLAG, AIRBNB, ARBDNA, ID - это одно и то же, но в разном порядке
+class Id(Base):
+    __tablename__ = 'id'
     id = Column(sqlalchemy.BigInteger, primary_key=True, unique=True, nullable=False, index=True)
-    title_room = Column(sqlalchemy.String(500), nullable=True)
-    name_room = Column(sqlalchemy.String(500), nullable=True)
+    url = Column(sqlalchemy.String(5000), nullable=False)
+    date = Column(sqlalchemy.DateTime, nullable=True)
+
+# FLAG - устанавливается флаг, когда объект пропарсили, не связанная таблица.
+class Flag(Base):
+    __tablename__ = 'flag'
+    id = Column(sqlalchemy.BigInteger, primary_key=True, unique=True, nullable=False, index=True)
+    busy_flag = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False) # для пометки уже взятых id в работу, в случае, если будут работать больше одной копии
+    passed_flag = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False) # пометка, что пропарсена
+    date = Column(sqlalchemy.DateTime, nullable=True)
+
+# POINT - точка остановки (от 10$ до 11$) сбора списков объектов
+class Point(Base):
+    __tablename__ = 'point'
+    id = Column(sqlalchemy.Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
+    date = Column(sqlalchemy.DateTime, nullable=True)
+    price_min = Column(sqlalchemy.Integer, default=10, server_default="10", nullable=False)
+    price_max = Column(sqlalchemy.Integer, default=11, server_default="11", nullable=False)
+    currency = Column(sqlalchemy.String(10), default="USD", server_default="USD", nullable=False)
+
+# AIRBNB - параметры объектов, не связанная таблица.
+class Airbnb(Base):
+    __tablename__ = 'airbnb'
+    id = Column(sqlalchemy.BigInteger, primary_key=True, unique=True, nullable=False, index=True)
+    url = Column(sqlalchemy.String(5000), nullable=False) # - дублируется, усложения в этом нет, так как при парсе объекта из таблицы ID забирается id и url, который можно закидывать в таблицу AIRBNB за одно, для того, что бы потом одним запросом забирать его.
+    title = Column(sqlalchemy.String(500), nullable=True)
+    name = Column(sqlalchemy.String(500), nullable=True)
     type_house = Column(sqlalchemy.String(500), nullable=True)
     night_price = Column(sqlalchemy.Float, default=0, server_default="0", nullable=False)
     month_price = Column(sqlalchemy.Float, default=0, server_default="0", nullable=False)
@@ -47,8 +73,14 @@ class Rooms(Base):
     restaurants = Column(sqlalchemy.String(500), nullable=True)
     storage = Column(sqlalchemy.String(500), nullable=True)
     sqm = Column(sqlalchemy.String(500), nullable=True)
-    url_room = Column(sqlalchemy.String(2000), nullable=False) 
     location = Column(sqlalchemy.String(500), nullable=False)
+    date_update = Column(sqlalchemy.DateTime, nullable=True)
+    date = Column(sqlalchemy.DateTime, nullable=True)
+
+# AIRDNA - параметры объектов, не связанная таблица, заливается сразу из json.
+class Airdna(Base):
+    __tablename__ = 'airdna'
+    id = Column(sqlalchemy.BigInteger, primary_key=True, unique=True, nullable=False, index=True)
     revenue_ltm = Column(sqlalchemy.BigInteger, nullable=True)
     revenue_potential_ltm = Column(sqlalchemy.BigInteger, nullable=True)
     occupancy_rate_ltm = Column(sqlalchemy.Float, nullable=True)
@@ -56,25 +88,9 @@ class Rooms(Base):
     days_available_ltm = Column(sqlalchemy.BigInteger, nullable=True)
     location_lat = Column(sqlalchemy.Float, nullable=True)
     location_lng = Column(sqlalchemy.Float, nullable=True)
-    is_parse = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False)
-    is_done = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False)
-    ####
-    obj_date_update = Column(sqlalchemy.DateTime, nullable=True) 
-    list_date_update = Column(sqlalchemy.DateTime, nullable=True)
-    # airdna = relationship("Airdna", back_populates="rooms_airbnb", uselist=False)
-
-
-# Save parse positions
-class Positions(Base):
-    __tablename__ = 'positions'
-    id = Column(sqlalchemy.Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
     date = Column(sqlalchemy.DateTime, nullable=True)
-    price_min = Column(sqlalchemy.Integer, default=10, server_default="10", nullable=False)
-    price_max = Column(sqlalchemy.Integer, default=11, server_default="11", nullable=False)
-    currency = Column(sqlalchemy.String(10), default="USD", server_default="USD", nullable=False)
 
-
-# Task
+# TASK - автоматизированные задачи
 class Task(Base):
     __tablename__ = 'task'
     id = Column(sqlalchemy.BigInteger, primary_key=True, unique=True, nullable=False, index=True)
@@ -85,8 +101,7 @@ class Task(Base):
     ####
     users_task = relationship("Users", back_populates="task")
 
-
-# Users
+# USERS - настройки пользователя, что бы сохранялись параметры работы
 class Users(Base):
     __tablename__ = 'users'
     id = Column(sqlalchemy.BigInteger, primary_key=True, unique=True, nullable=False, index=True) # Telegram user_id or any else

@@ -117,9 +117,30 @@ from options_chrome import profil
 
 
 
+# a = "gfserdsdsgazg"
+# b = "ddghjdse"
+
+# def ger(a, b):
+#     c = sorted(set(a + b))
+
+#     print(c)
 
 
 
+# # b = sorted(a)
+# print(ger(a, b))
+
+# a = "gfserdsdsgazg"
+
+# b = set("gfserdsdsgazg")
+
+# i = ""
+
+# for n in b:
+#     #print(type(n))
+#     i = i + n
+
+# print(type(i))
 
 
 
@@ -132,52 +153,52 @@ from options_chrome import profil
 #     print(n)
 
 
-id = 826564732035479725
-data_room = asyncio.run(get_rooms_by_id(id))
-if data_room is not None:
-    pass
-    print()
-    print(data_room.title_room)
-    print(data_room.name_room)
-    print(data_room.type_house)
-    print(data_room.night_price)
-    print(data_room.month_price)
-    print(data_room.currency)
-    print(data_room.rating)
-    print(data_room.reviews)
-    print(data_room.guest_favorite)
-    print(data_room.guest)
-    print(data_room.bedroom)
-    print(data_room.bed)
-    print(data_room.bath)
-    print(data_room.parking)
-    print(data_room.kitchen)
-    print(data_room.view)
-    print(data_room.workspace)
-    print(data_room.rooftop)
-    print(data_room.terrace_balcony)
-    print(data_room.restaurants)
-    print(data_room.storage)
-    print(data_room.sqm)
-    print(data_room.url_room)
-    print(data_room.location)
-    print(data_room.obj_date_update)
-    print(data_room.currency)
-    print(data_room.revenue_ltm)
-    print(data_room.revenue_potential_ltm)
-    print(data_room.occupancy_rate_ltm)
-    print(data_room.average_daily_rate_ltm)
-    print(data_room.days_available_ltm)
-    print(data_room.location_lat)
-    print(data_room.location_lng)
-    print(data_room.currency)
-    print(data_room.is_done)
-    print(data_room.is_parse)
+# id = 826564732035479725
+# data_room = asyncio.run(get_rooms_by_id(id))
+# if data_room is not None:
+#     pass
+#     print()
+#     print(data_room.title_room)
+#     print(data_room.name_room)
+#     print(data_room.type_house)
+#     print(data_room.night_price)
+#     print(data_room.month_price)
+#     print(data_room.currency)
+#     print(data_room.rating)
+#     print(data_room.reviews)
+#     print(data_room.guest_favorite)
+#     print(data_room.guest)
+#     print(data_room.bedroom)
+#     print(data_room.bed)
+#     print(data_room.bath)
+#     print(data_room.parking)
+#     print(data_room.kitchen)
+#     print(data_room.view)
+#     print(data_room.workspace)
+#     print(data_room.rooftop)
+#     print(data_room.terrace_balcony)
+#     print(data_room.restaurants)
+#     print(data_room.storage)
+#     print(data_room.sqm)
+#     print(data_room.url_room)
+#     print(data_room.location)
+#     print(data_room.obj_date_update)
+#     print(data_room.currency)
+#     print(data_room.revenue_ltm)
+#     print(data_room.revenue_potential_ltm)
+#     print(data_room.occupancy_rate_ltm)
+#     print(data_room.average_daily_rate_ltm)
+#     print(data_room.days_available_ltm)
+#     print(data_room.location_lat)
+#     print(data_room.location_lng)
+#     print(data_room.currency)
+#     print(data_room.is_done)
+#     print(data_room.is_parse)
 
 
-    print()
-else:
-    print("None data, sorry..")
+#     print()
+# else:
+#     print("None data, sorry..")
 
 
 

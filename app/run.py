@@ -4,21 +4,20 @@ from parser_sys import quick_sleep
 from worker_db import get_rooms_by_false_parse, update_all_rooms
 import asyncio
 from colorama import Fore, Back, Style
-# import time
+import time
 
 
 def run():
     i = 0
     while True:
 
-
-
-        # # Запуск обхода списков по поиску
+        # Запуск обхода списков по поиску
         data_id = get_list_data()
         if data_id is False:
             print("Error: The crawl of the lists in the search was completed unsuccessfully")
             return
 
+        # Проверка ресурса не пропарсеных объектов
         data_room = asyncio.run(get_rooms_by_false_parse())
         if data_room is None:
             data = {"is_parse": False}
@@ -26,7 +25,6 @@ def run():
             print(Back.RED + "info: Zeroing object parsing")
             print(Style.RESET_ALL)
             # Прверяет, если записей больше нет, которые не проходили, то обнуляет все, для очередного прохода.
-
 
         # Запуск детального обхода объектов
         complite_obj = get_data_obj()
@@ -40,11 +38,24 @@ def run():
         print(Style.RESET_ALL)
 
 
-if __name__ == "__main__":
-    run()
 
 
+max_attempts = 5
+attempts = 0
 
+while attempts < max_attempts:
+    try:
+        print("info: start parser")
+        if __name__ == "__main__":
+            run()
+        break
+    except Exception as e:
+        attempts += 1
+        print(f"Произошла ошибка: {e}. Попытка {attempts} из {max_attempts}. Повторная попытка через 5 секунд...")
+        time.sleep(5)
+
+if attempts == max_attempts:
+    print("Превышено максимальное количество попыток. Завершение работы.")
 
 
 

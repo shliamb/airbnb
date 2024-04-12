@@ -53,7 +53,7 @@ def get_exel_file(choice):
         rooftop = n.rooftop# Руфтоп/ rooftop
         balcony_terrace = n.terrace_balcony# Балкон, терасса/ Balcony or terrace
         storage = n.storage # камера хранения/ storage room
-        rating = f"{n.rating} stars, {n.reviews} reviews" # Рейтинг отзывов
+        rating = n.rating # Рейтинг отзывов
         data_source = "" # Источник данных
 
         all_static.append([number, object, location, type_house, bedrooms, list_per, adr, actual_aver,\
