@@ -1,36 +1,31 @@
-from parser_sys import ( go_url, begin, end_close, quick_sleep, response_code, scroll)
-from parser_airbnb import ( build_url, quick_sleep, find_data_room, get_url_next_page, get_position)
-from worker_db import update_position
+from parser_sys import go_url, begin, end_close, quick_sleep, scroll, response_code
+from parser_airbnb import build_url, quick_sleep, find_data_room, get_url_next_page
+from worker_db import get_point, update_point
 from parser_sys import day_utcnow
 from colorama import Fore, Back, Style
 import asyncio
 
 
 
-#### GETTING DATA FOR ALL ROOMS ####
-# Build 1rst URL to citi
 def get_list_data():
-    data_id =[]
     i = 1
     print()
     print("info: Starting getting lists of id and url objects")
     confirm = False
-    # DATA FOR SEARCH URL
-    location = "Bali-Province--Indonesia" # Bali Как точно надо? 
+    location = "Bali-Province--Indonesia"
     checkin_date = "[]" # Он сам ставит на 1 месяц 
     checkout_date = "[]"
     guests = 0 # Гости Сколько гостей устанавливать в поиске?
-    time_correction = +8
+    time_correction = +8 # Под Bali
     currency = "USD"
     room_types = "Entire home%2Fapt" # Весь дом целиком
-    ppp = 3 # Циклов и пойдет обходить сами обхекты. Считает не нахождение ссылки Next +1.
+    count_none_next = 3 # Циклов и пойдет обходить сами обхекты. Считает не нахождение ссылки Next +1.
 
 
-
-    data_position = asyncio.run(get_position(1))
-    if data_position is not None:
-        price_min = str(data_position.price_min)
-        price_max = str(data_position.price_max)
+    point = asyncio.run(get_point(1))
+    if point is not None:
+        price_min = str(point.price_min)
+        price_max = str(point.price_max)
         print(f"info: Getting saved data from the last session. {price_min}$, {price_max}$")
     else:
         price_min = "10" # Не уверен что стоит вообще собирать от 10$ за ночь, там амбар сдают))
@@ -50,23 +45,24 @@ def get_list_data():
             print(f"\nError: The url does not open correctly\n")
             # Close Driver Chrome
             end_close(driver)
+            confirm = False
             break
         
         quick_sleep(5, 6)
         scroll(driver)
 
         # Find data room and save to DB
-        find_data_room(driver, location, time_correction, price_min, price_max)
+        find_data_room(driver, time_correction, price_min, price_max)
         url = get_url_next_page(driver)
         if url == None:
-            if i >= ppp:
-                print(Back.BLUE + f"info: {i} from {ppp} iterations completed. Go to parse Objects.")
+            if i >= count_none_next:
+                print(Back.BLUE + f"info: {i} from {count_none_next} iterations completed.")
                 print(Style.RESET_ALL)
                 i = 0
                 confirm = True
                 break
             i += 1
-            print(f"info: {i} from {ppp} iterations completed. Go to parse Objects.")
+            print(f"info: {i} from {count_none_next} iterations completed. Go to parse Objects.")
             if int(price_max) < 16000:
                 # Close Driver Chrome
                 end_close(driver)
@@ -84,12 +80,13 @@ def get_list_data():
                 max = 11
                 list_date_update = day_utcnow(time_correction)
                 price_data = {"date": list_date_update, "price_min": min, "price_max": max}
-                asyncio.run(update_position(1, price_data))
+                asyncio.run(update_point(1, price_data))
                 print(f"info: Update min = 10$ and max = 11$ to the database")
                 # Close Driver Chrome
                 end_close(driver)
                 print(Back.BLUE + "info: The search list for objects has been completed")
                 print(Style.RESET_ALL)
+                confirm = False
                 return
             
     return confirm

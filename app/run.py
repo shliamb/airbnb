@@ -1,7 +1,7 @@
 from get_list import get_list_data
 from get_object import get_data_obj
 from parser_sys import quick_sleep
-from worker_db import get_rooms_by_false_parse, update_all_rooms
+from worker_db import get_all_id_false, update_all_id
 import asyncio
 from colorama import Fore, Back, Style
 import time
@@ -12,32 +12,32 @@ def run():
     while True:
 
         # Запуск обхода списков по поиску
-        data_id = get_list_data()
-        if data_id is False:
-            print("Error: The crawl of the lists in the search was completed unsuccessfully")
-            return
+        confirm_list = get_list_data()
+        if confirm_list is False:
+            print(Back.RED + "Error: The crawl of the lists in the search was completed unsuccessfully")
+            print(Style.RESET_ALL)
 
         # Проверка ресурса не пропарсеных объектов
-        data_room = asyncio.run(get_rooms_by_false_parse())
-        if data_room is None:
-            data = {"is_parse": False}
-            asyncio.run(update_all_rooms(data))
+        all_false_id = asyncio.run(get_all_id_false())
+        if all_false_id == []:
+            data = {"passed_flag": False}
+            asyncio.run(update_all_id(data))
             print(Back.RED + "info: Zeroing object parsing")
             print(Style.RESET_ALL)
             # Прверяет, если записей больше нет, которые не проходили, то обнуляет все, для очередного прохода.
 
         # Запуск детального обхода объектов
-        complite_obj = get_data_obj()
-        if complite_obj is False:
-            print("Error: Object traversal failed")
-            return
+        confirm_obj = get_data_obj()
+        if confirm_obj is False:
+            print(Back.RED + "Error: Object traversal failed")
+            print(Style.RESET_ALL)
+
         
-        #quick_sleep(2,3)
+        quick_sleep(1,2)
+
         i += 1
         print(Back.BLUE + f"Info: {i} big cicles Parsing is completed. Congratulation.")
         print(Style.RESET_ALL)
-
-
 
 
 max_attempts = 5

@@ -1,4 +1,4 @@
-from worker_db import get_rooms_by_id, update_rooms, adding_rooms, update_position, get_position, adding_position
+from worker_db import get_id, update_id, adding_id, get_point, adding_point, update_point, get_airbnb, adding_airbnb, update_airbnb
 from parser_sys import quick_sleep, str_int, day_utcnow, unformat_date, str_inter
 from bs4 import BeautifulSoup
 import asyncio
@@ -60,7 +60,7 @@ def rating_clean(num: str) -> float | int:
 
 # FIND TEXT LIST FIXED BT4  -  Сбор со страниц поиска id и url
 # Позже сделать входные параметры в виде словаря для легкой подстройки к изменениям на сайте
-def find_data_room(driver, country, time_correction, price_min, price_max):
+def find_data_room(driver, time_correction, price_min, price_max):
     complite = False
     print("\ninfo: Go parsing list home in the search.")
     html = driver.page_source
@@ -98,33 +98,33 @@ def find_data_room(driver, country, time_correction, price_min, price_max):
         list_date_update = day_utcnow(time_correction)
 
         # Preparing data for the room - Готовим данные 
-        room_data = {"id": id, "url_room": url_room, "location": country, "list_date_update": list_date_update}
+        room_data = {"id": id, "url": url_room, "date": list_date_update}
         
         # Обновляем или добавляем данные
-        data_room = asyncio.run(get_rooms_by_id(id))
+        data_room = asyncio.run(get_id(id))
         # Update data to room, if is outdated
         if data_room is not None:
             # Update data list
-            asyncio.run(update_rooms(id, room_data))
+            asyncio.run(update_id(id, room_data))
             print(f"info: Update {id} and url to the database")
         else:
             # Adding data room
-            asyncio.run(adding_rooms(room_data))
+            asyncio.run(adding_id(room_data))
             print(f"info: Added {id} and url to the database")
 
 
         # price_min, price_max
-        data_position = asyncio.run(get_position(1))
+        data_position = asyncio.run(get_point(1))
         min = str_inter(price_min)
         max = str_inter(price_max)
 
         if data_position is not None:
             price_data = {"date": list_date_update, "price_min": min, "price_max": max}
-            asyncio.run(update_position(1, price_data))
+            asyncio.run(update_point(1, price_data))
             print(f"info: Update min - max to the database")
         else:
             price_data = {"id": 1, "date": list_date_update, "price_min": min, "price_max": max}
-            asyncio.run(adding_position(price_data))
+            asyncio.run(adding_point(price_data))
             print(f"info: Added min - max to the database")
         
         complite = True
@@ -498,22 +498,21 @@ def find_data_object(driver, id, url_room, location, time_correction, currency):
 
 
     # location
-    loc_room = None
+    loc_room = ""
     text_loc = el.find("div", {"data-section-id": "LOCATION_DEFAULT"})
     if text_loc != None:
         text_loc_2 = text_loc.find("h3", {"elementtiming": "LCP-target"})
         if text_loc_2 != None:
             loc_room = text_loc_2.text.strip()
             print(f"location: {loc_room}")
-    if loc_room == None:
+    if loc_room == "":
         text_loc3 = el.find("div", {"data-section-id": "LOCATION_DEFAULT"})
         if text_loc != None:
             text_loc_1 = text_loc3.find("div", {"class": "_152qbzi"})
             if text_loc_1 != None:
                 loc_room = text_loc_1.text.strip()
                 print(f"location: {loc_room}")
-    else:
-        loc_room = ""
+
 
 
 
@@ -544,9 +543,10 @@ def find_data_object(driver, id, url_room, location, time_correction, currency):
 
     room_data = {
 
-        # "id": id,
-        "title_room": title_room,
-        "name_room": name_room,
+        "id": id,
+        "url": url_room,
+        "title": title_room,
+        "name": name_room,
         "type_house": type_house,
         "night_price": night_price,
         "month_price": month_price,
@@ -567,22 +567,27 @@ def find_data_object(driver, id, url_room, location, time_correction, currency):
         "restaurants": restaurants,
         "storage": storage,
         "sqm": sqm,
-        # "url_room": url_room,
         "location": loc_room,
-        "obj_date_update": obj_date_update,
-        "currency" : currency,
-        "is_parse" : True
+        "date_update": obj_date_update,
+        # "currency" : currency,
 
                 }
        
 
-    # # Обновляем или добавляем данные
-    # data_room = asyncio.run(get_rooms_by_id(id))
-    # # Update data to object - обновляем данные по id
-    # if data_room.obj_date_update is not None:
-    # Update data room
-    asyncio.run(update_rooms(id, room_data))
-    print(f"info: Updated Data  at Object {id}")
+    # Обновляем или добавляем данные
+    data_room = asyncio.run(get_airbnb(id))
+
+    if data_room is None:
+        asyncio.run(adding_airbnb(room_data))
+        print(f"info: Adding Data  at Object {id}")
+    else:
+        asyncio.run(update_airbnb(id, room_data))
+        print(f"info: Updated Data  at Object {id}")
+
+
+    # Пометка о прохождении
+    data_id = {"passed_flag": True}
+    asyncio.run(update_id(id, data_id))
 
     confirmation = True
     return confirmation

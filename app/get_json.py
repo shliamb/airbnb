@@ -1,4 +1,4 @@
-from worker_db import get_rooms_by_id, update_rooms
+from worker_db import get_airdna, update_airdna, adding_airdna
 import asyncio
 import json
 import glob
@@ -18,7 +18,7 @@ def transfer_json():
         # Чтение и загрузка содержимого JSON-файла
         with open(name_file, 'r', encoding='utf-8') as file:
             data = json.load(file)
-            up_db = not_found = 0 # Обнуление счетчиков
+            up_db = ad_db = 0 # Обнуление счетчиков
             # Извлечение данных из каждого элемента списка
             for item in data:
                 id = item.get('airbnb_property_id')
@@ -49,14 +49,15 @@ def transfer_json():
 
                             }
 
-                data_room = asyncio.run(get_rooms_by_id(id))
+                data_room = asyncio.run(get_airdna(id))
                 if data_room != None:
-                    asyncio.run(update_rooms(id, room_data))
+                    asyncio.run(update_airdna(id, room_data))
                     up_db += 1
                 else:
-                    not_found += 1
+                    asyncio.run(adding_airdna(room_data))
+                    ad_db += 1
 
-            print(f"info: Transferring data from a json file {name_file} to a database.\ninfo: Update: {up_db}. Not found id: {not_found}\n")
+            print(f"info: Transferring data from a json file {name_file} to a database.\ninfo: Update: {up_db}. Add: {ad_db}\n")
     
     confirmation = True    
     return confirmation

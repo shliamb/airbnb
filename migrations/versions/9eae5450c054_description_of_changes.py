@@ -1,8 +1,8 @@
 """Description of changes
 
-Revision ID: 32f57ae82c1e
+Revision ID: 9eae5450c054
 Revises: 
-Create Date: 2024-04-12 20:03:08.504547
+Create Date: 2024-04-13 00:57:36.318846
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '32f57ae82c1e'
+revision: str = '9eae5450c054'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -23,9 +23,9 @@ def upgrade() -> None:
     op.create_table('airbnb',
     sa.Column('id', sa.BigInteger(), nullable=False),
     sa.Column('url', sa.String(length=5000), nullable=False),
-    sa.Column('title', sa.String(length=500), nullable=True),
-    sa.Column('name', sa.String(length=500), nullable=True),
-    sa.Column('type_house', sa.String(length=500), nullable=True),
+    sa.Column('title', sa.String(length=3000), nullable=True),
+    sa.Column('name', sa.String(length=3000), nullable=True),
+    sa.Column('type_house', sa.String(length=3000), nullable=True),
     sa.Column('night_price', sa.Float(), server_default='0', nullable=False),
     sa.Column('month_price', sa.Float(), server_default='0', nullable=False),
     sa.Column('currency', sa.String(length=10), server_default='USD', nullable=False),
@@ -36,16 +36,16 @@ def upgrade() -> None:
     sa.Column('bedroom', sa.Integer(), nullable=True),
     sa.Column('bed', sa.Integer(), nullable=True),
     sa.Column('bath', sa.Float(), nullable=True),
-    sa.Column('parking', sa.String(length=500), nullable=True),
-    sa.Column('kitchen', sa.String(length=500), nullable=True),
-    sa.Column('view', sa.String(length=500), nullable=True),
-    sa.Column('workspace', sa.String(length=500), nullable=True),
-    sa.Column('rooftop', sa.String(length=500), nullable=True),
-    sa.Column('terrace_balcony', sa.String(length=500), nullable=True),
-    sa.Column('restaurants', sa.String(length=500), nullable=True),
-    sa.Column('storage', sa.String(length=500), nullable=True),
-    sa.Column('sqm', sa.String(length=500), nullable=True),
-    sa.Column('location', sa.String(length=500), nullable=False),
+    sa.Column('parking', sa.String(length=3000), nullable=True),
+    sa.Column('kitchen', sa.String(length=3000), nullable=True),
+    sa.Column('view', sa.String(length=3000), nullable=True),
+    sa.Column('workspace', sa.String(length=3000), nullable=True),
+    sa.Column('rooftop', sa.String(length=3000), nullable=True),
+    sa.Column('terrace_balcony', sa.String(length=3000), nullable=True),
+    sa.Column('restaurants', sa.String(length=3000), nullable=True),
+    sa.Column('storage', sa.String(length=3000), nullable=True),
+    sa.Column('sqm', sa.String(length=3000), nullable=True),
+    sa.Column('location', sa.String(length=3000), nullable=False),
     sa.Column('date_update', sa.DateTime(), nullable=True),
     sa.Column('date', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
@@ -64,17 +64,11 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_airdna_id'), 'airdna', ['id'], unique=True)
-    op.create_table('flag',
-    sa.Column('id', sa.BigInteger(), nullable=False),
-    sa.Column('busy_flag', sa.Boolean(), server_default='False', nullable=False),
-    sa.Column('passed_flag', sa.Boolean(), server_default='False', nullable=False),
-    sa.Column('date', sa.DateTime(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_index(op.f('ix_flag_id'), 'flag', ['id'], unique=True)
     op.create_table('id',
     sa.Column('id', sa.BigInteger(), nullable=False),
     sa.Column('url', sa.String(length=5000), nullable=False),
+    sa.Column('busy_flag', sa.Boolean(), server_default='False', nullable=False),
+    sa.Column('passed_flag', sa.Boolean(), server_default='False', nullable=False),
     sa.Column('date', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
@@ -100,7 +94,7 @@ def upgrade() -> None:
     sa.Column('time_correction', sa.Integer(), server_default='+5', nullable=False),
     sa.Column('checkin_date', sa.DateTime(), nullable=True),
     sa.Column('checkout_date', sa.DateTime(), nullable=True),
-    sa.Column('country', sa.String(length=100), server_default='Bali', nullable=False),
+    sa.Column('country', sa.String(length=3000), server_default='Bali', nullable=False),
     sa.Column('guest', sa.Integer(), server_default='0', nullable=False),
     sa.Column('currency', sa.String(length=10), server_default='USD', nullable=False),
     sa.PrimaryKeyConstraint('id'),
@@ -110,7 +104,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_users_id'), 'users', ['id'], unique=True)
     op.create_table('task',
     sa.Column('id', sa.BigInteger(), nullable=False),
-    sa.Column('name_task', sa.String(length=100), nullable=True),
+    sa.Column('name_task', sa.String(length=3000), nullable=True),
     sa.Column('date_task', sa.DateTime(), nullable=True),
     sa.Column('data_task', sa.String(length=3000), nullable=True),
     sa.Column('owner_task', sa.BigInteger(), nullable=False),
@@ -130,8 +124,6 @@ def downgrade() -> None:
     op.drop_table('point')
     op.drop_index(op.f('ix_id_id'), table_name='id')
     op.drop_table('id')
-    op.drop_index(op.f('ix_flag_id'), table_name='flag')
-    op.drop_table('flag')
     op.drop_index(op.f('ix_airdna_id'), table_name='airdna')
     op.drop_table('airdna')
     op.drop_index(op.f('ix_airbnb_id'), table_name='airbnb')

@@ -10,7 +10,6 @@ import time
 import random
 import sys
 import re
-# import pandas as pd
 
 profil.counter = 0 # Счетчик, по достяжении которого, удаляются профиля
 
@@ -76,7 +75,7 @@ def response_code(url: str) -> int:
 def go_url(driver, url: str) -> bool:
     confirmation = False
     code = response_code(url)
-    if code == 200:
+    if code == 200 or code == 410: # Встречалась переадресация, что бы просто пропустило, а не выбрасывало по кругу
         driver.get(url)
         print("info: Going to the url")
         confirmation = True

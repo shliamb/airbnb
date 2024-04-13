@@ -1,4 +1,4 @@
-from worker_db import get_rooms_by_id, get_rooms_by_location#, update_rooms, adding_rooms
+from worker_db import get_airbnb, get_id
 from datetime import datetime, timezone, timedelta
 from parser_sys import str_inter
 import asyncio
@@ -17,6 +17,85 @@ from options_chrome import profil
 # profil()
 # profil()
 # profil()
+
+
+
+
+id = 18828943
+
+data = asyncio.run(get_id(id))
+if data is not None:
+    print(data.passed_flag)
+
+
+
+
+
+
+data_room = asyncio.run(get_airbnb(id))
+if data_room is not None:
+    pass
+    print()
+    print(data_room.id)
+    print(data_room.url)
+    print(data_room.title)
+    print(data_room.name)
+    print(data_room.type_house)
+    print(data_room.night_price)
+    print(data_room.month_price)
+    print(data_room.currency)
+    print(data_room.rating)
+    print(data_room.reviews)
+    print(data_room.guest_favorite)
+    print(data_room.guest)
+    print(data_room.bedroom)
+    print(data_room.bed)
+    print(data_room.bath)
+    print(data_room.parking)
+    print(data_room.kitchen)
+    print(data_room.view)
+    print(data_room.workspace)
+    print(data_room.rooftop)
+    print(data_room.terrace_balcony)
+    print(data_room.restaurants)
+    print(data_room.storage)
+    print(data_room.sqm)
+    print(data_room.date_update)
+    print(data_room.date)
+    print(data_room.location)
+    print()
+else:
+    print("None data, sorry..")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # import glob

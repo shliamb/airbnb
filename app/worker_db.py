@@ -2,7 +2,7 @@ from sqlalchemy import select, insert, update, join, func
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from models import Base, Users, Airbnb, Airdna, Task, Id, Flag, Point
+from models import Base, Users, Airbnb, Airdna, Task, Id, Point
 from keys import user_db, paswor_db
 import sqlalchemy
 import asyncio
@@ -70,20 +70,26 @@ async def adding_airbnb(data) -> bool:
 #
 #
 
-# # Update ALL Rooms Data
-# async def update_all_rooms(updated_data_room) -> bool:
-#     async_session = await create_async_engine_and_session()
-#     confirmation = False
-#     async with async_session() as session:
-#         try:
-#             query = update(Airbnb).values(**updated_data_room)
-#             await session.execute(query)
-#             await session.commit()
-#             confirmation = True
-#             logging.info(f"All rooms data is updated")
-#         except Exception as e:
-#             logging.error(f"Failed to update all rooms data, error: {e}")
-#     return confirmation
+# Read All Airbnb hwo Title is not None
+async def get_all_rooms_not_None():
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = select(Airbnb)# .filter(Airbnb.title.isnot(None))
+        result = await session.execute(query)
+        data = result.scalars().all()  # Получение всех записей
+        return data # Если не будет записей, то вернет пустой список
+
+
+
+
+
+
+
+
+
+
+
+
 
 # # Read All Rooms For Location
 # async def get_rooms_by_location(country: int):
@@ -103,23 +109,6 @@ async def adding_airbnb(data) -> bool:
 #         data = result.scalars().all()  # Получение всех записей
 #         return data # Если не будет записей, то вернет пустой список
 
-# # Read All Rooms hwo Title is not None
-# async def get_all_rooms_not_None():
-#     async_session = await create_async_engine_and_session()
-#     async with async_session() as session:
-#         query = select(Airbnb).filter(Airbnb.title_room.isnot(None))
-#         result = await session.execute(query)
-#         data = result.scalars().all()  # Получение всех записей
-#         return data # Если не будет записей, то вернет пустой список
-
-# # Read All Rooms For False in is_parse
-# async def get_rooms_by_false_parse():
-#     async_session = await create_async_engine_and_session()
-#     async with async_session() as session:
-#         query = select(Airbnb).filter(Airbnb.is_parse == False)
-#         result = await session.execute(query)
-#         data = result.scalars().all()  # Получение всех записей
-#         return data # Если не будет записей, то вернет пустой список
 
 # # Read All Rooms
 # async def get_all_rooms():
@@ -169,6 +158,7 @@ async def adding_airbnb(data) -> bool:
 #         result = await session.execute(query)
 #         rooms_sorted = result.scalars().all()  # Получаем отсортированный список комнат
 #         return rooms_sorted
+####
 
 
 
@@ -216,50 +206,88 @@ async def adding_id(data) -> bool:
             logging.error(f"Failed to add a Table ID, errror:: {e}")
     return confirmation
 
+#
+#
+# Additional functions
+#
+#
 
-
-
-#### FLAG #### 
-
-# Read Data for FLAG
-async def get_flag(id: int):
+# Read all id's at Table ID 
+async def get_all_id_false():
     async_session = await create_async_engine_and_session()
     async with async_session() as session:
-        query = select(Flag).filter(Flag.id == id)
+        query = select(Id).filter(Id.passed_flag == False)
         result = await session.execute(query)
-        data = result.scalar_one_or_none()
-        logging.info(f"Read data for Flag")
-        return data or None
-
-# Update Data for FLAG
-async def update_flag(id: int, data) -> bool: 
+        data = result.scalars().all()  
+        return data
+    
+# Update ALL ID Data
+async def update_all_id(data) -> bool:
     async_session = await create_async_engine_and_session()
     confirmation = False
     async with async_session() as session:
         try:
-            query = update(Flag).where(Flag.id == id).values(**data)
+            query = update(Id).values(**data)
             await session.execute(query)
             await session.commit()
             confirmation = True
-            logging.info(f"The Flag is update")
+            logging.info(f"All data ID Table is updated")
         except Exception as e:
-            logging.error(f"Failed to update table Flag, error: {e}")
+            logging.error(f"Failed to update data ID Table, error: {e}")
     return confirmation
+####
 
-# Add Data for Flag
-async def adding_flag(data) -> bool:
-    async_session = await create_async_engine_and_session()
-    confirmation = False
-    async with async_session() as session:
-        try:
-            query = insert(Flag).values(**data)
-            await session.execute(query)
-            await session.commit()
-            confirmation = True
-            logging.info("Adding a Table Flag")
-        except Exception as e:
-            logging.error(f"Failed to add a Table Flag, errror: {e}")
-    return confirmation
+
+
+
+# #### FLAG #### 
+
+# # Read Data for FLAG
+# async def get_flag(id: int):
+#     async_session = await create_async_engine_and_session()
+#     async with async_session() as session:
+#         query = select(Flag).filter(Flag.id == id)
+#         result = await session.execute(query)
+#         data = result.scalar_one_or_none()
+#         logging.info(f"Read data for Flag")
+#         return data or None
+
+# # Update Data for FLAG
+# async def update_flag(id: int, data) -> bool: 
+#     async_session = await create_async_engine_and_session()
+#     confirmation = False
+#     async with async_session() as session:
+#         try:
+#             query = update(Flag).where(Flag.id == id).values(**data)
+#             await session.execute(query)
+#             await session.commit()
+#             confirmation = True
+#             logging.info(f"The Flag is update")
+#         except Exception as e:
+#             logging.error(f"Failed to update table Flag, error: {e}")
+#     return confirmation
+
+# # Add Data for Flag
+# async def adding_flag(data) -> bool:
+#     async_session = await create_async_engine_and_session()
+#     confirmation = False
+#     async with async_session() as session:
+#         try:
+#             query = insert(Flag).values(**data)
+#             await session.execute(query)
+#             await session.commit()
+#             confirmation = True
+#             logging.info("Adding a Table Flag")
+#         except Exception as e:
+#             logging.error(f"Failed to add a Table Flag, errror: {e}")
+#     return confirmation
+
+#
+#
+# Additional functions
+#
+#
+
 
 
 
@@ -305,6 +333,7 @@ async def adding_point(data) -> bool:
         except Exception as e:
             logging.error(f"Failed to add point, errror: {e}")
     return confirmation
+####
 
 
 
@@ -378,6 +407,7 @@ async def adding_airdna(data) -> bool:
 #         result = await session.execute(query)
 #         data = result.fetchall()  # Получение всех строк
 #         return data
+####
 
 
 
@@ -423,6 +453,7 @@ async def adding_users(data) -> bool:
         except Exception as e:
             logging.error(f"Failed to add user data, error: {e}")
     return confirmation
+####
 
 
 
