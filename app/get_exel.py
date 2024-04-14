@@ -1,6 +1,6 @@
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
-from worker_db import get_all_rooms_not_None#, get_rooms_sorted_by_bedroom_asc, get_rooms_sorted_by_bedroom_desc
+from worker_db import get_all_rooms_not_None2, get_all_rooms_not_None#, get_rooms_sorted_by_bedroom_asc, get_rooms_sorted_by_bedroom_desc
 import asyncio
 import shutil
 
@@ -18,34 +18,57 @@ def get_exel_file(choice):
     # Выбор активного листа или листа по имени
     sheet = workbook["расчет ADR и OccupancyADR and O"] 
 
-    if choice == "1":
-        data = asyncio.run(get_all_rooms_not_None()) 
+    # if choice == "1":
+    #     data = asyncio.run(get_all_rooms_not_None()) 
     # elif choice == "2":
     #     data = asyncio.run(get_rooms_sorted_by_bedroom_asc())
     # elif choice == "3":
-    #     data = asyncio.run(get_rooms_sorted_by_bedroom_desc()) 
+    #     data = asyncio.run(get_rooms_sorted_by_bedroom_desc())
+
+
+
+    rooms_data = asyncio.run(get_all_rooms_not_None2())
+    # for airbnb, airdna in rooms_data:
+    #     print(airbnb.title)  # Объект из таблицы Airbnb
+    #     if airdna is not None:
+    #         print(airdna.location_lat)  # Связанный объект из таблицы Airdna (если есть)
+
+
 
 
     all_static = []
     number = 0
 
 
+
+
+
+    # # Убедитесь, что url_location определена до ее использования
+    # url_location = f"https://www.google.com/maps?q={n.location_lat},{n.location_lng}"  # Пример значения
+
+    # # Теперь можно безопасно использовать url_location
+    # location = [f"{n.location}", f"{url_location}"]
+
+
     # Собираем ячейки
-    for n in data:
+    for n, m in rooms_data:
         number += 1
         object =  [f"{n.title}", f"{n.url}"] # f"{n.title_room} + " # Объект / Object
-        # if n.location_lat == None:
-        #     url_location = None
-        # else:
-        #     url_location = f"{n.location_lat},{n.location_lng}"
-        location = n.location#[f"{n.location}", f"{url_location}"]             #  f"https://www.google.com/maps?q={n.location_lat},{n.location_lng}" #"ссылка на карту" # Локация/ Location
+        #if m is not None:
+        if m is not None:
+            url_location = f"{m.location_lat},{m.location_lng}"
+        else:
+            url_location = ""
+        location = [f"{n.location}", f"{url_location}"]             #  f"https://www.google.com/maps?q={n.location_lat},{n.location_lng}" #"ссылка на карту" # Локация/ Location
         type_house = n.type_house # Категория
         bedrooms = 1 if n.bedroom == 0 else n.bedroom # Число br / Quantity of br
-        list_per = ""#n.days_available_ltm #"Срок размещения" # Срок размещения / Listing period
-        adr = ""#n.average_daily_rate_ltm #"Средняя цена юнита за сутки" # Средняя цена юнита за сутки, $ / ADR
-        actual_aver = ""#n.occupancy_rate_ltm #"Загрузка средняя фактическая" # Загрузка средняя фактическая / Actual average occupancy
-        historic = ""#n.revenue_ltm #"Выручка историческая" # Выручка историческая / Historical value
-        price_month = ""# n.month_price # Цена за месяц, $
+        list_per, adr, actual_aver, historic, price_month = "", "", "", "", ""
+        if m is not None:
+            list_per = m.days_available_ltm #"Срок размещения" # Срок размещения / Listing period
+            adr = m.average_daily_rate_ltm #"Средняя цена юнита за сутки" # Средняя цена юнита за сутки, $ / ADR
+            actual_aver = m.occupancy_rate_ltm #"Загрузка средняя фактическая" # Загрузка средняя фактическая / Actual average occupancy
+            historic = m.revenue_ltm #"Выручка историческая" # Выручка историческая / Historical value
+        price_month = ""#n.month_price # Цена за месяц, $
         sqm = n.sqm # Площадь, м2
         view = n.view # Вид
         parking = n.parking # P
@@ -75,15 +98,15 @@ def get_exel_file(choice):
                 cell_to_update.value = s[0]
                 cell_to_update.hyperlink = s[1]
                 cell_to_update.font = Font(color="0000FF", underline="single")
-            # elif alb[k] == "C":
-            #     if s[1] == "None":
-            #         cell_to_update = sheet[f"{alb[k]}{f}"]   # 'B11'
-            #         cell_to_update.value = s[0]
-            #     else:
-            #         cell_to_update = sheet[f"{alb[k]}{f}"]
-            #         cell_to_update.value = s[0]
-            #         cell_to_update.hyperlink = f"https://www.google.com/maps?q={s[1]}"
-            #         cell_to_update.font = Font(color="0000FF", underline="single")
+            elif alb[k] == "C":
+                if s[1] == "None":
+                    cell_to_update = sheet[f"{alb[k]}{f}"]   # 'B11'
+                    cell_to_update.value = s[0]
+                else:
+                    cell_to_update = sheet[f"{alb[k]}{f}"]
+                    cell_to_update.value = s[0]
+                    cell_to_update.hyperlink = f"https://www.google.com/maps?q={s[1]}"
+                    cell_to_update.font = Font(color="0000FF", underline="single")
             else:
                 cell_to_update = sheet[f"{alb[k]}{f}"]   # 'B11'
                 cell_to_update.value = s
@@ -126,3 +149,101 @@ if __name__ == "__main__":
     #                     "Вид","P","Ресторан/Restraunt", "Бассейн / Pool", "Кухня / Kitchen",\
     #                     "Коворкинг/coworking", "Руфтоп/ rooftop", "Балкон, терасса/ Balcony or terrace", "камера хранения/ storage room",\
     #                     "Рейтинг отзывов", "Источник данных"])
+
+
+
+
+
+
+
+
+# def get_exel_file(choice):
+#     # Путь к исходному файлу и новое имя файла
+#     sourcefile = "./file/The Heigts анализ_research.xlsx"
+#     newfile = "./file/stat_data.xlsx"
+#     # Копирование файла
+#     shutil.copy(sourcefile, newfile)
+#     # Загрузка скопированного файла
+#     workbook = load_workbook(filename=newfile)
+#     # Выбор активного листа или листа по имени
+#     sheet = workbook["расчет ADR и OccupancyADR and O"] 
+
+#     if choice == "1":
+#         data = asyncio.run(get_all_rooms_not_None()) 
+#     elif choice == "2":
+#         data = asyncio.run(get_rooms_sorted_by_bedroom_asc())
+#     elif choice == "3":
+#         data = asyncio.run(get_rooms_sorted_by_bedroom_desc()) 
+
+
+#     all_static = []
+#     number = 0
+
+
+#     # Собираем ячейки
+#     for n in data:
+#         number += 1
+#         object =  [f"{n.title}", f"{n.url}"] # f"{n.title_room} + " # Объект / Object
+#         # if n.location_lat == None:
+#         #     url_location = None
+#         # else:
+#         #     url_location = f"{n.location_lat},{n.location_lng}"
+#         location = n.location#[f"{n.location}", f"{url_location}"]             #  f"https://www.google.com/maps?q={n.location_lat},{n.location_lng}" #"ссылка на карту" # Локация/ Location
+#         type_house = n.type_house # Категория
+#         bedrooms = 1 if n.bedroom == 0 else n.bedroom # Число br / Quantity of br
+#         list_per = ""#n.days_available_ltm #"Срок размещения" # Срок размещения / Listing period
+#         adr = ""#n.average_daily_rate_ltm #"Средняя цена юнита за сутки" # Средняя цена юнита за сутки, $ / ADR
+#         actual_aver = ""#n.occupancy_rate_ltm #"Загрузка средняя фактическая" # Загрузка средняя фактическая / Actual average occupancy
+#         historic = ""#n.revenue_ltm #"Выручка историческая" # Выручка историческая / Historical value
+#         price_month = ""# n.month_price # Цена за месяц, $
+#         sqm = n.sqm # Площадь, м2
+#         view = n.view # Вид
+#         parking = n.parking # P
+#         restraunt = n.restaurants # Ресторан/Restraunt
+#         pool = n.bath # Бассейн / Pool
+#         kitchen = n.kitchen # Кухня / Kitchen
+#         coworking = n.workspace# Коворкинг/coworking
+#         rooftop = n.rooftop# Руфтоп/ rooftop
+#         balcony_terrace = n.terrace_balcony# Балкон, терасса/ Balcony or terrace
+#         storage = n.storage # камера хранения/ storage room
+#         rating = n.rating # Рейтинг отзывов
+#         data_source = "" # Источник данных
+
+#         all_static.append([number, object, location, type_house, bedrooms, list_per, adr, actual_aver,\
+#         historic, price_month, sqm, view, parking, restraunt, pool, kitchen, coworking, rooftop, \
+#             balcony_terrace, storage, rating, data_source]) 
+    
+#     # Магия не иначе, переписать
+#     f = 10
+#     alb =[ "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V" ]
+#     for row in all_static:
+#         f += 1
+#         k = 0
+#         for s in row:
+#             if alb[k] == "B":
+#                 cell_to_update = sheet[f"{alb[k]}{f}"]
+#                 cell_to_update.value = s[0]
+#                 cell_to_update.hyperlink = s[1]
+#                 cell_to_update.font = Font(color="0000FF", underline="single")
+#             # elif alb[k] == "C":
+#             #     if s[1] == "None":
+#             #         cell_to_update = sheet[f"{alb[k]}{f}"]   # 'B11'
+#             #         cell_to_update.value = s[0]
+#             #     else:
+#             #         cell_to_update = sheet[f"{alb[k]}{f}"]
+#             #         cell_to_update.value = s[0]
+#             #         cell_to_update.hyperlink = f"https://www.google.com/maps?q={s[1]}"
+#             #         cell_to_update.font = Font(color="0000FF", underline="single")
+#             else:
+#                 cell_to_update = sheet[f"{alb[k]}{f}"]   # 'B11'
+#                 cell_to_update.value = s
+#             k += 1
+
+#     workbook.save(filename=newfile)
+#     print("info: Exel file is complite")
+#     return newfile
+
+
+
+# if __name__ == "__main__":
+#     get_exel_file("1")

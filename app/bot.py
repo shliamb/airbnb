@@ -1,6 +1,6 @@
 from keys import telegram
 from get_exel import get_exel_file
-from worker_db import get_count_rooms_not_None
+#from worker_db import get_count_rooms_not_None
 import telebot
 from telebot import types
 from telebot.types import BotCommand
@@ -33,10 +33,10 @@ def send_welcome(message):
 
 
 # Обработчик команды '/count'
-@bot.message_handler(commands=['count'])
-def count_is_not(message):
-    count = asyncio.run(get_count_rooms_not_None())
-    bot.reply_to(message, f"Обработанных записей: {count}")
+# @bot.message_handler(commands=['count'])
+# def count_is_not(message):
+#     count = asyncio.run(get_count_rooms_not_None())
+#     bot.reply_to(message, f"Обработанных записей: {count}")
 
 
 # Обработчик команды '/menu'

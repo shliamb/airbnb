@@ -11,14 +11,14 @@ import os
 
 
 
+
 async def create_async_engine_and_session():                               # postgres
     engine = create_async_engine(f"postgresql+asyncpg://{user_db}:{paswor_db}@localhost:5432/my_database") # echo=True - вывод логирования
-    async_session = sessionmaker(bind=engine, class_=AsyncSession)
+    async_session = sessionmaker(bind=engine, class_=AsyncSession) #, autoflush=True, expire_on_commit=False)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     return async_session
 ####
-
 
 
 
@@ -78,6 +78,18 @@ async def get_all_rooms_not_None():
         result = await session.execute(query)
         data = result.scalars().all()  # Получение всех записей
         return data # Если не будет записей, то вернет пустой список
+
+# EXEL Read All Airbnb and Airdna whith hes is hwo - забирает таблицу Airbnb и по id забирает с Airdna если оно есть там, для exel
+async def get_all_rooms_not_None2():
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = (
+            select(Airbnb, Airdna)
+            .outerjoin(Airdna, Airbnb.id == Airdna.id)  # Предполагаем что поле для соединения это 'id'
+        )
+        result = await session.execute(query)
+        data = result.all() 
+        return data
 
 
 
@@ -350,15 +362,15 @@ async def get_airdna(id: int):
         logging.info(f"Read Airdna data")
         return data or None
 
-# # Get ALL Airdna
-# async def get_all_airdna():
-#     async_session = await create_async_engine_and_session()
-#     async with async_session() as session:
-#         query = select(Airdna)
-#         result = await session.execute(query)
-#         data = result.scalars().all()
-#         logging.info(f"Read all Airdna data")
-#         return data or None
+# Get ALL Airdna
+async def get_all_airdna():
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = select(Airdna)
+        result = await session.execute(query)
+        data = result.scalars().all()
+        logging.info(f"Read all Airdna data")
+        return data or None
 
 # Update Airdna
 async def update_airdna(id: int, data) -> bool: 
