@@ -5,65 +5,40 @@ import asyncio
 import shutil
 
 
+async def get_rooms_data(choice):
+    if choice == "1":
+        return await get_all_rooms_not_None2()
+    # elif choice == "2":
+    #     return await get_all_rooms_not_None3()
+    # elif choice == "3":
+    #     return await get_all_rooms_not_None4()
 
 
-def get_exel_file(choice):
-    # Путь к исходному файлу и новое имя файла
+
+async def get_exel_file(choice):
     sourcefile = "./file/The Heigts анализ_research.xlsx"
     newfile = "./file/stat_data.xlsx"
-    # Копирование файла
     shutil.copy(sourcefile, newfile)
-    # Загрузка скопированного файла
+
     workbook = load_workbook(filename=newfile)
-    # Выбор активного листа или листа по имени
-    sheet = workbook["расчет ADR и OccupancyADR and O"] 
+    sheet = workbook["расчет ADR и OccupancyADR and O"]
 
-    # if choice == "1":
-    #     data = asyncio.run(get_all_rooms_not_None()) 
-    # elif choice == "2":
-    #     data = asyncio.run(get_rooms_sorted_by_bedroom_asc())
-    # elif choice == "3":
-    #     data = asyncio.run(get_rooms_sorted_by_bedroom_desc())
-
-
-
-    rooms_data = asyncio.run(get_all_rooms_not_None2())
-    # for airbnb, airdna in rooms_data:
-    #     print(airbnb.title)  # Объект из таблицы Airbnb
-    #     if airdna is not None:
-    #         print(airdna.location_lat)  # Связанный объект из таблицы Airdna (если есть)
-
-
-
+    rooms_data = await get_rooms_data(choice)
 
     all_static = []
-    number = 0
-
-
-
-
-
-    # # Убедитесь, что url_location определена до ее использования
-    # url_location = f"https://www.google.com/maps?q={n.location_lat},{n.location_lng}"  # Пример значения
-
-    # # Теперь можно безопасно использовать url_location
-    # location = [f"{n.location}", f"{url_location}"]
-
-
-    # Собираем ячейки
-    for n, m in rooms_data:
+    for number, (n, m) in enumerate(rooms_data, start=0):
         number += 1
-        object =  [f"{n.title}", f"{n.url}"] # f"{n.title_room} + " # Объект / Object
+        object =  [n.title, n.url] # Объект / Object
         #if m is not None:
-        if m is not None:
-            url_location = f"{m.location_lat},{m.location_lng}"
+        if m:
+            url_location = m.location_lat, m.location_lng
         else:
             url_location = ""
-        location = [f"{n.location}", f"{url_location}"]             #  f"https://www.google.com/maps?q={n.location_lat},{n.location_lng}" #"ссылка на карту" # Локация/ Location
+        location = [n.location, url_location] #  f"https://www.google.com/maps?q={n.location_lat},{n.location_lng}" 
         type_house = n.type_house # Категория
         bedrooms = 1 if n.bedroom == 0 else n.bedroom # Число br / Quantity of br
         list_per, adr, actual_aver, historic, price_month = "", "", "", "", ""
-        if m is not None:
+        if m:
             list_per = m.days_available_ltm #"Срок размещения" # Срок размещения / Listing period
             adr = m.average_daily_rate_ltm #"Средняя цена юнита за сутки" # Средняя цена юнита за сутки, $ / ADR
             actual_aver = m.occupancy_rate_ltm #"Загрузка средняя фактическая" # Загрузка средняя фактическая / Actual average occupancy
@@ -85,44 +60,35 @@ def get_exel_file(choice):
         all_static.append([number, object, location, type_house, bedrooms, list_per, adr, actual_aver,\
         historic, price_month, sqm, view, parking, restraunt, pool, kitchen, coworking, rooftop, \
             balcony_terrace, storage, rating, data_source]) 
-    
-    # Магия не иначе, переписать
-    f = 10
-    alb =[ "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V" ]
-    for row in all_static:
-        f += 1
-        k = 0
-        for s in row:
-            if alb[k] == "B":
-                cell_to_update = sheet[f"{alb[k]}{f}"]
-                cell_to_update.value = s[0]
-                cell_to_update.hyperlink = s[1]
-                cell_to_update.font = Font(color="0000FF", underline="single")
-            elif alb[k] == "C":
-                if s[1] == "None":
-                    cell_to_update = sheet[f"{alb[k]}{f}"]   # 'B11'
-                    cell_to_update.value = s[0]
-                else:
-                    cell_to_update = sheet[f"{alb[k]}{f}"]
-                    cell_to_update.value = s[0]
-                    cell_to_update.hyperlink = f"https://www.google.com/maps?q={s[1]}"
-                    cell_to_update.font = Font(color="0000FF", underline="single")
+
+    alb = [chr(i) for i in range(ord('A'), ord('W'))]  # Создает список букв от A до V
+    for row_num, row in enumerate(all_static, start=11):
+        for col_num, value in enumerate(row):
+            col_letter = alb[col_num]
+            cell_ref = f"{col_letter}{row_num}"
+            cell = sheet[cell_ref]
+
+            if col_letter == "B":
+                cell.value, cell.hyperlink = value[0], value[1]
+                cell.font = Font(color="0000FF", underline="single")
+            elif col_letter == "C":
+                cell.value = value[0]
+                if value[1] != "None":
+                    cell.hyperlink = f"https://www.google.com/maps?q={value[1]}"
+                    cell.font = Font(color="0000FF", underline="single")
             else:
-                cell_to_update = sheet[f"{alb[k]}{f}"]   # 'B11'
-                cell_to_update.value = s
-            k += 1
+                cell.value = value
 
     workbook.save(filename=newfile)
-    print("info: Exel file is complite")
+    workbook.close()  # Закрыть рабочую книгу вручную
+    print("info: Exel file is complete")
     return newfile
 
 
 
 if __name__ == "__main__":
-    get_exel_file("1")
-
-
-
+    choice = "1"  # Assigning "1" to the variable choice, not comparing it
+    asyncio.run(get_exel_file(choice))
 
 
 
@@ -155,47 +121,43 @@ if __name__ == "__main__":
 
 
 
+# def get_rooms_data(choice):
+#     if choice == "1":
+#         return get_all_rooms_not_None2()
+#     # elif choice == "2":
+#     #     return get_all_rooms_not_None3()
+#     # elif choice == "3":
+#     #     return get_all_rooms_not_None4()
 
-
-# def get_exel_file(choice):
-#     # Путь к исходному файлу и новое имя файла
+# async def get_exel_file(choice):
 #     sourcefile = "./file/The Heigts анализ_research.xlsx"
 #     newfile = "./file/stat_data.xlsx"
-#     # Копирование файла
 #     shutil.copy(sourcefile, newfile)
-#     # Загрузка скопированного файла
+
 #     workbook = load_workbook(filename=newfile)
-#     # Выбор активного листа или листа по имени
 #     sheet = workbook["расчет ADR и OccupancyADR and O"] 
 
-#     if choice == "1":
-#         data = asyncio.run(get_all_rooms_not_None()) 
-#     elif choice == "2":
-#         data = asyncio.run(get_rooms_sorted_by_bedroom_asc())
-#     elif choice == "3":
-#         data = asyncio.run(get_rooms_sorted_by_bedroom_desc()) 
-
+#     rooms_data = await get_rooms_data(choice)
 
 #     all_static = []
-#     number = 0
-
-
-#     # Собираем ячейки
-#     for n in data:
+#     for number, (n, m) in enumerate(rooms_data, start=0):
 #         number += 1
-#         object =  [f"{n.title}", f"{n.url}"] # f"{n.title_room} + " # Объект / Object
-#         # if n.location_lat == None:
-#         #     url_location = None
-#         # else:
-#         #     url_location = f"{n.location_lat},{n.location_lng}"
-#         location = n.location#[f"{n.location}", f"{url_location}"]             #  f"https://www.google.com/maps?q={n.location_lat},{n.location_lng}" #"ссылка на карту" # Локация/ Location
+#         object =  [f"{n.title}", f"{n.url}"] # Объект / Object
+#         #if m is not None:
+#         if m is not None:
+#             url_location = f"{m.location_lat},{m.location_lng}"
+#         else:
+#             url_location = ""
+#         location = [f"{n.location}", f"{url_location}"] #  f"https://www.google.com/maps?q={n.location_lat},{n.location_lng}" 
 #         type_house = n.type_house # Категория
 #         bedrooms = 1 if n.bedroom == 0 else n.bedroom # Число br / Quantity of br
-#         list_per = ""#n.days_available_ltm #"Срок размещения" # Срок размещения / Listing period
-#         adr = ""#n.average_daily_rate_ltm #"Средняя цена юнита за сутки" # Средняя цена юнита за сутки, $ / ADR
-#         actual_aver = ""#n.occupancy_rate_ltm #"Загрузка средняя фактическая" # Загрузка средняя фактическая / Actual average occupancy
-#         historic = ""#n.revenue_ltm #"Выручка историческая" # Выручка историческая / Historical value
-#         price_month = ""# n.month_price # Цена за месяц, $
+#         list_per, adr, actual_aver, historic, price_month = "", "", "", "", ""
+#         if m is not None:
+#             list_per = m.days_available_ltm #"Срок размещения" # Срок размещения / Listing period
+#             adr = m.average_daily_rate_ltm #"Средняя цена юнита за сутки" # Средняя цена юнита за сутки, $ / ADR
+#             actual_aver = m.occupancy_rate_ltm #"Загрузка средняя фактическая" # Загрузка средняя фактическая / Actual average occupancy
+#             historic = m.revenue_ltm #"Выручка историческая" # Выручка историческая / Historical value
+#         price_month = ""#n.month_price # Цена за месяц, $
 #         sqm = n.sqm # Площадь, м2
 #         view = n.view # Вид
 #         parking = n.parking # P
@@ -212,38 +174,31 @@ if __name__ == "__main__":
 #         all_static.append([number, object, location, type_house, bedrooms, list_per, adr, actual_aver,\
 #         historic, price_month, sqm, view, parking, restraunt, pool, kitchen, coworking, rooftop, \
 #             balcony_terrace, storage, rating, data_source]) 
-    
-#     # Магия не иначе, переписать
-#     f = 10
-#     alb =[ "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V" ]
-#     for row in all_static:
-#         f += 1
-#         k = 0
-#         for s in row:
-#             if alb[k] == "B":
-#                 cell_to_update = sheet[f"{alb[k]}{f}"]
-#                 cell_to_update.value = s[0]
-#                 cell_to_update.hyperlink = s[1]
-#                 cell_to_update.font = Font(color="0000FF", underline="single")
-#             # elif alb[k] == "C":
-#             #     if s[1] == "None":
-#             #         cell_to_update = sheet[f"{alb[k]}{f}"]   # 'B11'
-#             #         cell_to_update.value = s[0]
-#             #     else:
-#             #         cell_to_update = sheet[f"{alb[k]}{f}"]
-#             #         cell_to_update.value = s[0]
-#             #         cell_to_update.hyperlink = f"https://www.google.com/maps?q={s[1]}"
-#             #         cell_to_update.font = Font(color="0000FF", underline="single")
+
+#     alb = [chr(i) for i in range(ord('A'), ord('W'))]  # Создает список букв от A до V
+#     for row_num, row in enumerate(all_static, start=11):
+#         for col_num, value in enumerate(row):
+#             col_letter = alb[col_num]
+#             cell_ref = f"{col_letter}{row_num}"
+#             cell = sheet[cell_ref]
+
+#             if col_letter == "B":
+#                 cell.value, cell.hyperlink = value[0], value[1]
+#                 cell.font = Font(color="0000FF", underline="single")
+#             elif col_letter == "C":
+#                 cell.value = value[0]
+#                 if value[1] != "None":
+#                     cell.hyperlink = f"https://www.google.com/maps?q={value[1]}"
+#                     cell.font = Font(color="0000FF", underline="single")
 #             else:
-#                 cell_to_update = sheet[f"{alb[k]}{f}"]   # 'B11'
-#                 cell_to_update.value = s
-#             k += 1
+#                 cell.value = value
 
 #     workbook.save(filename=newfile)
-#     print("info: Exel file is complite")
+#     print("info: Exel file is complete")
 #     return newfile
 
 
 
 # if __name__ == "__main__":
-#     get_exel_file("1")
+#     choice = "1"  # Assigning "1" to the variable choice, not comparing it
+#     asyncio.run(get_exel_file(choice))

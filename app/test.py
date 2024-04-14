@@ -65,24 +65,24 @@ from options_chrome import profil
 
 
 
-# i = 0
+i = 0
 
-# data_room = asyncio.run(get_all_airdna())
+data_room = asyncio.run(get_all_airdna())
 
-# if data_room is not None:
-#     for n in data_room:
-#         print("id: ", n.id)
-#         print("n.revenue_ltm: ", n.revenue_ltm)
-#         print("n.revenue_potential_ltm: ", n.revenue_potential_ltm)
-#         print("n.occupancy_rate_ltm: ", n.occupancy_rate_ltm)
-#         print("n.average_daily_rate_ltm: ", n.average_daily_rate_ltm)
-#         print("n.days_available_ltm: ", n.days_available_ltm)
-#         print("n.location_lat: ", n.location_lat)
-#         print("n.location_lng: ", n.location_lng)
-#         print("n.date: ", n.date)
-#         print()
-#         i += 1
-# print("i: ", i)
+if data_room is not None:
+    for n in data_room:
+        print("id: ", n.id)
+        print("n.revenue_ltm: ", n.revenue_ltm)
+        print("n.revenue_potential_ltm: ", n.revenue_potential_ltm)
+        print("n.occupancy_rate_ltm: ", n.occupancy_rate_ltm)
+        print("n.average_daily_rate_ltm: ", n.average_daily_rate_ltm)
+        print("n.days_available_ltm: ", n.days_available_ltm)
+        print("n.location_lat: ", n.location_lat)
+        print("n.location_lng: ", n.location_lng)
+        print("n.date: ", n.date)
+        print()
+        i += 1
+print("i: ", i)
 
 
 # id = 1035169267511734598
