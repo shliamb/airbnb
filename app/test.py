@@ -123,37 +123,35 @@ from options_chrome import profil
 
 
 
-async def main():
-    i = 0
-    rooms_data = await get_all_rooms_not_None2()
-    for room in rooms_data:
-        airbnb_room, airdna_room = room
-        print(airbnb_room.id)  # Объект из таблицы Airbnb
-        if airdna_room is not None:
-            print(airdna_room.location_lat)  # Связанный объект из таблицы Airdna (если есть)
-            print()
-        i += 1
-    print("Всего: ", i)
+# async def main():
+#     i = 0
+#     rooms_data = await get_all_rooms_not_None2()
+#     for room in rooms_data:
+#         airbnb_room, airdna_room = room
+#         print(airbnb_room.id)  # Объект из таблицы Airbnb
+#         if airdna_room is not None:
+#             print(airdna_room.location_lat)  # Связанный объект из таблицы Airdna (если есть)
+#             print()
+#         i += 1
+#     print("Всего: ", i)
 
-asyncio.run(main())
-
-
+# asyncio.run(main())
 
 
 
 
+# from datetime import datetime, timezone, timedelta
 
 
 
+# GET DAY AND TIME
+def get_time_utcnow() -> time:
+    current_time = datetime.now(timezone.utc).strftime("%M")
+    return current_time
 
 
-
-
-
-
-
-
-
+current_time = get_time_utcnow()
+print(current_time)
 
 
 
@@ -161,7 +159,14 @@ asyncio.run(main())
 
 
 
+# from datetime import datetime, timezone
 
+# def time_utcnow() -> str:
+#     return datetime.now(timezone.utc).strftime("%H:%M:%S")
+
+# # Использование функции
+# current_time_str = time_utcnow()
+# print(current_time_str)  # Выводит текущее время в UTC в формате HH:MM:SS
 
 
 

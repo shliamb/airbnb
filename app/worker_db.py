@@ -88,10 +88,19 @@ async def get_all_rooms_not_None2():
             .outerjoin(Airdna, Airbnb.id == Airdna.id)  # Предполагаем что поле для соединения это 'id'
         )
         result = await session.execute(query)
-        data = result.all() 
+        data = result.all()
+        #data = result.scalars().all()
         return data
 
-
+# Get Count All Rooms hwo not None
+async def get_count_rooms_not_None():
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        # Используем func.count() для подсчета записей
+        query = select(func.count()).select_from(Airbnb).filter(Airbnb.title.isnot(None))
+        result = await session.execute(query)
+        count = result.scalar()  # Получаем количество записей как скалярное значение
+        return count
 
 
 
