@@ -76,6 +76,7 @@ def find_data_room(driver, time_correction, price_min, price_max):
         
         print("---------")
 
+
         # Room url and ID room
         room_url = el.find("a", {"class": "l1ovpqvx"})
         if room_url:
@@ -83,14 +84,16 @@ def find_data_room(driver, time_correction, price_min, price_max):
             url_room = f"https://www.airbnb.com{url_href}"
             print("url_room:", url_room)
             # ID ROOM
-            patern = "/rooms/(\d+)"
-            match = re.search(patern, url_href)
+            pattern = r"/(?:rooms|listing)/(\d+)"
+            match = re.search(pattern, url_href)
             if match:
                 id = int(match.group(1))
                 print("id:", id)
             else:
+                id = 0
                 print("Error: Ошибка поиска ID")
         else:
+            id = 0
             print("Error: Ошибка поиска URl")
 
 

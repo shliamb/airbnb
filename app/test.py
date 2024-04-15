@@ -19,13 +19,52 @@ import re
 # profil()
 
 
+#url_href = "/rooms/897544692951213383?adults"
+url_href = "/luxury/listing/20473374?adults=1&ch"
 
 
-id = 45969379
+pattern = r"/(?:rooms|listing)/(\d+)"
 
-data = asyncio.run(get_id(id))
-if data is not None:
-    print(data.passed_flag, data.id, data.url )
+
+match = re.search(pattern, url_href)
+if match:
+    id = int(match.group(1))
+else:
+    id = None
+
+print("id:", id)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# id = 45969379
+
+# data = asyncio.run(get_id(id))
+# if data is not None:
+#     print(data.passed_flag, data.id, data.url )
 
 
 # data_room = asyncio.run(get_airbnb(id))
