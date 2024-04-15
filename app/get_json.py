@@ -47,7 +47,7 @@ async def process_data(item, semaphore):
 
         data_room = await get_airdna(id)
         if data_room is not None:
-            print(f"ino: update data")
+            print(f"info: update data")
             await update_airdna(id, room_data)
         else:
             print(f"info: added data")

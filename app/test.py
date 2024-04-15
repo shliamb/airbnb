@@ -21,11 +21,11 @@ from options_chrome import profil
 
 
 
-# id = 826564732035479725
+# id = 1106800871559619275
 
 # data = asyncio.run(get_id(id))
 # if data is not None:
-#     print(data.passed_flag)
+#     print(data.passed_flag, data.id, data.url )
 
 
 # data_room = asyncio.run(get_airbnb(id))
@@ -65,24 +65,40 @@ from options_chrome import profil
 
 
 
-i = 0
 
-data_room = asyncio.run(get_all_airdna())
 
-if data_room is not None:
-    for n in data_room:
-        print("id: ", n.id)
-        print("n.revenue_ltm: ", n.revenue_ltm)
-        print("n.revenue_potential_ltm: ", n.revenue_potential_ltm)
-        print("n.occupancy_rate_ltm: ", n.occupancy_rate_ltm)
-        print("n.average_daily_rate_ltm: ", n.average_daily_rate_ltm)
-        print("n.days_available_ltm: ", n.days_available_ltm)
-        print("n.location_lat: ", n.location_lat)
-        print("n.location_lng: ", n.location_lng)
-        print("n.date: ", n.date)
-        print()
-        i += 1
-print("i: ", i)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# i = 0
+
+# data_room = asyncio.run(get_all_airdna())
+
+# if data_room is not None:
+#     for n in data_room:
+#         print("id: ", n.id)
+#         print("n.revenue_ltm: ", n.revenue_ltm)
+#         print("n.revenue_potential_ltm: ", n.revenue_potential_ltm)
+#         print("n.occupancy_rate_ltm: ", n.occupancy_rate_ltm)
+#         print("n.average_daily_rate_ltm: ", n.average_daily_rate_ltm)
+#         print("n.days_available_ltm: ", n.days_available_ltm)
+#         print("n.location_lat: ", n.location_lat)
+#         print("n.location_lng: ", n.location_lng)
+#         print("n.date: ", n.date)
+#         print()
+#         i += 1
+# print("i: ", i)
 
 
 # id = 1035169267511734598
@@ -107,16 +123,31 @@ print("i: ", i)
 
 
 
-# async def main():
-#     rooms_data = await get_all_rooms_not_None2()
-#     for room in rooms_data:
-#         airbnb_room, airdna_room = room
-#         print(airbnb_room.title)  # Объект из таблицы Airbnb
-#         if airdna_room is not None:
-#             print(airdna_room.location_lat)  # Связанный объект из таблицы Airdna (если есть)
-#             print()
+async def main():
+    i = 0
+    rooms_data = await get_all_rooms_not_None2()
+    for room in rooms_data:
+        airbnb_room, airdna_room = room
+        print(airbnb_room.id)  # Объект из таблицы Airbnb
+        if airdna_room is not None:
+            print(airdna_room.location_lat)  # Связанный объект из таблицы Airdna (если есть)
+            print()
+        i += 1
+    print("Всего: ", i)
 
-# asyncio.run(main())
+asyncio.run(main())
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

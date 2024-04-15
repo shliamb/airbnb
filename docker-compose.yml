@@ -13,6 +13,12 @@ services:
       - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - db-network
 
 volumes:
   postgres_data:
+
+networks:
+  db-network:
+    driver: bridge

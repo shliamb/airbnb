@@ -26,18 +26,18 @@ Column = sqlalchemy.Column
 class Id(Base):
     __tablename__ = 'id'
     id = Column(sqlalchemy.BigInteger, primary_key=True, unique=True, nullable=False, index=True)
-    url = Column(sqlalchemy.String(5000), nullable=False)
-    busy_flag = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False) # для пометки уже взятых id в работу, в случае, если будут работать больше одной копии
-    passed_flag = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False) # пометка, что пропарсена
+    url = Column(sqlalchemy.String(5000), nullable=False, index=True)
+    busy_flag = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False, index=True) # для пометки уже взятых id в работу, в случае, если будут работать больше одной копии
+    passed_flag = Column(sqlalchemy.Boolean, default=False, server_default="False", nullable=False, index=True) # пометка, что пропарсена
     date = Column(sqlalchemy.DateTime, nullable=True)
 
 # POINT - точка остановки (от 10$ до 11$) сбора списков объектов
 class Point(Base):
     __tablename__ = 'point'
-    id = Column(sqlalchemy.Integer, primary_key=True, unique=True, nullable=False, autoincrement=True)
+    id = Column(sqlalchemy.Integer, primary_key=True, unique=True, nullable=False, autoincrement=True, index=True)
     date = Column(sqlalchemy.DateTime, nullable=True)
-    price_min = Column(sqlalchemy.Integer, default=10, server_default="10", nullable=False)
-    price_max = Column(sqlalchemy.Integer, default=11, server_default="11", nullable=False)
+    price_min = Column(sqlalchemy.Integer, default=10, server_default="10", nullable=False, index=True)
+    price_max = Column(sqlalchemy.Integer, default=11, server_default="11", nullable=False, index=True)
     currency = Column(sqlalchemy.String(10), default="USD", server_default="USD", nullable=False)
 
 # AIRBNB - параметры объектов, не связанная таблица.
@@ -82,6 +82,17 @@ class Airdna(Base):
     days_available_ltm = Column(sqlalchemy.BigInteger, nullable=True)
     location_lat = Column(sqlalchemy.Float, nullable=True)
     location_lng = Column(sqlalchemy.Float, nullable=True)
+    date = Column(sqlalchemy.DateTime, nullable=True)
+
+# MAP - из API будет андрес текстом и дублироваться url, location_lat, location_lng
+class Map(Base):
+    __tablename__ = 'map'
+    id = Column(sqlalchemy.BigInteger, primary_key=True, unique=True, nullable=False, index=True)
+    title = Column(sqlalchemy.String(3000), nullable=True, index=True)
+    description = Column(sqlalchemy.String(3000), nullable=True)
+    url = Column(sqlalchemy.String(3000), nullable=True)
+    location_lat = Column(sqlalchemy.Float, nullable=True, index=True)
+    location_lng = Column(sqlalchemy.Float, nullable=True, index=True)
     date = Column(sqlalchemy.DateTime, nullable=True)
 
 # TASK - автоматизированные задачи

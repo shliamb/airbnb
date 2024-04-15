@@ -5,3 +5,4 @@ profiles/
 img/
 app/chromedriver/
 app/test.py
+migration.py

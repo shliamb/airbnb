@@ -33,7 +33,7 @@ def run():
             print(Style.RESET_ALL)
 
         
-        quick_sleep(1,2)
+        #quick_sleep(1,2)
 
         i += 1
         print(Back.BLUE + f"Info: {i} big cicles Parsing is completed. Congratulation.")
@@ -43,19 +43,23 @@ def run():
 max_attempts = 5
 attempts = 0
 
-while attempts < max_attempts:
-    try:
-        print("info: start parser")
-        if __name__ == "__main__":
-            run()
-        break
-    except Exception as e:
-        attempts += 1
-        print(f"Произошла ошибка: {e}. Попытка {attempts} из {max_attempts}. Повторная попытка через 5 секунд...")
-        time.sleep(5)
+# run()
+asyncio.run(run())
 
-if attempts == max_attempts:
-    print("Превышено максимальное количество попыток. Завершение работы.")
+
+# while attempts < max_attempts:
+#     try:
+#         print("info: start parser")
+#         if __name__ == "__main__":
+#             run()
+#         break
+#     except Exception as e:
+#         attempts += 1
+#         print(f"Произошла ошибка: {e}. Попытка {attempts} из {max_attempts}. Повторная попытка через 5 секунд...")
+#         time.sleep(5)
+
+# if attempts == max_attempts:
+#     print("Превышено максимальное количество попыток. Завершение работы.")
 
 
 
