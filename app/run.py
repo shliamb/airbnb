@@ -12,18 +12,18 @@ def run():
     while True:
 
         # Запуск обхода списков по поиску
-        confirm_list = get_list_data()
-        if confirm_list is False:
-            print(Back.RED + "Error: The crawl of the lists in the search was completed unsuccessfully")
-            print(Style.RESET_ALL)
+        # confirm_list = get_list_data()
+        # if confirm_list is False:
+        #     print(Back.RED + "Error: The crawl of the lists in the search was completed unsuccessfully")
+        #     print(Style.RESET_ALL)
 
-        # Проверка ресурса не пропарсеных объектов
-        all_false_id = asyncio.run(get_all_id_false())
-        if all_false_id == []:
-            data = {"passed_flag": False}
-            asyncio.run(update_all_id(data))
-            print(Back.RED + "info: Zeroing object parsing")
-            print(Style.RESET_ALL)
+        # # Проверка ресурса не пропарсеных объектов
+        # all_false_id = asyncio.run(get_all_id_false())
+        # if all_false_id == []:
+        #     data = {"passed_flag": False}
+        #     asyncio.run(update_all_id(data))
+        #     print(Back.RED + "info: Zeroing object parsing")
+        #     print(Style.RESET_ALL)
             # Прверяет, если записей больше нет, которые не проходили, то обнуляет все, для очередного прохода.
 
         # Запуск детального обхода объектов
@@ -56,7 +56,7 @@ asyncio.run(run())
 #     except Exception as e:
 #         attempts += 1
 #         print(f"Произошла ошибка: {e}. Попытка {attempts} из {max_attempts}. Повторная попытка через 5 секунд...")
-#         time.sleep(5)
+#         time.sleep(60)
 
 # if attempts == max_attempts:
 #     print("Превышено максимальное количество попыток. Завершение работы.")

@@ -1,11 +1,11 @@
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font
-from worker_db import get_all_rooms_not_None2
+from worker_db import get_all_airbnb_airdna, get_all_airbnb_airdna_sorted_bedroom_asc, get_all_airbnb_airdna_sorted_bedroom_desc
 import asyncio
 import shutil
 
 
-def get_exel_file(choice):
+async def get_exel_file(choice):
         # Путь к исходному файлу и новое имя файла
     sourcefile = "./file/The Heigts анализ_research.xlsx"
     newfile = "./file/stat_data.xlsx"
@@ -17,15 +17,17 @@ def get_exel_file(choice):
     sheet = workbook["расчет ADR и OccupancyADR and O"] 
 
     if choice == "1":
-        data = asyncio.run(get_all_rooms_not_None2()) 
-    # elif choice == "2":
-    #     data = asyncio.run(get_rooms_sorted_by_bedroom_asc())
-    # elif choice == "3":
-    #     data = asyncio.run(get_rooms_sorted_by_bedroom_desc()) 
+        data = await get_all_airbnb_airdna()
+    elif choice == "2":
+        data = await get_all_airbnb_airdna_sorted_bedroom_asc()
+    elif choice == "3":
+        data = await get_all_airbnb_airdna_sorted_bedroom_desc()
 
         # Переменные
     all_static = []
     number = 0
+
+    list_per = adr = actual_aver = historic = url_location = location = ""
 
         # Передаем в переменные данные из ответа базы в цыкле каждая строка
     for n, m in data:
@@ -121,7 +123,7 @@ def get_exel_file(choice):
 
 
 if __name__ == "__main__":
-    get_exel_file()
+    asyncio.run(get_exel_file())
 
 
 

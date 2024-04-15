@@ -19,7 +19,7 @@ def get_list_data():
     time_correction = +8 # Под Bali
     currency = "USD"
     room_types = "Entire home%2Fapt" # Весь дом целиком
-    count_none_next = 3 # Циклов и пойдет обходить сами обхекты. Считает не нахождение ссылки Next +1.
+    count_none_next = 20 # Циклов и пойдет обходить сами обхекты. Считает не нахождение ссылки Next +1.
 
 
     point = asyncio.run(get_point(1))

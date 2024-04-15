@@ -80,7 +80,7 @@ async def get_all_rooms_not_None():
         return data # Если не будет записей, то вернет пустой список
 
 # EXEL Read All Airbnb and Airdna whith hes is hwo - забирает таблицу Airbnb и по id забирает с Airdna если оно есть там, для exel
-async def get_all_rooms_not_None2():
+async def get_all_airbnb_airdna():
     async_session = await create_async_engine_and_session()
     async with async_session() as session:
         query = (
@@ -92,17 +92,31 @@ async def get_all_rooms_not_None2():
         #data = result.scalars().all()
         return data
 
-# Get Count All Rooms hwo not None
-async def get_count_rooms_not_None():
+# Get_rooms_sorted_by_bedroom_asc
+async def get_all_airbnb_airdna_sorted_bedroom_asc():
     async_session = await create_async_engine_and_session()
     async with async_session() as session:
-        # Используем func.count() для подсчета записей
-        query = select(func.count()).select_from(Airbnb).filter(Airbnb.title.isnot(None))
+        query = (
+            select(Airbnb, Airdna)
+            .outerjoin(Airdna, Airbnb.id == Airdna.id)  # Предполагаем что поле для соединения это 'id'
+            .order_by(Airbnb.bedroom.asc()) # asc() # desc()
+        )
         result = await session.execute(query)
-        count = result.scalar()  # Получаем количество записей как скалярное значение
-        return count
+        rooms_sorted = result.all()  # Получаем отсортированный список комнат
+        return rooms_sorted
 
-
+# Get_rooms_sorted_by_bedroom_desc
+async def get_all_airbnb_airdna_sorted_bedroom_desc():
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = (
+            select(Airbnb, Airdna)
+            .outerjoin(Airdna, Airbnb.id == Airdna.id)  # Предполагаем что поле для соединения это 'id'
+            .order_by(Airbnb.bedroom.desc()) # asc() # desc()
+        )
+        result = await session.execute(query)
+        rooms_sorted = result.all()  # Получаем отсортированный список комнат
+        return rooms_sorted
 
 
 
@@ -170,15 +184,6 @@ async def get_count_rooms_not_None():
 #         rooms_sorted = result.scalars().all()  # Получаем отсортированный список комнат
 #         return rooms_sorted
 
-# # Get_rooms_sorted_by_bedroom_asc
-# async def get_rooms_sorted_by_bedroom_asc():
-#     async_session = await create_async_engine_and_session()
-#     async with async_session() as session:
-#         # Добавляем сортировку записей по цене за ночь от меньшей к большей
-#         query = select(Airbnb).filter(Airbnb.title_room.isnot(None)).order_by(Rooms.bedroom.asc()) # asc() # desc()
-#         result = await session.execute(query)
-#         rooms_sorted = result.scalars().all()  # Получаем отсортированный список комнат
-#         return rooms_sorted
 ####
 
 
@@ -232,6 +237,62 @@ async def adding_id(data) -> bool:
 # Additional functions
 #
 #
+
+# Read ALL ID by Passed is False
+async def get_id_passed_false_count():
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        count_query = (
+            select(func.count('*'))
+            .select_from(Id)  # Указываем таблицу
+            .filter(Id.passed_flag == False)
+        )
+        result = await session.execute(count_query)
+        count = result.scalar_one()
+        return count
+
+# Read ALL coint good
+async def get_all_airbnb_airdna_good_count():
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = (
+            select(func.count('*'))
+            .select_from(Airbnb, Airdna)
+            .outerjoin(Airdna, Airbnb.id == Airdna.id)  # Предполагаем что поле для соединения это 'id'
+            .filter(Airbnb.location != "")
+            .filter(Airbnb.bedroom != None)
+        )
+        result = await session.execute(query)
+        data = result.scalar_one()
+        return data
+
+# async def get_id_passed_false_count():
+#     async_session = await create_async_engine_and_session()
+#     async with async_session() as session:
+#         count_query = (
+#             select(func.count('*'))  # Или func.count(Id.id), если нужно подсчитать по столбцу id
+#             .select_from(Id)  # Указываем таблицу
+#             .filter(Id.passed_flag == 0)  # Условие фильтрации
+#         )
+#         result = await session.execute(count_query)
+#         count = result.scalar_one()  # Получаем результат запроса
+#         return count
+
+# Get_rooms_sorted_by_bedroom_desc
+async def get_all_airbnb_airdna_sorted_bedroom_desc():
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = (
+            select(Airbnb, Airdna)
+            .outerjoin(Airdna, Airbnb.id == Airdna.id)  # Предполагаем что поле для соединения это 'id'
+            .order_by(Airbnb.bedroom.desc()) # asc() # desc()
+        )
+        result = await session.execute(query)
+        rooms_sorted = result.all()  # Получаем отсортированный список комнат
+        return rooms_sorted
+
+
+
 
 # Read all id's at Table ID 
 async def get_all_id_false():

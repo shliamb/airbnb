@@ -1,4 +1,4 @@
-from worker_db import get_airbnb, get_id, get_airdna, get_all_airdna, get_airdna, get_all_rooms_not_None2
+from worker_db import get_airbnb, get_id
 from datetime import datetime, timezone, timedelta
 from parser_sys import str_inter
 import asyncio
@@ -7,8 +7,8 @@ import random
 import sys
 # from tqdm import tqdm
 import re
-from colorama import Fore, Back, Style
-from options_chrome import profil
+# from colorama import Fore, Back, Style
+# from options_chrome import profil
 
 # profil.counter = 0
 
@@ -21,11 +21,11 @@ from options_chrome import profil
 
 
 
-# id = 1106800871559619275
+id = 45969379
 
-# data = asyncio.run(get_id(id))
-# if data is not None:
-#     print(data.passed_flag, data.id, data.url )
+data = asyncio.run(get_id(id))
+if data is not None:
+    print(data.passed_flag, data.id, data.url )
 
 
 # data_room = asyncio.run(get_airbnb(id))
@@ -145,13 +145,13 @@ from options_chrome import profil
 
 
 # GET DAY AND TIME
-def get_time_utcnow() -> time:
-    current_time = datetime.now(timezone.utc).strftime("%M")
-    return current_time
+# def get_time_utcnow() -> time:
+#     current_time = datetime.now(timezone.utc).strftime("%M")
+#     return current_time
 
 
-current_time = get_time_utcnow()
-print(current_time)
+# current_time = get_time_utcnow()
+# print(current_time)
 
 
 
