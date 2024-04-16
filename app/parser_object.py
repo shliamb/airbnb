@@ -21,7 +21,8 @@ async def get_data_obj():
         while data_room is None or data_room == []:
             print(Back.RED + "Error: The objects in the database are over, let's wait a bit.")
             print(Style.RESET_ALL)
-            asyncio.sleep(300)
+            # await asyncio.sleep(300)
+            await quick_sleep(250, 300)
             data_room = await get_10_id_false(count)
 
 
@@ -58,8 +59,27 @@ async def get_data_obj():
         print(Style.RESET_ALL)
 
 
-if __name__ == "__main__":
-    asyncio.run(get_data_obj())
+
+
+
+attempts = 0
+max_attempts = 5  # Примерное количество максимальных попыток
+
+async def main():
+    global attempts
+    while attempts < max_attempts:
+        try:
+            print("info: start parser")
+            if __name__ == "__main__":
+                await get_data_obj()
+            break  # Если функция выполнится без ошибок, выйдем из цикла
+        except Exception as e:
+            attempts += 1
+            print(f"Произошла ошибка: {e}. Попытка {attempts} из {max_attempts}. Повторная попытка через 300 секунд...")
+            await asyncio.sleep(300)  # Ожидание перед повторной попыткой
+
+# Запуск асинхронной функции main
+asyncio.run(main())
 
 
 
@@ -72,6 +92,9 @@ if __name__ == "__main__":
 
 
 
+
+# if __name__ == "__main__":
+#     asyncio.run(get_data_obj())
 
     # Scroll page
 # await scroll(driver)

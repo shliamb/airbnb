@@ -96,24 +96,38 @@ async def get_list_id_url():
 
 
 
-
-
-max_attempts = 5
 attempts = 0
+max_attempts = 5  # Примерное количество максимальных попыток
 
-while attempts < max_attempts:
-    try:
-        print("info: start parser")
-        if __name__ == "__main__":
-            asyncio.run(get_list_id_url())
-        break
-    except Exception as e:
-        attempts += 1
-        print(f"Произошла ошибка: {e}. Попытка {attempts} из {max_attempts}. Повторная попытка через 5 секунд...")
-        asyncio.sleep(300)
+async def main():
+    global attempts
+    while attempts < max_attempts:
+        try:
+            print("info: start parser")
+            if __name__ == "__main__":
+                await get_list_id_url()
+            break  # Если функция выполнится без ошибок, выйдем из цикла
+        except Exception as e:
+            attempts += 1
+            print(f"Произошла ошибка: {e}. Попытка {attempts} из {max_attempts}. Повторная попытка через 5 секунд...")
+            await asyncio.sleep(300)  # Ожидание перед повторной попыткой
 
-if attempts == max_attempts:
-    print("Превышено максимальное количество попыток. Завершение работы.")
+# Запуск асинхронной функции main
+asyncio.run(main())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -123,7 +137,23 @@ if attempts == max_attempts:
 
 
 
+# max_attempts = 5
+# attempts = 0
 
+# while attempts < max_attempts:
+#     try:
+#         print("info: start parser")
+#         if __name__ == "__main__":
+#             asyncio.run(get_list_id_url())
+#         break
+#     except Exception as e:
+#         attempts += 1
+#         print(f"Произошла ошибка: {e}. Попытка {attempts} из {max_attempts}. Повторная попытка через 5 секунд...")
+#         #asyncio.sleep(300)
+#         await asyncio.sleep(300)
+
+# if attempts == max_attempts:
+#     print("Превышено максимальное количество попыток. Завершение работы.")
 
 
 
