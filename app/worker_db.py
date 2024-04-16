@@ -22,6 +22,114 @@ async def create_async_engine_and_session():                               # pos
 
 
 
+
+
+############################################
+#               Проверенные                #
+#                                          #
+
+
+#### POINT #### 
+
+# Read POINT
+async def get_point(id: int):
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = select(Point).filter(Point.id == id)
+        result = await session.execute(query)
+        data = result.scalar_one_or_none()
+        logging.info(f"Read point")
+        return data or None
+
+# Update POINT
+async def update_point(id: int, data) -> bool: 
+    async_session = await create_async_engine_and_session()
+    confirmation = False
+    async with async_session() as session:
+        try:
+            query = update(Point).where(Point.id == id).values(**data)
+            await session.execute(query)
+            await session.commit()
+            confirmation = True
+            logging.info(f"point is update")
+        except Exception as e:
+            logging.error(f"Failed to update point, error: {e}")
+    return confirmation
+
+# Add POINT
+async def adding_point(data) -> bool:
+    async_session = await create_async_engine_and_session()
+    confirmation = False
+    async with async_session() as session:
+        try:
+            query = insert(Point).values(**data)
+            await session.execute(query)
+            await session.commit()
+            confirmation = True
+            logging.info("Adding point DB")
+        except Exception as e:
+            logging.error(f"Failed to add point, errror: {e}")
+    return confirmation
+####
+
+#### ID #### 
+
+# Read Data for ID
+async def get_id(id: int):
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = select(Id).filter(Id.id == id)
+        result = await session.execute(query)
+        data = result.scalar_one_or_none()
+        logging.info(f"Read data for ID")
+        return data or None
+
+# Update Data for ID
+async def update_id(id: int, data) -> bool: 
+    async_session = await create_async_engine_and_session()
+    confirmation = False
+    async with async_session() as session:
+        try:
+            query = update(Id).where(Id.id == id).values(**data)
+            await session.execute(query)
+            await session.commit()
+            confirmation = True
+            logging.info(f"The ID is update")
+        except Exception as e:
+            logging.error(f"Failed to update table ID, error: {e}")
+    return confirmation
+
+# Add Data for ID
+async def adding_id(data) -> bool:
+    async_session = await create_async_engine_and_session()
+    confirmation = False
+    async with async_session() as session:
+        try:
+            query = insert(Id).values(**data)
+            await session.execute(query)
+            await session.commit()
+            confirmation = True
+            logging.info("Adding a Table ID")
+        except Exception as e:
+            logging.error(f"Failed to add a Table ID, errror:: {e}")
+    return confirmation
+
+# Read count id's at Table ID 
+async def get_10_id_false(count):
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = (
+            select(Id)
+            .filter(Id.passed_flag == False)
+            .filter(Id.busy_flag == False)
+            .limit(count) # Максимальное значение - count
+        )
+        result = await session.execute(query)
+        data = result.scalars().all()  
+        return data
+
+
+
 #### AIRBNB #### - таблица с параметрами объекта 
 
 # Read data airbnb
@@ -63,6 +171,57 @@ async def adding_airbnb(data) -> bool:
         except Exception as e:
             logging.error(f"Failed to add data airbnb, error: {e}")
     return confirmation
+
+
+
+
+
+
+
+#                                          #
+#               Проверенные                #
+############################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #
 #
@@ -190,47 +349,9 @@ async def get_all_airbnb_airdna_sorted_bedroom_desc():
 
 
 
-#### ID #### 
 
-# Read Data for ID
-async def get_id(id: int):
-    async_session = await create_async_engine_and_session()
-    async with async_session() as session:
-        query = select(Id).filter(Id.id == id)
-        result = await session.execute(query)
-        data = result.scalar_one_or_none()
-        logging.info(f"Read data for ID")
-        return data or None
 
-# Update Data for ID
-async def update_id(id: int, data) -> bool: 
-    async_session = await create_async_engine_and_session()
-    confirmation = False
-    async with async_session() as session:
-        try:
-            query = update(Id).where(Id.id == id).values(**data)
-            await session.execute(query)
-            await session.commit()
-            confirmation = True
-            logging.info(f"The ID is update")
-        except Exception as e:
-            logging.error(f"Failed to update table ID, error: {e}")
-    return confirmation
 
-# Add Data for ID
-async def adding_id(data) -> bool:
-    async_session = await create_async_engine_and_session()
-    confirmation = False
-    async with async_session() as session:
-        try:
-            query = insert(Id).values(**data)
-            await session.execute(query)
-            await session.commit()
-            confirmation = True
-            logging.info("Adding a Table ID")
-        except Exception as e:
-            logging.error(f"Failed to add a Table ID, errror:: {e}")
-    return confirmation
 
 #
 #
@@ -372,50 +493,6 @@ async def update_all_id(data) -> bool:
 
 
 
-
-
-#### POINT #### 
-
-# Read POINT
-async def get_point(id: int):
-    async_session = await create_async_engine_and_session()
-    async with async_session() as session:
-        query = select(Point).filter(Point.id == id)
-        result = await session.execute(query)
-        data = result.scalar_one_or_none()
-        logging.info(f"Read point")
-        return data or None
-
-# Update POINT
-async def update_point(id: int, data) -> bool: 
-    async_session = await create_async_engine_and_session()
-    confirmation = False
-    async with async_session() as session:
-        try:
-            query = update(Point).where(Point.id == id).values(**data)
-            await session.execute(query)
-            await session.commit()
-            confirmation = True
-            logging.info(f"point is update")
-        except Exception as e:
-            logging.error(f"Failed to update point, error: {e}")
-    return confirmation
-
-# Add POINT
-async def adding_point(data) -> bool:
-    async_session = await create_async_engine_and_session()
-    confirmation = False
-    async with async_session() as session:
-        try:
-            query = insert(Point).values(**data)
-            await session.execute(query)
-            await session.commit()
-            confirmation = True
-            logging.info("Adding point DB")
-        except Exception as e:
-            logging.error(f"Failed to add point, errror: {e}")
-    return confirmation
-####
 
 
 

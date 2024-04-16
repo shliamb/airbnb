@@ -5,25 +5,25 @@ import asyncio
 import os
 
 # PROFILESS CHROME
-def call_counter(func): # входит функция profil
-    def helper():
+
+def call_counter(func):
+    def helper(*args, **kwargs): 
         helper.calls += 1
-        if helper.calls >= 3:
-            folder_path = "./profiles/"
+        if helper.calls >= 10:
+            # Получаю folder из аргументов
+            folder_path = args[0] if args else kwargs.get('folder', '')
             if os.path.exists(folder_path):
-                shutil.rmtree(folder_path)  # Удаляет папку profiles
-                os.makedirs(folder_path) # Создает папку profiles
+                shutil.rmtree(folder_path)
+                os.makedirs(folder_path)
                 print(Back.BLUE + "info: Profiles Chrome is deleted")
                 print(Style.RESET_ALL)
             helper.calls = 0
-        return func() # выходит результат функции profil
+        return func(*args, **kwargs) 
     helper.calls = 0
     return helper
 
-
-
 @call_counter
-def profil() -> str:
+def profil(folder) -> str:
     return f"profile{random.randint(1, 10)}"
 
 
@@ -44,6 +44,45 @@ if __name__ == "__main__":
 
 
 
+
+
+
+
+
+
+
+
+
+# "./profiles/"
+
+
+
+
+
+# PROFILESS CHROME
+# def call_counter(func): # входит функция profil
+#     def helper():
+#         helper.calls += 1
+#         if helper.calls >= 10:
+#             folder_path = folder
+#             if os.path.exists(folder_path):
+#                 shutil.rmtree(folder_path)  # Удаляет папку profiles
+#                 os.makedirs(folder_path) # Создает папку profiles
+#                 print(Back.BLUE + "info: Profiles Chrome is deleted")
+#                 print(Style.RESET_ALL)
+#             helper.calls = 0
+#         return func() # выходит результат функции profil
+#     helper.calls = 0
+#     return helper
+
+
+
+# @call_counter
+# def profil(folder) -> str:
+#     return f"profile{random.randint(1, 10)}"
+
+# if __name__ == "__main__":
+#     asyncio.run(profil())
 
 
 # PROFILESS CHROME

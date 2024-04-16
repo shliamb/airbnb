@@ -1,7 +1,8 @@
 venv/
 app/bad/
 .env
-profiles/
+profiles_list/
+profiles_object/
 img/
 app/chromedriver/
 app/test.py

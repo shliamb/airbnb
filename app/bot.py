@@ -66,43 +66,61 @@ def send_welcome(message):
     markup.row(btn_count_3)
     bot.send_message(message.chat.id, "🧮 Выберите интересующую статистику:", reply_markup=markup)
 
+
+
+
+
+
+
 # menu1
 @bot.callback_query_handler(func=lambda call: True)
 def query_handler(call):
     bot.answer_callback_query(callback_query_id=call.id)
-
     current_start = get_time_utcnow()
-
     # Функция для отправки действия "typing"
     def send_typing_action(chat_id):
         while not action_done.is_set():  # Пока флаг не установлен, отправляем "typing"
             bot.send_chat_action(chat_id, 'typing')
             time.sleep(3)  # Интервал в секундах между отправками действия "typing"
-
     # Флаг для отслеживания статуса обработки запроса
     action_done = threading.Event()
-
     # Запуск потока, который будет отправлять действие "typing"
     threading.Thread(target=send_typing_action, args=(call.message.chat.id,)).start()
 
     try:
+
         if call.data == 'menu1':
             choice = "1"
             file_exel = asyncio.run(get_exel_file(choice))
             with open(file_exel, "rb") as exel_file:
                 bot.send_document(call.message.chat.id, exel_file)
+            current_end = get_time_utcnow()
+            if current_start is not None and current_end is not None:
+                difference = float(current_end) - float(current_start)
+                bot.send_message(call.message.chat.id, f"Выполнение запроса заняло: {round(difference, 2)} мин.")
+
 
         elif call.data == 'menu2':
             choice = "2"
             file_exel = asyncio.run(get_exel_file(choice))
             with open(file_exel, "rb") as exel_file:
                 bot.send_document(call.message.chat.id, exel_file)
+            current_end = get_time_utcnow()
+            if current_start is not None and current_end is not None:
+                difference = float(current_end) - float(current_start)
+                bot.send_message(call.message.chat.id, f"Выполнение запроса заняло: {round(difference, 2)} мин.")
+
 
         elif call.data == 'menu3':
             choice = "3"
             file_exel = asyncio.run(get_exel_file(choice))
             with open(file_exel, "rb") as exel_file:
                 bot.send_document(call.message.chat.id, exel_file)
+            current_end = get_time_utcnow()
+            if current_start is not None and current_end is not None:
+                difference = float(current_end) - float(current_start)
+                bot.send_message(call.message.chat.id, f"Выполнение запроса заняло: {round(difference, 2)} мин.")
+
 
         elif call.data == 'count1':
             file_exel = asyncio.run(get_all_airbnb_airdna_good_count())
@@ -121,34 +139,13 @@ def query_handler(call):
             bot.send_message(call.message.chat.id, f"На данный момент парсер проходит\n диапазон от {price_min}$ до {price_max}$")
 
 
-
-
-
-            # Получение времени затраченого на формирование отчета
-        current_end = get_time_utcnow()
-        if current_start is not None and current_end is not None:
-            difference = float(current_end) - float(current_start)
-            bot.send_message(call.message.chat.id, f"Выполнение запроса заняло: {round(difference, 2)} мин.")
-        else:
-            bot.send_message(call.message.chat.id, f"Спасибо за ожидание.")
     finally:
         # По завершении обработки запроса устанавливаем флаг
         action_done.set()
-#####
+####
 
 
 
-
-
-
-
-
-
-
-
-
-# # Запуск бота
-# bot.polling()
 
 
 
@@ -167,3 +164,7 @@ while attempts < max_attempts:
 
 if attempts == max_attempts:
     print("Превышено максимальное количество попыток. Завершение работы.")
+
+
+# # Запуск бота
+# bot.polling()

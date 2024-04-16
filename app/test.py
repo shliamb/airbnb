@@ -1,6 +1,6 @@
 from worker_db import get_airbnb, get_id
 from datetime import datetime, timezone, timedelta
-from parser_sys import str_inter
+from app.bad.parser_sys import str_inter
 import asyncio
 import time
 import random
@@ -20,35 +20,49 @@ import re
 
 
 #url_href = "/rooms/897544692951213383?adults"
-url_href = "/luxury/listing/20473374?adults=1&ch"
+# url_href = "/luxury/listing/20473374?adults=1&ch"
 
 
-pattern = r"/(?:rooms|listing)/(\d+)"
+# pattern = r"/(?:rooms|listing)/(\d+)"
 
 
-match = re.search(pattern, url_href)
-if match:
-    id = int(match.group(1))
-else:
-    id = None
+# match = re.search(pattern, url_href)
+# if match:
+#     id = int(match.group(1))
+# else:
+#     id = None
 
-print("id:", id)
-
-
-
+# print("id:", id)
 
 
 
+# room_data = {"id": 4445, "url": 34, "date": 343}
 
-
-
-
+# for n in room_data:
+#     print(n["url"])
 
 
 
 
 
 
+# room_data = {"id": 4445, "url": 34, "date": 343}
+
+# print(room_data['url'])
+
+
+# url = "https://www.airbnb.ru/rooms/945811232623268326?adults=1&category_tag=Tag%3A5635&children=0&enable_m3_private_room=true&infants=0&pets=0&photo_id=1824705786&search_mode=flex_destinations_search&check_in=2024-07-29&check_out=2024-08-03&source_impression_id=p3_1713289897_FGt11VEmkmQNPnhq&previous_page_section_name=1000&federated_search_id=65e9afac-3b5d-4fe0-bfd0-3bf6e390bdfa"
+# #url = "https://www.airbnb.ru/luxury/listing/26197937?adults=1&children=0&enable_m3_private_room=true&infants=0&pets=0&check_in=2024-04-17&check_out=2024-04-22&source_impression_id=p3_1713150034_4ZBpuHJRM8yIkxrI&previous_page_section_name=1000&federated_search_id=e7538e51-0aa1-4233-90db-44026bf8abe3&_set_bev_on_new_domain=1712664722_NmUyY2E3NmYyNmI1"
+
+# pattern = r'(/listing/\d+|rooms/\d+)'
+# url_object = re.sub(pattern, r'\1/amenities', url)
+
+
+# print(url_object)
+
+
+# pattern = r'(/?listing|rooms/\d+)'
+# url_object = re.sub(pattern, r'/amenities', url)
 
 
 
@@ -60,11 +74,31 @@ print("id:", id)
 
 
 
-# id = 45969379
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# id = 738026793777154035
 
 # data = asyncio.run(get_id(id))
 # if data is not None:
-#     print(data.passed_flag, data.id, data.url )
+#     print(f"{data.passed_flag}\n{data.id}\n{data.url}\n{data.date}\n{data.busy_flag}")
 
 
 # data_room = asyncio.run(get_airbnb(id))
