@@ -28,12 +28,12 @@
 
 Пример окна бота:
 
-<img src="https://raw.githubusercontent.com/shliamb/airbnb/main/img/9.png?token=GHSAT0AAAAAACQOLXF5CRSH57MEHFIBQA6CZRAI4AQ" alt="Airbnb" width="auto" height="auto" align="top">
+<img src="https://github.com/shliamb/airbnb/blob/main/img/9.png?raw=true" alt="Airbnb" width="auto" height="auto" align="top">
 
 
 Сайт Airbnb кусается. При длительном парсинге страниц, блокируется доступ к сайту. Решилось автоматическим удалением и созданием новых профилей браузера.
 
-<img src="https://raw.githubusercontent.com/shliamb/airbnb/main/img/5.png?token=GHSAT0AAAAAACQOLXF4PTF7O3VDYCGSBZMSZRAI6GA" alt="Airbnb" width="auto" height="auto" align="top">
+<img src="https://github.com/shliamb/airbnb/blob/main/img/5.png?raw=true" alt="Airbnb" width="auto" height="auto" align="top">
 
 
 - После доработок работы парсера, ошибок не возникает и сервер максимально отзывчев. Обращение не блокирует, даже, если довольно долго его парсить. Хотя почти везде установлены случайные задержки в дробных числах. Так же заморочился с подменой user-agent, максимально-возможно скрыл доступные способы скрытия фингерпринта железа. 10 профилей, хоть и пустых chrome driver. При необходимости, можно будет подразвить и вообще подключить proxy. Но я не думаю, что в ближайшее время сервер доростет до борьбы с этим парсером, посмотрим. Так же есть возможность использовать режим драйвера хрома headless. Браузер не будет запускаться до конца, т. е. не будет визуальной части браузера, головы, но все будет работать и нормально парсить.
