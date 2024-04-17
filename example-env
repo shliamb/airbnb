@@ -1,7 +1,6 @@
 
+USER_DB="name"
+PASWOR_DB="pas"
+TELE_BOT="token"
+YANDEX_GEO="key"
 
-
-
-#USER_DB=""
-
-#PASWOR_DB=""
