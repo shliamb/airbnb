@@ -35,8 +35,9 @@ async def get_exel_file(choice):
         if n.bedroom != None and n.location != "":
                 # Порядковый номер строк в ексель
             number += 1
-                # Название объекта и ссылка на него
-            object =  [n.title, n.url]
+                # Название объекта и ссылка на него в airdna
+            url_aird = f"https://app.airdna.co/data/listing/abnb_{n.id}"
+            object =  [n.title, url_aird]
                 # Если данные с Airdna есть, то формируем ссылку на локацию в google
             if m:
                 url_location = m.location_lat,m.location_lng
@@ -51,7 +52,7 @@ async def get_exel_file(choice):
             if m is not None:
                 list_per = m.days_available_ltm # Срок размещения / Listing period
                 adr = m.average_daily_rate_ltm # Средняя цена юнита за сутки, $ / ADR
-                actual_aver = m.occupancy_rate_ltm # Загрузка средняя фактическая / Actual average occupancy
+                actual_aver = str(int(m.occupancy_rate_ltm)) + " %" # Загрузка средняя фактическая / Actual average occupancy
                 historic = m.revenue_ltm # Выручка историческая / Historical value
                 # Цена за месяц, сказали пусть будет пустым
             price_month = ""# Цена за месяц, $, не оно - n.month_price
@@ -60,25 +61,25 @@ async def get_exel_file(choice):
                 # Вид
             view = n.view # Вид
                 # Парковка
-            parking = n.parking # P
+            parking = 1 if n.parking != "" else 0 # P
                 # Рестораны
-            restraunt = n.restaurants # Ресторан/Restraunt
+            restraunt = 1 if n.restaurants != "" else 0  # Ресторан/Restraunt
                 # Басейны
-            pool = n.bath # Бассейн / Pool
+            pool = 1 if n.bath != "" else 0 # Бассейн / Pool
                 # Кухня
-            kitchen = n.kitchen # Кухня / Kitchen
+            kitchen = 1 if n.kitchen != "" else 0 # Кухня / Kitchen
                 # Коворкинг
-            coworking = n.workspace# Коворкинг/coworking
+            coworking = 1 if n.workspace != "" else 0 # Коворкинг/coworking
                 # Руфтоп
-            rooftop = n.rooftop# Руфтоп/ rooftop
+            rooftop = 1 if n.rooftop != "" else 0 # Руфтоп/ rooftop
                 # Балкон, терраса, балкон на террасу
-            balcony_terrace = n.terrace_balcony# Балкон, терасса/ Balcony or terrace
+            balcony_terrace = 1 if n.terrace_balcony != "" else 0 # Балкон, терасса/ Balcony or terrace
                 # Хранение
-            storage = n.storage # камера хранения/ storage room
+            storage = 1 if n.storage != "" else 0 # камера хранения/ storage room
                 # Рейтинг
-            rating = n.rating #stars, {n.reviews} reviews" # Рейтинг отзывов
+            rating = 5 if n.rating > 5 else round(n.rating, 2) #stars, {n.reviews} reviews" # Рейтинг отзывов
                 # Источник данных
-            data_source = "" # Источник данных
+            data_source = ["airbnb", n.url]  # Источник данных
                 # Добавляем в список данные в цикле строк
             all_static.append([number, object, location, type_house, bedrooms, list_per, adr, actual_aver,\
             historic, price_month, sqm, view, parking, restraunt, pool, kitchen, coworking, rooftop, \
@@ -100,6 +101,11 @@ async def get_exel_file(choice):
                 cell_to_update.hyperlink = s[1]
                 cell_to_update.font = Font(color="0000FF", underline="single")
                 # В каждом столбце "С", каждой строки, формируем крассивую ссылку, если она есть, если нет, то просто Текст
+            elif alb[k] == "V":
+                cell_to_update = sheet[f"{alb[k]}{f}"]
+                cell_to_update.value = s[0]
+                cell_to_update.hyperlink = s[1]
+                cell_to_update.font = Font(color="0000FF", underline="single")
             elif alb[k] == "C":
                 if s[1] == "None":
                     cell_to_update = sheet[f"{alb[k]}{f}"]   # 'B11'

@@ -147,6 +147,35 @@ import re
 
 
 
+# n.rating  = 4.05
+
+# rating = n.rating 
+
+
+# a = 4.06
+
+
+# print(5 if a > 5 else n.rating)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

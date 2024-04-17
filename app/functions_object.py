@@ -166,7 +166,7 @@ async def find_data_object(driver, id, url_room, time_correction, currency):#, c
     not_dryer = not_garage = not_kitchen = not_safe = not_lockbox = dedicated_workspace = not_rooftop \
     = outdoor_dining_area = patio_or_balcony = private_backyard = courtyard_view = garden_view = sea_view = \
     beach_view = private_pool = mountain_view = park_view = river_view = valley_view = ocean_view = \
-    pool_view = restaurant = coworking = storage = False
+    pool_view = restaurant = coworking = storage = luggage_drop_off = False
 
     if del_text is not None:
         for n_del_text in del_text:
@@ -202,7 +202,7 @@ async def find_data_object(driver, id, url_room, time_correction, currency):#, c
                     sea_view = True
                 if "beach view" in del_text_clear.lower():
                     beach_view = True
-                if "private pool" in del_text_clear.lower():
+                if "pool" in del_text_clear.lower():
                     private_pool = True
                 if "mountain view" in del_text_clear.lower():
                     mountain_view = True
@@ -222,6 +222,9 @@ async def find_data_object(driver, id, url_room, time_correction, currency):#, c
                     coworking = True
                 if "storage" in del_text_clear.lower():
                     storage = True
+                if "luggage drop-off" in del_text_clear.lower():
+                    luggage_drop_off = True
+
 
         # Приверяю, есть ли в тексте ключевые слова
     if amenities_data != None:
@@ -244,6 +247,8 @@ async def find_data_object(driver, id, url_room, time_correction, currency):#, c
     print(', '.join(kitchen))
 
         # Storage room
+    if luggage_drop_off == False and "luggage drop-off" in amenities.lower(): 
+        storage.append("Luggage drop-off")
     if not_lockbox == False and "lockbox" in amenities.lower(): # Запирающийся ящик
         storage.append("Lockbox")
     if not_safe == False and "safe" in amenities.lower(): # Сейф
@@ -251,6 +256,8 @@ async def find_data_object(driver, id, url_room, time_correction, currency):#, c
     if storage == False and "storage" in amenities.lower(): # Место хранения
         storage.append("Storage")
     print(', '.join(storage))
+
+
 
         # coworking
     if dedicated_workspace == False and "dedicated workspace" in amenities.lower(): # Коворкинг
