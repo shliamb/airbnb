@@ -2,7 +2,7 @@ from sqlalchemy import select, insert, update, join, func
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from models import Base, Users, Airbnb, Airdna, Task, Id, Point
+from models import Base, Users, Airbnb, Airdna, Task, Id, Point, Map
 from keys import user_db, paswor_db
 import sqlalchemy
 import asyncio
@@ -38,7 +38,7 @@ async def get_point(id: int):
         query = select(Point).filter(Point.id == id)
         result = await session.execute(query)
         data = result.scalar_one_or_none()
-        logging.info(f"Read point")
+        logging.info(f"info: Read point")
         return data or None
 
 # Update POINT
@@ -51,9 +51,9 @@ async def update_point(id: int, data) -> bool:
             await session.execute(query)
             await session.commit()
             confirmation = True
-            logging.info(f"point is update")
+            logging.info(f"info: point is update")
         except Exception as e:
-            logging.error(f"Failed to update point, error: {e}")
+            logging.error(f"Error: Failed to update point, error: {e}")
     return confirmation
 
 # Add POINT
@@ -66,9 +66,9 @@ async def adding_point(data) -> bool:
             await session.execute(query)
             await session.commit()
             confirmation = True
-            logging.info("Adding point DB")
+            logging.info("info: Adding point DB")
         except Exception as e:
-            logging.error(f"Failed to add point, errror: {e}")
+            logging.error(f"Error: Failed to add point, errror: {e}")
     return confirmation
 ####
 
@@ -81,7 +81,7 @@ async def get_id(id: int):
         query = select(Id).filter(Id.id == id)
         result = await session.execute(query)
         data = result.scalar_one_or_none()
-        logging.info(f"Read data for ID")
+        logging.info(f"info: Read data for ID")
         return data or None
 
 # Update Data for ID
@@ -94,9 +94,9 @@ async def update_id(id: int, data) -> bool:
             await session.execute(query)
             await session.commit()
             confirmation = True
-            logging.info(f"The ID is update")
+            logging.info(f"info: The ID is update")
         except Exception as e:
-            logging.error(f"Failed to update table ID, error: {e}")
+            logging.error(f"Error: Failed to update table ID, error: {e}")
     return confirmation
 
 # Add Data for ID
@@ -109,9 +109,9 @@ async def adding_id(data) -> bool:
             await session.execute(query)
             await session.commit()
             confirmation = True
-            logging.info("Adding a Table ID")
+            logging.info("info: Adding a Table ID")
         except Exception as e:
-            logging.error(f"Failed to add a Table ID, errror:: {e}")
+            logging.error(f"Error: Failed to add a Table ID, errror:: {e}")
     return confirmation
 
 # Read count id's at Table ID 
@@ -139,7 +139,7 @@ async def get_airbnb(id: int):
         query = select(Airbnb).filter(Airbnb.id == id)
         result = await session.execute(query)
         data = result.scalar_one_or_none()
-        logging.info(f"Reading data at table airbnb")
+        logging.info(f"info: Reading data at table airbnb")
         return data or None
 
 # Update Data aibnb
@@ -152,9 +152,9 @@ async def update_airbnb(id: int, data) -> bool:
             await session.execute(query)
             await session.commit()
             confirmation = True
-            logging.info(f"Update data at table airbnb")
+            logging.info(f"info: Update data at table airbnb")
         except Exception as e:
-            logging.error(f"Failed to Update data at table airbnb, error: {e}")
+            logging.error(f"Error: Failed to Update data at table airbnb, error: {e}")
     return confirmation
 
 # Add data airbnb
@@ -167,12 +167,128 @@ async def adding_airbnb(data) -> bool:
             await session.execute(query)
             await session.commit()
             confirmation = True
-            logging.info("Data airbnb is added")
+            logging.info("info: Data airbnb is added")
         except Exception as e:
-            logging.error(f"Failed to add data airbnb, error: {e}")
+            logging.error(f"Error: Failed to add data airbnb, error: {e}")
     return confirmation
 
 
+
+
+########## Map ###########
+
+# Read data Map
+async def get_map(id: int):
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = select(Map).filter(Map.id == id)
+        result = await session.execute(query)
+        data = result.scalar_one_or_none()
+        logging.info(f"info: Reading data at table map")
+        return data or None
+
+# Update Data Map
+async def update_map(id: int, data) -> bool:
+    async_session = await create_async_engine_and_session()
+    confirmation = False
+    async with async_session() as session:
+        try:
+            query = update(Map).where(Map.id == id).values(**data)
+            await session.execute(query)
+            await session.commit()
+            confirmation = True
+            logging.info(f"info: Update data at table map")
+        except Exception as e:
+            logging.error(f"Error: Failed to Update data at table map, error: {e}")
+    return confirmation
+
+# Add data Map
+async def adding_map(data) -> bool:
+    async_session = await create_async_engine_and_session()
+    confirmation = False
+    async with async_session() as session:
+        try:
+            query = insert(Map).values(**data)
+            await session.execute(query)
+            await session.commit()
+            confirmation = True
+            logging.info("info: Data map is added")
+        except Exception as e:
+            logging.error(f"Error: Failed to add data map, error: {e}")
+    return confirmation
+
+
+
+
+#### AIRDNA #### 
+
+# Read Airdna
+async def get_airdna(id: int):
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = select(Airdna).filter(Airdna.id == id)
+        result = await session.execute(query)
+        data = result.scalar_one_or_none()
+        logging.info(f"info: Read Airdna data")
+        return data or None
+
+# Get ALL Airdna
+async def get_all_airdna():
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = select(Airdna)
+        result = await session.execute(query)
+        data = result.scalars().all()
+        logging.info(f"info: Read all Airdna data")
+        return data or None
+
+# Update Airdna
+async def update_airdna(id: int, data) -> bool: 
+    async_session = await create_async_engine_and_session()
+    confirmation = False
+    async with async_session() as session:
+        try:
+            query = update(Airdna).where(Airdna.id == id).values(**data)
+            await session.execute(query)
+            await session.commit()
+            confirmation = True
+            logging.info(f"info: Data Airdna is update")
+        except Exception as e:
+            logging.error(f"Error: Failed to update data Airdna, error: {e}")
+    return confirmation
+
+# Add Airdna
+async def adding_airdna(data) -> bool:
+    async_session = await create_async_engine_and_session()
+    confirmation = False
+    async with async_session() as session:
+        try:
+            query = insert(Airdna).values(**data)
+            await session.execute(query)
+            await session.commit()
+            confirmation = True
+            logging.info("info: Adding data Airdna DB")
+        except Exception as e:
+            logging.error(f"Error: Failed to add data Airdna, errror:: {e}")
+    return confirmation
+
+
+# Read table Airna join ID 
+async def get_all_airdna_id_join():
+    async_session = await create_async_engine_and_session()
+    async with async_session() as session:
+        query = (
+            select(Airdna, Id, Map)
+            .outerjoin(Id, Airdna.id == Id.id)  # Убедитесь, что используете правильные поля для соединения
+            .outerjoin(Map, Airdna.id == Map.id)  # Убедитесь, что используете правильные поля для соединения
+            .where(Airdna.location_lat != 0)
+            .where(Airdna.location_lng != 0)
+            .where(Id.id.isnot(None))  # Используйте isnot(None) для проверки на не NULL
+            .where(Map.id.is_(None))  # Используйте is_(None) для проверки на NULL
+        )
+        result = await session.execute(query)
+        data = result.all()
+        return data
 
 
 
@@ -434,9 +550,9 @@ async def update_all_id(data) -> bool:
             await session.execute(query)
             await session.commit()
             confirmation = True
-            logging.info(f"All data ID Table is updated")
+            logging.info(f"info: All data ID Table is updated")
         except Exception as e:
-            logging.error(f"Failed to update data ID Table, error: {e}")
+            logging.error(f"Error: Failed to update data ID Table, error: {e}")
     return confirmation
 ####
 
@@ -497,58 +613,6 @@ async def update_all_id(data) -> bool:
 
 
 
-#### AIRDNA #### 
-
-# Read Airdna
-async def get_airdna(id: int):
-    async_session = await create_async_engine_and_session()
-    async with async_session() as session:
-        query = select(Airdna).filter(Airdna.id == id)
-        result = await session.execute(query)
-        data = result.scalar_one_or_none()
-        logging.info(f"Read Airdna data")
-        return data or None
-
-# Get ALL Airdna
-async def get_all_airdna():
-    async_session = await create_async_engine_and_session()
-    async with async_session() as session:
-        query = select(Airdna)
-        result = await session.execute(query)
-        data = result.scalars().all()
-        logging.info(f"Read all Airdna data")
-        return data or None
-
-# Update Airdna
-async def update_airdna(id: int, data) -> bool: 
-    async_session = await create_async_engine_and_session()
-    confirmation = False
-    async with async_session() as session:
-        try:
-            query = update(Airdna).where(Airdna.id == id).values(**data)
-            await session.execute(query)
-            await session.commit()
-            confirmation = True
-            logging.info(f"Data Airdna is update")
-        except Exception as e:
-            logging.error(f"Failed to update data Airdna, error: {e}")
-    return confirmation
-
-# Add Airdna
-async def adding_airdna(data) -> bool:
-    async_session = await create_async_engine_and_session()
-    confirmation = False
-    async with async_session() as session:
-        try:
-            query = insert(Airdna).values(**data)
-            await session.execute(query)
-            await session.commit()
-            confirmation = True
-            logging.info("Adding data Airdna DB")
-        except Exception as e:
-            logging.error(f"Failed to add data Airdna, errror:: {e}")
-    return confirmation
-
 # # ADMIN Read all settings and users an id
 # async def get_all_rooms_and_airdna():
 #     async_session = await create_async_engine_and_session()
@@ -580,7 +644,7 @@ async def get_users(id: int):
         query = select(Users).filter(Users.id == id)
         result = await session.execute(query)
         data = result.scalar_one_or_none()  # - это метод SQLAlchemy, который возвращает ровно один результат из результата запроса или None, если запрос не вернул ни одного результата.
-        logging.info(f"Read Users")
+        logging.info(f"info: Read Users")
         return data or None
 
 # Update User Data
@@ -593,9 +657,9 @@ async def update_users(id: int, data) -> bool:
             await session.execute(query)
             await session.commit()
             confirmation = True
-            logging.info(f"User data is update")
+            logging.info(f"info: User data is update")
         except Exception as e:
-            logging.error(f"Failed to update user data, error: {e}")
+            logging.error(f"Error: Failed to update user data, error: {e}")
     return confirmation
 
 # Add User Data to DB
@@ -608,9 +672,9 @@ async def adding_users(data) -> bool:
             await session.execute(query)
             await session.commit()
             confirmation = True
-            logging.info("User data is add")
+            logging.info("info: User data is add")
         except Exception as e:
-            logging.error(f"Failed to add user data, error: {e}")
+            logging.error(f"Error: Failed to add user data, error: {e}")
     return confirmation
 ####
 
@@ -626,7 +690,7 @@ async def get_task(id: int):
         query = select(Task).filter(Task.id == id)
         result = await session.execute(query)
         data = result.scalar_one_or_none()
-        logging.info(f"Read Task")
+        logging.info(f"info: Read Task")
         return data or None
 
 # Update Task
@@ -639,9 +703,9 @@ async def update_task(id: int, data) -> bool:
             await session.execute(query)
             await session.commit()
             confirmation = True
-            logging.info(f"Task is update by user: {id}")
+            logging.info(f"info: Task is update by user: {id}")
         except Exception as e:
-            logging.error(f"Failed to update task, error: {e}")
+            logging.error(f"Error: Failed to update task, error: {e}")
     return confirmation
 
 # Add Task
@@ -654,9 +718,9 @@ async def adding_task(data) -> bool:
             await session.execute(query)
             await session.commit()
             confirmation = True
-            logging.info("Adding one task to DB")
+            logging.info("info: Adding one task to DB")
         except Exception as e:
-            logging.error(f"Failed to add task, errror:: {e}")
+            logging.error(f"Error: Failed to add task, errror:: {e}")
     return confirmation
 
 

@@ -58,9 +58,10 @@ async def find_data_object(driver, id, url_room, time_correction, currency):#, c
     if title != None:
         title_room = title.text.strip()
         print("info: title_room:", title_room)
-    else:
-        title_room = ""
-        print(title_room)
+    elif title == None or title == "":
+        print("Error: in this object dont have title.")
+        return
+    
         
         # Name room
     name = el.find("h2", {"elementtiming": "LCP-target"})

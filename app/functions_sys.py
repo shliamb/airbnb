@@ -15,7 +15,13 @@ import re
 
 #### SYSTEM FUNCTIONS ####
 
-# Устанавливает настройки драйвера chrome и запускает его (открывается окно брауз.) и возвращает driver
+# "--no-sandbox"  # Этот аргумент часто помогает в средах Linux
+# "--headless"  # Запускать Chrome в фоновом режиме (без GUI)
+# "--disable-dev-shm-usage"  # Исправляет проблемы с ограниченной памятью в Docker
+# "--remote-debugging-port=9222"  # Указывает порт для удаленной отладки
+#    chrome_options.binary_location = "/path/to/google-chrome"
+
+# 1  Устанавливает настройки драйвера chrome и запускает его (открывается окно брауз.) и возвращает driver
 async def begin_list():
         # Всевозможные варианты UserAgent и как их выбрать -  ua = UserAgent(browsers=['edge', 'chrome'])  ua = UserAgent(os='linux') ua = UserAgent(min_version=120.0)  ua = UserAgent(platforms='mobile')  
     options = Options()
@@ -46,6 +52,7 @@ async def begin_list():
 
 
 
+# 2
 async def begin_object():
         # Всевозможные варианты UserAgent и как их выбрать -  ua = UserAgent(browsers=['edge', 'chrome'])  ua = UserAgent(os='linux') ua = UserAgent(min_version=120.0)  ua = UserAgent(platforms='mobile')  
     options = Options()

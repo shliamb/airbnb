@@ -1,6 +1,6 @@
-from worker_db import get_airbnb, get_id
+from worker_db import get_all_airdna_id_join, get_airbnb, get_id, get_map
 from datetime import datetime, timezone, timedelta
-from app.bad.parser_sys import str_inter
+#from app.bad.parser_sys import str_inter
 import asyncio
 import time
 import random
@@ -63,6 +63,78 @@ import re
 
 # pattern = r'(/?listing|rooms/\d+)'
 # url_object = re.sub(pattern, r'/amenities', url)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# id = 738026793777154035
+
+# data = asyncio.run(get_id(id))
+# if data is not None:
+#     print(f"{data.passed_flag}\n{data.id}\n{data.url}\n{data.date}\n{data.busy_flag}")
+
+
+# data_room = asyncio.run(get_airbnb(id))
+# if data_room is not None:
+
+
+
+
+
+# data = asyncio.run(get_all_airdna_id_join())
+
+# i = 0
+
+# for n, k, p in data:
+#     print(n.location_lat)
+#     i += 1
+# print(f"Всего: {i}")
+
+
+
+# a = ['Country: Индонезия', 'Province: провинция Бали', 'Area: Кабупатен-Табанан']
+
+# d = ' | '.join(a)
+
+# print(d)
+
+
+
+
+
+
+# id = 967685889953187975
+
+# data = asyncio.run(get_map(id))
+
+# print(data.id)
+# print(data.url)
+# print(data.title)
+# print(data.location_lat)
+# print(data.location_lng)
+# print(data.date)
+
+# i = 0
+
+# for n in data:
+#     print(n.location_lat)
+#     i += 1
+# print(f"Всего: {i}")
 
 
 
