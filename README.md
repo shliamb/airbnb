@@ -24,7 +24,7 @@
 
 - Просто запустить файл run.py (позже сам будет подниматься с докером и работать сразу)
 
-
+<img src="https://raw.githubusercontent.com/shliamb/Telegram-bot-ChatGPT-OpenAI/main/img/bot.png" alt="ChatGPT" width="auto" height="auto" align="top">
 
 # Подробное описание приложения
 
