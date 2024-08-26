@@ -1,8 +1,11 @@
 venv/
 app/bad/
 .env
+app/.env
 profiles_list/
+app(copy)
 profiles_object/
 app/chromedriver/
 app/test.py
 migration.py
+app/__pycache__/

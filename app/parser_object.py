@@ -21,8 +21,8 @@ async def get_data_obj():
         while data_room is None or data_room == []:
             print(Back.RED + "Error: The objects in the database are over, let's wait a bit.")
             print(Style.RESET_ALL)
-            # await asyncio.sleep(300)
-            await quick_sleep(250, 300)
+            await asyncio.sleep(300)
+            # await quick_sleep(250, 300)
             data_room = await get_10_id_false(count)
 
 
