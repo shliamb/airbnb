@@ -63,7 +63,7 @@ async def get_data_obj():
 
 
 attempts = 0
-max_attempts = 5  # Примерное количество максимальных попыток
+max_attempts = 10  # Примерное количество максимальных попыток
 
 async def main():
     global attempts
@@ -75,7 +75,7 @@ async def main():
             break  # Если функция выполнится без ошибок, выйдем из цикла
         except Exception as e:
             attempts += 1
-            print(f"Произошла ошибка: {e}. Попытка {attempts} из {max_attempts}. Повторная попытка через 300 секунд...")
+            print(f"Произошла ошибка: {e}. Попытка {attempts} из {max_attempts}. Повторная попытка через 5 минут ...")
             await asyncio.sleep(300)  # Ожидание перед повторной попыткой
 
 # Запуск асинхронной функции main

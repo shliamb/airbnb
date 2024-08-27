@@ -9,7 +9,7 @@ import os
 def call_counter(func):
     def helper(*args, **kwargs): 
         helper.calls += 1
-        if helper.calls >= 10:
+        if helper.calls >= 5:
             # Получаю folder из аргументов
             folder_path = args[0] if args else kwargs.get('folder', '')
             if os.path.exists(folder_path):
