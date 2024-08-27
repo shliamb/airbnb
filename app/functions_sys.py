@@ -36,7 +36,7 @@ async def begin_list():
             options.add_argument(arg)
             #print(arg)
     ####
-    add_options(options, "--disable-webgl", "--disable-gpu", "--disable-3d-apis", "--enable-virtual-keyboard", "--mute-audio", "--disable-plugins-discovery", "--profile-directory=Default", "disable-infobars", "start-maximized", "--disable-blink-features=AutomationControlled", f"--user-agent={ua.random}", f"user-data-dir=./profiles_list/{prof}", "--headless=new") # , "--incognito", f"--proxy-server={PROXY}", "--headless=new")
+    add_options(options, "--disable-webgl", "--disable-gpu", "--disable-3d-apis", "--enable-virtual-keyboard", "--mute-audio", "--disable-plugins-discovery", "--profile-directory=Default", "disable-infobars", "start-maximized", "--disable-blink-features=AutomationControlled", f"--user-agent={ua.random}", f"user-data-dir=./profiles_list/{prof}", "--headless") # , "--incognito", f"--proxy-server={PROXY}", "--headless=new") "--window-size=1920x1080",
     ####
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option("useAutomationExtension", False)
@@ -44,7 +44,7 @@ async def begin_list():
     options.add_argument('--disable-dev-shm-usage')
     driver_list = webdriver.Chrome(options=options)
     # driver.delete_all_cookies()
-    driver_list.set_window_size(1200,800)
+    driver_list.set_window_size(1920,1080)
     driver_list.set_window_position(0,0)
     print("info: Open driver_list Chrome")
     return driver_list
@@ -67,7 +67,7 @@ async def begin_object():
             options.add_argument(arg)
             #print(arg)
     ####
-    add_options(options, "--disable-webgl", "--disable-gpu", "--disable-3d-apis", "--enable-virtual-keyboard", "--mute-audio", "--disable-plugins-discovery", "--profile-directory=Default", "disable-infobars", "start-maximized", "--disable-blink-features=AutomationControlled", f"--user-agent={ua.random}", f"user-data-dir=./profiles_object/{prof}", "--headless=new") # , "--incognito", f"--proxy-server={PROXY}", "--headless=new")
+    add_options(options, "--disable-webgl", "--disable-gpu", "--disable-3d-apis", "--enable-virtual-keyboard", "--mute-audio", "--disable-plugins-discovery", "--profile-directory=Default", "disable-infobars", "start-maximized", "--disable-blink-features=AutomationControlled", f"--user-agent={ua.random}", f"user-data-dir=./profiles_object/{prof}", "--headless") # , "--incognito", f"--proxy-server={PROXY}", "--headless=new")
     ####
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option("useAutomationExtension", False)
@@ -75,7 +75,7 @@ async def begin_object():
     options.add_argument('--disable-dev-shm-usage')
     driver_object = webdriver.Chrome(options=options)
     # driver.delete_all_cookies()
-    driver_object.set_window_size(1200,800)
+    driver_object.set_window_size(1920,1080)
     driver_object.set_window_position(0,0)
     print("info: Open driver_object Chrome")
     return driver_object

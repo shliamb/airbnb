@@ -23,7 +23,20 @@ RUN apt-get update && apt-get install -y apt-utils \
     libx11-xcb1 \
     fonts-liberation \
     xdg-utils \
+    libx11-dev \
+    libxcb1 \
+    libxcomposite1 \
+    libxcursor1 \
+    libxdamage1 \
+    libxi6 \
+    libxtst6 \
+    libnss3 \
+    libcups2 \
+    libxrandr2 \
+    libatk1.0-0 \
+    libgtk-3-0 \
     curl
+
 
 RUN echo "deb http://deb.debian.org/debian/ bookworm main" >> /etc/apt/sources.list && \
     apt-get update && \
