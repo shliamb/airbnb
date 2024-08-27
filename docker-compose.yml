@@ -16,6 +16,56 @@ services:
     networks:
       - db-network
 
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile.bot
+      # dockerfile: Dockerfile
+    container_name: telegram_bot
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: ${USER_DB}
+      POSTGRES_PASSWORD: ${PASWOR_DB}
+      POSTGRES_DB: my_database
+    depends_on:
+      - postgres
+    networks:
+      - db-network
+
+  list:
+    build:
+      context: .
+      dockerfile: Dockerfile.list
+    container_name: parser_list
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: ${USER_DB}
+      POSTGRES_PASSWORD: ${PASWOR_DB}
+      POSTGRES_DB: my_database
+    depends_on:
+      - postgres
+    networks:
+      - db-network
+    ports:
+      - "8080:80"  # Публикация порта 80 контейнера на порт 8080 хоста
+
+  object:
+    build:
+      context: .
+      dockerfile: Dockerfile.object
+    container_name: parser_object
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: ${USER_DB}
+      POSTGRES_PASSWORD: ${PASWOR_DB}
+      POSTGRES_DB: my_database
+    depends_on:
+      - postgres
+    networks:
+      - db-network
+    ports:
+      - "8081:80"  # Публикация порта 80 контейнера на порт 8081 хоста
+
 volumes:
   postgres_data:
 

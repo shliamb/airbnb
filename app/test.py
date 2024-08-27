@@ -66,11 +66,19 @@ import re
 
 
 
+# import asyncio
 
+# data_room = None
 
+# async def timer():
+#     while data_room is None or data_room == []:
+#         print("Error: The objects in the database are over, let's wait a bit.")
+#         await asyncio.sleep(10)
+#         print("ok")
+#         # await quick_sleep(250, 300)
+#         # data_room = await get_10_id_false(count)
 
-
-
+# asyncio.run(timer())
 
 
 

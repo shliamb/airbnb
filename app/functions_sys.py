@@ -109,18 +109,18 @@ async def quick_sleep(mi: int, ma: int) -> bool:
     confirm = False
     num = random.randint(mi, ma)
     print(f"info: wait {num} seconds")
-    def spinning_cursor():
-        while True:
-            for cursor in '|/-\|':
-                yield cursor
-    spinner = spinning_cursor()
-    i = 0
-    while i < num:
-        sys.stdout.write(next(spinner))
-        sys.stdout.flush()
-        await asyncio.sleep(0.04)
-        sys.stdout.write('\r')
-        i += 0.042
+    # def spinning_cursor():
+    #     while True:
+    #         for cursor in '|/-\|':
+    #             yield cursor
+    # spinner = spinning_cursor()
+    # i = 0
+    # while i < num:
+    #     sys.stdout.write(next(spinner))
+    #     sys.stdout.flush()
+    #     await asyncio.sleep(0.04)
+    #     sys.stdout.write('\r')
+    #     i += 0.042
     confirm = True
     return confirm
 
