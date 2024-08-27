@@ -1,6 +1,4 @@
 #!/bin/bash
-
-# Убедитесь, что вы запускаете этот скрипт из директории, где находится ваш docker-compose.yml
 while true; do
     echo "Starting docker-compose up"
     # Запускаем docker-compose up в фоновом режиме
