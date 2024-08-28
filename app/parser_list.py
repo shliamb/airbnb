@@ -50,9 +50,9 @@ async def get_list_id_url():
         await scroll(driver_list)
             # Поиск данных на странице, сохранение
         await find_id_url(driver_list, time_correction, price_min, price_max)
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@@@@")
             # Получение url следующей страницы
         url = await get_url_next_page(driver_list)
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@@@@")
             # Если url следующей страницы нет
         if url == None:
             if price_max is None:
