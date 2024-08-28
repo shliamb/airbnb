@@ -17,6 +17,6 @@ while true; do
     echo "Stopping docker-compose down"
     docker-compose down
     
-    echo "Waiting for 3 minutes"
+    echo "Waiting for 1 minutes"
     sleep 60   # Ждем 1 минуту (60 секунд)
 done

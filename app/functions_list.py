@@ -85,12 +85,18 @@ async def find_id_url(driver, time_correction, price_min, price_max):
     nand = BeautifulSoup(html, 'lxml')
     await quick_sleep(2, 3)
 
-    for el in nand.find_all("div", {"data-testid": "card-container"}):
+
+    cards = nand.find_all("div", {"data-testid": "card-container"})
+
+    if not cards:
+        print("Error: No data found on the html url")
+        return
+    
+    for el in cards:
+        print("---------")
         if el is None:
             print("Error: No data found on the html url")
             return
-        print("---------")
-
         # Забираем ID и URL
         room_url = el.find("a", {"class": "l1ovpqvx"})
         if room_url:
@@ -110,11 +116,13 @@ async def find_id_url(driver, time_correction, price_min, price_max):
             id = 0
             print("Error: Ошибка поиска URl")
 
-        # Готовим данные к сохранению
-        list_date_update = await day_utcnow(time_correction)
-        room_data = {"id": id, "url": url_room, "date": list_date_update}
+
+        if id != 0:
+            # Готовим данные к сохранению
+            list_date_update = await day_utcnow(time_correction)
+            room_data = {"id": id, "url": url_room, "date": list_date_update}
 
             # Записываем данные id и url в DB
-        await save_id_url_to_db(id, room_data)
+            await save_id_url_to_db(id, room_data)
         
     return

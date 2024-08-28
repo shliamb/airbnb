@@ -6,6 +6,6 @@ profiles_list/
 app(copy)
 profiles_object/
 app/chromedriver/
-app/test.py
 migration.py
 app/__pycache__/
+app/test.py

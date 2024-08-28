@@ -81,11 +81,14 @@ import re
 # asyncio.run(timer())
 
 
+def innm(ig):
+    if ig == 5:
+        return
+    print("no 5")
 
 
-
-
-
+ig = 5
+innm(ig)
 
 
 
