@@ -89,13 +89,13 @@ async def find_id_url(driver, time_correction, price_min, price_max):
     cards = nand.find_all("div", {"data-testid": "card-container"})
 
     if not cards:
-        print("Error: No data found on the html url")
+        print("info: No data found on the html url")
         return
     
     for el in cards:
         print("---------")
         if el is None:
-            print("Error: No data found on the html url")
+            print("info: No data found on the html url")
             return
         # Забираем ID и URL
         room_url = el.find("a", {"class": "l1ovpqvx"})

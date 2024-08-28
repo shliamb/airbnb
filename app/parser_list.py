@@ -52,9 +52,9 @@ async def get_list_id_url():
         await find_id_url(driver_list, time_correction, price_min, price_max)
             # Получение url следующей страницы
         url = await get_url_next_page(driver_list)
-        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@@@@")
             # Если url следующей страницы нет
         if url == None:
+            print(f"{int(price_max)} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@@@@")
             if price_max is None:
                 await end_close(driver_list)
                 return 
@@ -75,7 +75,7 @@ async def get_list_id_url():
                 driver_list = await begin_list()
                 await quick_sleep(1, 2)
                 # Если цена максимальная перешла максимальный предел, то обнуляем ценообразование для следующего круга
-            elif int(price_max) > 16000:
+            elif int(price_max) >= 16000:
                     # Закрытие драйвера Chrome
                 await end_close(driver_list)
                 print()
