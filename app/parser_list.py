@@ -54,7 +54,6 @@ async def get_list_id_url():
         url = await get_url_next_page(driver_list)
             # Если url следующей страницы нет
         if url == None:
-            print(f"{int(price_max)} - !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@@@@")
             if price_max is None:
                 await end_close(driver_list)
                 return 
